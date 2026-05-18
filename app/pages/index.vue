@@ -61,11 +61,20 @@ function formatDate(dateStr: string | null): string {
             v-for="deck in filteredDecks"
             :key="deck.identifier"
             :title="deck.name"
-            :description="deck.description"
             variant="subtle"
             class="hover:z-1"
           >
-            <div class="mt-3 space-y-2">
+            <template #title>
+              <p class="text-base text-pretty font-semibold text-highlighted line-clamp-2">
+                {{ deck.name }}
+              </p>
+            </template>
+            <template #description>
+              <p class="text-sm text-muted line-clamp-3">
+                {{ deck.description }}
+              </p>
+            </template>
+            <div class="mt-auto space-y-2">
               <div class="flex items-center justify-between text-sm">
                 <div class="flex items-center gap-2">
                   <UIcon name="i-lucide-layers" class="text-primary size-4" />
