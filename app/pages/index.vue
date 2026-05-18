@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { refDebounced } from '@vueuse/core';
 const { data: decks } = useDecks();
+
+const keyword = useState(() => '');
+const debouncedKeyword = refDebounced(keyword, 300);
+const filteredDecks = computed(() =>
+  decks.value?.filter(d => (
+    d.name.toLowerCase().includes(debouncedKeyword.value.toLowerCase())
+    || d.description.toLowerCase().includes(debouncedKeyword.value.toLowerCase())
+  ) ?? [],
+));
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) {
@@ -24,13 +34,31 @@ function formatDate(dateStr: string | null): string {
           <UDashboardSidebarCollapse />
         </template>
       </UDashboardNavbar>
+      <UDashboardToolbar>
+        <UInput
+          v-model="keyword"
+          icon="i-lucide-search"
+          placeholder="Tìm bộ thẻ..."
+          class="w-full sm:max-w-xs"
+        >
+          <template v-if="keyword" #trailing>
+            <UButton
+              icon="i-lucide-x"
+              color="neutral"
+              variant="ghost"
+              size="xs"
+              @click="keyword = ''"
+            />
+          </template>
+        </UInput>
+      </UDashboardToolbar>
     </template>
 
     <template #body>
       <div class="p-4 sm:p-6">
         <UPageGrid class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <UPageCard
-            v-for="deck in decks"
+            v-for="deck in filteredDecks"
             :key="deck.identifier"
             :title="deck.name"
             :description="deck.description"
