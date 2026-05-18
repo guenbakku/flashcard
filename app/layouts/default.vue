@@ -41,18 +41,7 @@ const links = [
         </div>
       </template>
 
-      <template #footer="{ collapsed }">
-        <UColorModeButton
-          :label="collapsed ? undefined : 'Sáng / Tối'"
-          variant="ghost"
-          color="neutral"
-          block
-        />
-      </template>
-
       <template #default="{ collapsed }">
-        <!-- <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" /> -->
-
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[0]"
@@ -60,6 +49,17 @@ const links = [
           tooltip
           popover
         />
+      </template>
+
+      <template #footer="{ collapsed }">
+        <UTooltip text="Giao diện Sáng / Tối">
+          <UColorModeButton
+            :label="collapsed ? undefined : 'Sáng / Tối'"
+            variant="ghost"
+            color="neutral"
+            block
+          />
+        </UTooltip>
       </template>
     </UDashboardSidebar>
     <slot />
