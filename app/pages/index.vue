@@ -1,12 +1,18 @@
 <script setup lang="ts">
-
-const isCreateModalOpen = ref(false);
-
 const { data: decks } = useDecks();
 
 function formatDate(dateStr: string | null): string {
-  if (!dateStr) return 'Chưa học';
-  return new Date(dateStr).toLocaleDateString('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (!dateStr) {
+    return 'Chưa học';
+  }
+
+  return new Date(dateStr).toLocaleDateString('vi-VN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 </script>
 
@@ -17,14 +23,6 @@ function formatDate(dateStr: string | null): string {
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
-        <template #right>
-          <UButton
-            icon="i-lucide-plus"
-            size="md"
-            class="rounded-full"
-            @click="isCreateModalOpen = true"
-          />
-        </template>
       </UDashboardNavbar>
     </template>
 
@@ -33,7 +31,7 @@ function formatDate(dateStr: string | null): string {
         <UPageGrid class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <UPageCard
             v-for="deck in decks"
-            :key="deck.id"
+            :key="deck.identifier"
             :title="deck.name"
             :description="deck.description"
             variant="subtle"
@@ -49,7 +47,7 @@ function formatDate(dateStr: string | null): string {
               <div class="flex items-center justify-between text-sm">
                 <span class="text-muted">{{ deck.cardCount }} thẻ</span>
                 <UBadge
-                  :color="deck.progress > 0 ? 'success' : 'neutral'"
+                  :color="deck.progress  > 0 ? 'success' : 'neutral'"
                   variant="subtle"
                   size="sm"
                 >
@@ -58,7 +56,7 @@ function formatDate(dateStr: string | null): string {
               </div>
 
               <UProgress
-                v-model="deck.progress"
+                :model-value="deck.progress"
                 size="sm"
                 color="primary"
               />
@@ -71,7 +69,7 @@ function formatDate(dateStr: string | null): string {
             <template #footer>
               <div class="flex gap-2">
                 <UButton
-                  :to="`/decks/${deck.id}`"
+                  :to="`/decks/${deck.identifier}`"
                   size="sm"
                   variant="subtle"
                   icon="i-lucide-play"
@@ -86,27 +84,4 @@ function formatDate(dateStr: string | null): string {
       </div>
     </template>
   </UDashboardPanel>
-
-  <UModal v-model:open="isCreateModalOpen" title="Tạo bộ thẻ mới">
-    <template #body>
-      <UForm :state="{}" class="space-y-4">
-        <UFormField label="Tên bộ thẻ" required>
-          <UInput placeholder="VD: Tiếng Anh cơ bản" class="w-full" />
-        </UFormField>
-        <UFormField label="Mô tả">
-          <UTextarea placeholder="Mô tả ngắn về bộ thẻ..." class="w-full" />
-        </UFormField>
-      </UForm>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">
-          Hủy
-        </UButton>
-        <UButton icon="i-lucide-plus">
-          Tạo
-        </UButton>
-      </div>
-    </template>
-  </UModal>
 </template>

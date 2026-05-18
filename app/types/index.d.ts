@@ -1,14 +1,15 @@
 export interface Deck {
-  id: number
+  identifier: string
   name: string
   description: string
   cardCount: number
   lastStudied: string | null
+  correct: Record<string, true>
   progress: number
 }
 
 export interface Card {
-  id: number
   front: string
   back: string
+  backSub?: string
 }
