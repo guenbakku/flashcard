@@ -65,17 +65,14 @@ function formatDate(dateStr: string | null): string {
             variant="subtle"
             class="hover:z-1"
           >
-            <template #leading>
-              <div class="bg-primary/10 ring-primary/25 flex size-10 items-center justify-center rounded-full ring ring-inset">
-                <UIcon name="i-lucide-layers" class="text-primary size-5" />
-              </div>
-            </template>
-
             <div class="mt-3 space-y-2">
               <div class="flex items-center justify-between text-sm">
-                <span class="text-muted">{{ deck.cardCount }} thẻ</span>
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-layers" class="text-primary size-4" />
+                  <span class="text-muted">{{ deck.cardCount }} thẻ</span>
+                </div>
                 <UBadge
-                  :color="deck.progress  > 0 ? 'success' : 'neutral'"
+                  :color="deck.progress > 0 ? 'success' : 'neutral'"
                   variant="subtle"
                   size="sm"
                 >
