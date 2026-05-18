@@ -7,12 +7,23 @@ const deck = computed(() => getDeck(identifier));
 
 const { data: cards, pending } = useCards(identifier);
 
+const isShuffle = ref(false);
+const displayCards = computed(() => {
+  if (!cards.value) {
+    return [];
+  };
+  if (!isShuffle.value) {
+    return cards.value;
+  };
+  return [...cards.value].sort(() => Math.random() - 0.5);
+});
+
 const currentIndex = ref(0);
 const isFlipped = ref(false);
 const results = ref<Record<string, boolean>>({});
 
-const currentCard = computed(() => cards.value?.[currentIndex.value]);
-const total = computed(() => cards.value?.length ?? 0);
+const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
+const total = computed(() => displayCards.value?.length ?? 0);
 const progress = computed(() => total.value ? Math.round((Object.values(results.value).length / total.value) * 100) : 0);
 const correctCount = computed(() => Object.values(results.value).filter(v => v).length);
 const isDone = computed(() => total.value && Object.values(results.value).length === total.value);
@@ -84,14 +95,21 @@ watch(cards, () => {
             size="sm"
           />
         </template>
-        <template #right>
-          <span class="text-muted text-sm">{{ currentIndex + 1 }} / {{ total }}</span>
-        </template>
       </UDashboardNavbar>
 
-      <div class="border-default border-b px-4 py-2">
-        <UProgress v-model="progress" size="sm" />
-      </div>
+      <UDashboardToolbar>
+        <UTooltip text="Xáo trộn thứ tự thẻ">
+          <UButton
+            :icon="isShuffle ? 'i-lucide-shuffle' : 'i-lucide-arrow-right'"
+            :color="isShuffle ? 'primary' : 'neutral'"
+            variant="subtle"
+            size="sm"
+            @click="isShuffle = !isShuffle; restart()"
+          >
+            {{ isShuffle ? 'Ngẫu nhiên' : 'Theo thứ tự' }}
+          </UButton>
+        </UTooltip>
+      </UDashboardToolbar>
     </template>
 
     <template #body>
@@ -143,6 +161,21 @@ watch(cards, () => {
 
           <!-- Study state -->
           <template v-else>
+            <!-- Progress -->
+            <div class="w-full max-w-lg space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-muted">{{ currentIndex + 1 }} / {{ total }}</span>
+                <UBadge
+                  :color="progress > 0 ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="sm"
+                >
+                  {{ progress }}%
+                </UBadge>
+              </div>
+              <UProgress v-model="progress" size="sm" />
+            </div>
+
             <!-- Flip card -->
             <div
               class="flashcard-scene w-full max-w-lg cursor-pointer"
