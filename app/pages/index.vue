@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import type { Deck } from '~/types';
 
 const isCreateModalOpen = ref(false);
 
-const { data: decks } = await useAsyncData<Deck[]>('decks', async () => {
-  return [
-    { id: 1, name: 'Tiếng Anh cơ bản', description: 'Từ vựng tiếng Anh cho người mới bắt đầu', cardCount: 120, lastStudied: '2025-01-10T08:00:00Z', progress: 65 },
-    { id: 2, name: 'Ngữ pháp Nhật', description: 'Các mẫu câu ngữ pháp tiếng Nhật N5-N4', cardCount: 80, lastStudied: '2025-01-09T14:30:00Z', progress: 40 },
-    { id: 3, name: 'Lịch sử Việt Nam', description: 'Các sự kiện lịch sử quan trọng', cardCount: 50, lastStudied: null, progress: 0 },
-    { id: 4, name: 'Toán cao cấp', description: 'Công thức và định lý toán học', cardCount: 95, lastStudied: '2025-01-08T10:00:00Z', progress: 20 },
-  ];
-}, { default: () => [] });
+const { data: decks } = useDecks();
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return 'Chưa học';
@@ -66,9 +58,9 @@ function formatDate(dateStr: string | null): string {
               </div>
 
               <UProgress
-                :value="deck.progress"
+                v-model="deck.progress"
                 size="sm"
-                :color="deck.progress > 0 ? 'primary' : 'neutral'"
+                color="primary"
               />
 
               <p class="text-muted text-xs">

@@ -70,7 +70,7 @@ function restart() {
       </UDashboardNavbar>
 
       <div class="border-default border-b px-4 py-2">
-        <UProgress :value="progress" size="sm" />
+        <UProgress v-model="progress" size="sm" />
       </div>
     </template>
 

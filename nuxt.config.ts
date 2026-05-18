@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2024-07-11',
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
@@ -17,8 +19,6 @@ export default defineNuxtConfig({
       cors: true,
     },
   },
-
-  compatibilityDate: '2024-07-11',
 
   vite: {
     optimizeDeps: {

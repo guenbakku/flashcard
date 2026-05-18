@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Tiếng Anh cơ bản",
+    "description": "Từ vựng tiếng Anh cho người mới bắt đầu",
+    "cardCount": 120
+  },
+  {
+    "id": 2,
+    "name": "Ngữ pháp Nhật",
+    "description": "Các mẫu câu ngữ pháp tiếng Nhật N5-N4",
+    "cardCount": 80
+  },
+  {
+    "id": 3,
+    "name": "Lịch sử Việt Nam",
+    "description": "Các sự kiện lịch sử quan trọng",
+    "cardCount": 50
+  },
+  {
+    "id": 4,
+    "name": "Toán cao cấp",
+    "description": "Công thức và định lý toán học",
+    "cardCount": 95
+  }
+]
