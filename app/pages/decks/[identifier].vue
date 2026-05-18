@@ -8,14 +8,22 @@ const deck = computed(() => getDeck(identifier));
 const { data: cards, pending } = useCards(identifier);
 
 const isShuffle = ref(false);
+const isFilterCorrect = ref(false);
+const snapshottedCorrect = ref<Record<string, boolean>>({});
+
 const displayCards = computed(() => {
   if (!cards.value) {
     return [];
   };
+
+  const filtered = isFilterCorrect.value
+    ? cards.value.filter(c => !snapshottedCorrect.value[c.front])
+    : cards.value;
+
   if (!isShuffle.value) {
-    return cards.value;
+    return filtered;
   };
-  return [...cards.value].sort(() => Math.random() - 0.5);
+  return [...filtered].sort(() => Math.random() - 0.5);
 });
 
 const currentIndex = ref(0);
@@ -74,6 +82,7 @@ function restart() {
 
 watch(cards, () => {
   if (cards.value?.length) {
+    snapshottedCorrect.value = { ...deck.value?.correct };
     updateDeck(identifier, {
       lastStudied: new Date().toISOString(),
     });
@@ -97,16 +106,27 @@ watch(cards, () => {
         </template>
       </UDashboardNavbar>
 
-      <UDashboardToolbar>
+      <UDashboardToolbar class="justify-start gap-2">
         <UTooltip text="Xáo trộn thứ tự thẻ">
           <UButton
-            :icon="isShuffle ? 'i-lucide-shuffle' : 'i-lucide-arrow-right'"
             :color="isShuffle ? 'primary' : 'neutral'"
+            icon="i-lucide-shuffle"
             variant="subtle"
             size="sm"
             @click="isShuffle = !isShuffle; restart()"
           >
-            {{ isShuffle ? 'Ngẫu nhiên' : 'Theo thứ tự' }}
+            Xáo trộn
+          </UButton>
+        </UTooltip>
+        <UTooltip text="Ẩn thẻ đã thuộc">
+          <UButton
+            :color="isFilterCorrect ? 'primary' : 'neutral'"
+            icon="i-lucide-eye-off"
+            variant="subtle"
+            size="sm"
+            @click="isFilterCorrect = !isFilterCorrect; restart()"
+          >
+            Ẩn thẻ đã thuộc
           </UButton>
         </UTooltip>
       </UDashboardToolbar>
@@ -152,7 +172,7 @@ watch(cards, () => {
               <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
                 <UIcon name="i-lucide-globe-off" class="text-error size-10" />
               </div>
-              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học.</p>
+              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
               <UButton to="/" icon="i-lucide-house">
                 Về trang chủ
               </UButton>
