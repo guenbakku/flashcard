@@ -189,7 +189,7 @@ watch(cards, () => {
               >
                 <!-- Front -->
                 <div
-                  class="bg-default border-default absolute inset-0 flex flex-col items-center justify-center rounded-2xl border p-8 shadow-lg"
+                  class="bg-default border-default absolute inset-0 flex flex-col items-center justify-between rounded-2xl border p-8 py-6 shadow-lg"
                   style="backface-visibility: hidden;"
                 >
                   <p class="text-muted mb-4 text-xs uppercase tracking-widest">
@@ -205,21 +205,24 @@ watch(cards, () => {
 
                 <!-- Back -->
                 <div
-                  class="bg-primary absolute inset-0 flex flex-col items-center justify-center rounded-2xl p-8 shadow-lg"
+                  class="bg-primary absolute inset-0 flex flex-col items-center justify-between rounded-2xl p-8 py-6 shadow-lg"
                   style="backface-visibility: hidden; transform: rotateY(180deg);"
                 >
                   <p class="mb-4 text-xs uppercase tracking-widest text-white/70">
                     Mặt sau
                   </p>
-                  <p class="text-3xl font-bold text-white text-center">
-                    {{ currentCard.back }}
-                  </p>
-                  <p
-                    v-if="currentCard.backSub !== undefined"
-                    class="text-2xl font-bold text-white text-center"
-                  >
-                      {{ currentCard.backSub }}
-                  </p>
+                  <div>
+                    <p class="text-3xl font-bold text-white text-center">
+                      {{ currentCard.back }}
+                    </p>
+                    <p
+                      v-if="currentCard.backSub !== undefined"
+                      class="text-2xl font-bold text-white text-center"
+                    >
+                        {{ currentCard.backSub }}
+                    </p>
+                  </div>
+                  <p>&nbsp;</p>
                 </div>
               </div>
             </div>
