@@ -28,7 +28,17 @@ const links = [
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
-        {{ collapsed ? 'F' : 'Flashcard' }}
+        <div class="flex items-center gap-2 px-1">
+          <div class="bg-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
+            <img
+              src="/brand.svg"
+              width="20"
+              height="20"
+              alt="Brand logo"
+            >
+          </div>
+          <span v-if="!collapsed" class="text-highlighted truncate font-semibold">Flashcard</span>
+        </div>
       </template>
 
       <template #footer="{ collapsed }">
