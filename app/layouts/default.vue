@@ -10,9 +10,15 @@ const links = [
       label: 'Bộ thẻ',
       icon: 'i-lucide-layers',
       to: '/',
-      onSelect: () => {
-        open.value = false;
-      },
+      onSelect: () => open.value = false,
+    },
+  ],
+  [
+    {
+      label: 'Sao lưu dữ liệu',
+      icon: 'i-lucide-arrow-left-right',
+      to: '/data-transfer',
+      onSelect: () => open.value = false,
     },
   ],
 ] satisfies NavigationMenuItem[][];
@@ -52,6 +58,14 @@ const links = [
           orientation="vertical"
           tooltip
           popover
+        />
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="links[1]"
+          orientation="vertical"
+          tooltip
+          popover
+          class="mt-auto"
         />
       </template>
 
