@@ -1,23 +1,29 @@
 import type { Deck } from "~/types";
 
-type DeckFromApi = Pick<Deck, "identifier" | "name" | "description" | "cardCount">;
-type DeckFromClient = Pick<Deck, "lastStudied" | "correct">;
+// Static metadata fetched from API (read-only)
+type DeckMeta = Pick<Deck, "identifier" | "name" | "description" | "cardCount">;
 
-const defaultDeck: DeckFromClient = {
+// User progress stored in localStorage (mutable)
+type DeckProgress = Pick<Deck, "lastStudied" | "masteredCards">;
+
+const defaultProgress: DeckProgress = {
   lastStudied: null,
-  correct: {},
+  masteredCards: {},
 };
 
 const useDecks = () => {
-  const { data: decksFromApi, pending } = useClientFetch<DeckFromApi[]>('/data/decks.json');
-  const storage = useLocalStorage<Record<string, DeckFromClient>>('decks', {});
+  const { data: decksMeta, pending } = useClientFetch<DeckMeta[]>('/data/decks.json');
+  const progress = useLocalStorage<Record<string, DeckProgress>>('decks', {});
 
   const decks = computed(() => {
-    return decksFromApi.value?.map(deck => {
+    return decksMeta.value?.map(meta => {
+      const deckProgress = progress.value[meta.identifier] ?? defaultProgress;
+      const masteredCount = Object.keys(deckProgress.masteredCards ?? {}).length;
+
       return {
-        ...deck,
-        ...(storage.value[deck.identifier] ?? defaultDeck),
-        progress: Math.round(Object.keys(storage.value[deck.identifier]?.correct || {}).length / deck.cardCount * 100),
+        ...meta,
+        ...deckProgress,
+        progress: Math.round(masteredCount / meta.cardCount * 100),
       };
     }) ?? [];
   });
@@ -26,21 +32,20 @@ const useDecks = () => {
     return decks.value.find(deck => deck.identifier === identifier);
   };
 
-  const updateDeck = (identifier: string, data: Partial<DeckFromClient>) => {
-    storage.value = {
-      ...storage.value,
+  const updateDeck = (identifier: string, data: Partial<DeckProgress>) => {
+    progress.value = {
+      ...progress.value,
       [identifier]: {
-        ...defaultDeck,
-        ...(storage.value[identifier] ?? {}),
+        ...defaultProgress,
+        ...(progress.value[identifier] ?? {}),
         ...data,
       },
     };
   };
 
   const deleteDeck = (identifier: string) => {
-    const { [identifier]: _, ...rest } = storage.value;
-    console.log(rest);
-    storage.value = rest;
+    const { [identifier]: _, ...rest } = progress.value;
+    progress.value = rest;
   };
 
   return {

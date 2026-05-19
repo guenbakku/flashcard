@@ -5,9 +5,10 @@ const identifier = String(route.params.identifier);
 const { getDeck, updateDeck } = useDecks();
 const deck = computed(() => getDeck(identifier));
 
-const { data: cards, pending } = useCards(identifier);
+const { data, pending } = useDeck(identifier);
+const cards = computed(() => data.value?.cards ?? []);
 
-const snapshottedCorrect = ref<Record<string, boolean>>({});
+const capturedMasteredCards = ref<Record<string, boolean>>({});
 
 const isShuffle = ref(false);
 const isFilterCorrect = ref(false);
@@ -19,7 +20,7 @@ const displayCards = computed(() => {
   };
 
   const filtered = isFilterCorrect.value
-    ? cards.value.filter(c => !snapshottedCorrect.value[c.front])
+    ? cards.value.filter(c => !capturedMasteredCards.value[c.front])
     : cards.value;
 
   if (!isShuffle.value) {
@@ -54,16 +55,16 @@ function answer(result: boolean) {
   // If answered incorrectly, remove the card from the mastered list (if exists)
   if (result) {
     updateDeck(identifier, {
-      correct: {
-        ...deck.value?.correct,
+      masteredCards: {
+        ...deck.value?.masteredCards,
         ...{[currentCard.value.front]: true},
       },
     });
   } else {
     if (deck.value) {
-      const {[currentCard.value.front]: _delete, ...rest} = deck.value.correct;
+      const {[currentCard.value.front]: _delete, ...rest} = deck.value.masteredCards;
       updateDeck(identifier, {
-        correct: rest,
+        masteredCards: rest,
       });
     }
   }
@@ -84,7 +85,7 @@ function restart() {
 
 watch(cards, () => {
   if (cards.value?.length) {
-    snapshottedCorrect.value = { ...deck.value?.correct };
+    capturedMasteredCards.value = { ...deck.value?.masteredCards };
     updateDeck(identifier, {
       lastStudied: new Date().toISOString(),
     });
@@ -240,7 +241,7 @@ watch(cards, () => {
               >
                 <!-- Front -->
                 <UBadge
-                  v-if="isBrowseMode && snapshottedCorrect[currentCard.front]"
+                  v-if="isBrowseMode && capturedMasteredCards[currentCard.front]"
                   color="primary"
                   variant="subtle"
                   size="md"

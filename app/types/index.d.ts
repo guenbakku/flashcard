@@ -4,7 +4,7 @@ export interface Deck {
   description: string
   cardCount: number
   lastStudied: string | null
-  correct: Record<string, true>
+  masteredCards: Record<string, true>
   progress: number
 }
 
