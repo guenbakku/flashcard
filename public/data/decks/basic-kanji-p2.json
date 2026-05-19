@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 2",
+    "description": "Kanji sơ cấp cho người mới bắt đầu - Trang 2"
+  },
+  "cards": [
+    {
+      "front": "官",
+      "back": "QUAN",
+      "backSub": "quan lại"
+    },
+    {
+      "front": "定",
+      "back": "ĐỊNH",
+      "backSub": "dự định"
+    },
+    {
+      "front": "客",
+      "back": "KHÁCH",
+      "backSub": "khách hàng"
+    },
+    {
+      "front": "室",
+      "back": "THẤT",
+      "backSub": "phòng ốc"
+    },
+    {
+      "front": "害",
+      "back": "HẠI",
+      "backSub": "tổn hại"
+    },
+    {
+      "front": "家",
+      "back": "GIA",
+      "backSub": "gia đình"
+    },
+    {
+      "front": "寮",
+      "back": "LIÊU",
+      "backSub": "ký túc xá"
+    },
+    {
+      "front": "寄",
+      "back": "KÝ",
+      "backSub": "ghé qua"
+    },
+    {
+      "front": "寒",
+      "back": "HÀN",
+      "backSub": "lạnh (thời tiết)"
+    },
+    {
+      "front": "寝",
+      "back": "TẨM",
+      "backSub": "ngủ"
+    },
+    {
+      "front": "実",
+      "back": "THỰC",
+      "backSub": "thực sự, trái (quả)"
+    },
+    {
+      "front": "発",
+      "back": "PHÁT",
+      "backSub": "xuất phát"
+    },
+    {
+      "front": "花",
+      "back": "HOA",
+      "backSub": "bông hoa"
+    },
+    {
+      "front": "苦",
+      "back": "KHỔ",
+      "backSub": "khổ cực"
+    },
+    {
+      "front": "英",
+      "back": "ANH",
+      "backSub": "anh văn"
+    },
+    {
+      "front": "茶",
+      "back": "TRÀ",
+      "backSub": "trà uống, hồng trà"
+    },
+    {
+      "front": "荷",
+      "back": "HÀ",
+      "backSub": "hành lý (hành lý)"
+    },
+    {
+      "front": "落",
+      "back": "LẠC",
+      "backSub": "rơi xuống"
+    },
+    {
+      "front": "薬",
+      "back": "DƯỢC",
+      "backSub": "thuốc"
+    },
+    {
+      "front": "笑",
+      "back": "TIẾU",
+      "backSub": "cười"
+    },
+    {
+      "front": "第",
+      "back": "ĐỆ",
+      "backSub": "thứ tự"
+    },
+    {
+      "front": "答",
+      "back": "ĐÁP",
+      "backSub": "trả lời"
+    },
+    {
+      "front": "算",
+      "back": "TOÁN",
+      "backSub": "tính toán"
+    },
+    {
+      "front": "節",
+      "back": "TIẾT",
+      "backSub": "thời tiết"
+    },
+    {
+      "front": "管",
+      "back": "QUẢN",
+      "backSub": "quản lý"
+    },
+    {
+      "front": "色",
+      "back": "SẮC",
+      "backSub": "màu sắc"
+    },
+    {
+      "front": "角",
+      "back": "GIÁC",
+      "backSub": "góc độ"
+    },
+    {
+      "front": "触",
+      "back": "XÚC",
+      "backSub": "tiếp xúc"
+    },
+    {
+      "front": "魚",
+      "back": "NGƯ",
+      "backSub": "con cá"
+    },
+    {
+      "front": "危",
+      "back": "NGUY",
+      "backSub": "nguy hiểm"
+    },
+    {
+      "front": "位",
+      "back": "VỊ",
+      "backSub": "vị trí"
+    },
+    {
+      "front": "仕",
+      "back": "SĨ",
+      "backSub": "sĩ sự (công việc)"
+    },
+    {
+      "front": "他",
+      "back": "THA",
+      "backSub": "khác"
+    },
+    {
+      "front": "化",
+      "back": "HÓA",
+      "backSub": "biến hóa"
+    },
+    {
+      "front": "代",
+      "back": "ĐẠI",
+      "backSub": "đại biểu"
+    },
+    {
+      "front": "体",
+      "back": "THỂ",
+      "backSub": "cơ thể"
+    },
+    {
+      "front": "低",
+      "back": "ĐÊ",
+      "backSub": "thấp"
+    },
+    {
+      "front": "住",
+      "back": "TRÚ",
+      "backSub": "cư trú"
+    },
+    {
+      "front": "休",
+      "back": "HƯU",
+      "backSub": "nghỉ ngơi"
+    },
+    {
+      "front": "何",
+      "back": "HÀ",
+      "backSub": "cái gì"
+    },
+    {
+      "front": "作",
+      "back": "TÁC",
+      "backSub": "sáng tác"
+    },
+    {
+      "front": "使",
+      "back": "SỬ",
+      "backSub": "sử dụng"
+    },
+    {
+      "front": "例",
+      "back": "LỆ",
+      "backSub": "ví dụ"
+    },
+    {
+      "front": "修",
+      "back": "TU",
+      "backSub": "sửa chữa"
+    },
+    {
+      "front": "候",
+      "back": "HẬU",
+      "backSub": "khí hậu"
+    },
+    {
+      "front": "借",
+      "back": "TÁ",
+      "backSub": "vay mượn"
+    },
+    {
+      "front": "健",
+      "back": "KIỆN",
+      "backSub": "tráng kiện"
+    },
+    {
+      "front": "側",
+      "back": "TRẮC",
+      "backSub": "1 phía, 1 bên"
+    },
+    {
+      "front": "備",
+      "back": "BỊ",
+      "backSub": "chuẩn bị"
+    },
+    {
+      "front": "便",
+      "back": "TIỆN",
+      "backSub": "tiện lợi"
+    }
+  ]
+}

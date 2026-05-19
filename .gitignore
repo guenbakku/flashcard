@@ -25,3 +25,8 @@ logs
 
 # VSC
 .history
+
+/public/data/decks.json
+
+# Coverage
+.coverage

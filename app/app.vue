@@ -17,15 +17,18 @@ useHead({
   },
 });
 
-const title = 'Nuxt Dashboard Template';
-const description = 'A professional dashboard template built with Nuxt UI, featuring multiple pages, data visualization, and comprehensive management capabilities for creating powerful admin interfaces.';
+const { public: { siteUrl } } = useRuntimeConfig();
+
+const title = 'Flashcard';
+const description = 'Ứng dụng học flashcard';
+const ogImage = `${siteUrl}/apple-touch-icon.png`;
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
+  ogImage,
   twitterCard: 'summary_large_image',
 });
 </script>

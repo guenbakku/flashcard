@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 3",
+    "description": "Kanji sơ cấp cho người mới bắt đầu - Trang 3"
+  },
+  "cards": [
+    {
+      "front": "係",
+      "back": "HỆ",
+      "backSub": "quan hệ"
+    },
+    {
+      "front": "信",
+      "back": "TÍN",
+      "backSub": "tin tưởng"
+    },
+    {
+      "front": "伝",
+      "back": "TRUYỀN",
+      "backSub": "truyền đạt"
+    },
+    {
+      "front": "働",
+      "back": "ĐỘNG",
+      "backSub": "lao động"
+    },
+    {
+      "front": "価",
+      "back": "GIÁ",
+      "backSub": "giá trị"
+    },
+    {
+      "front": "兄",
+      "back": "HUYNH",
+      "backSub": "anh trai"
+    },
+    {
+      "front": "先",
+      "back": "TIÊN",
+      "backSub": "trước"
+    },
+    {
+      "front": "元",
+      "back": "NGUYÊN",
+      "backSub": "nguồn gốc"
+    },
+    {
+      "front": "光",
+      "back": "QUANG",
+      "backSub": "ánh sáng"
+    },
+    {
+      "front": "売",
+      "back": "MẠI",
+      "backSub": "bán"
+    },
+    {
+      "front": "今",
+      "back": "KIM",
+      "backSub": "bây giờ"
+    },
+    {
+      "front": "介",
+      "back": "GIỚI",
+      "backSub": "giới thiệu"
+    },
+    {
+      "front": "令",
+      "back": "LỆNH",
+      "backSub": "mệnh lệnh"
+    },
+    {
+      "front": "全",
+      "back": "TOÀN",
+      "backSub": "hoàn toàn"
+    },
+    {
+      "front": "会",
+      "back": "HỘI",
+      "backSub": "gặp"
+    },
+    {
+      "front": "冷",
+      "back": "LÃNH",
+      "backSub": "lạnh (thức ăn)"
+    },
+    {
+      "front": "金",
+      "back": "KIM",
+      "backSub": "tiền"
+    },
+    {
+      "front": "銀",
+      "back": "NGÂN",
+      "backSub": "ngân hàng"
+    },
+    {
+      "front": "鉄",
+      "back": "THIẾT",
+      "backSub": "sắt"
+    },
+    {
+      "front": "録",
+      "back": "LỤC",
+      "backSub": "ghi chép"
+    },
+    {
+      "front": "幹",
+      "back": "CÁN",
+      "backSub": "cán bộ"
+    },
+    {
+      "front": "午",
+      "back": "NGỌ",
+      "backSub": "giữa trưa"
+    },
+    {
+      "front": "年",
+      "back": "NIÊN",
+      "backSub": "năm"
+    },
+    {
+      "front": "気",
+      "back": "KHÍ",
+      "backSub": "không khí"
+    },
+    {
+      "front": "役",
+      "back": "DỊCH",
+      "backSub": "vai trò"
+    },
+    {
+      "front": "待",
+      "back": "ĐÃI",
+      "backSub": "tiếp đãi, chờ đợi"
+    },
+    {
+      "front": "後",
+      "back": "HẬU",
+      "backSub": "sau"
+    },
+    {
+      "front": "復",
+      "back": "PHỤC",
+      "backSub": "phục tập (ôn tập)"
+    },
+    {
+      "front": "行",
+      "back": "HÀNH",
+      "backSub": "đi"
+    },
+    {
+      "front": "忙",
+      "back": "MANG",
+      "backSub": "bận rộn"
+    },
+    {
+      "front": "性",
+      "back": "TÍNH",
+      "backSub": "tính cách"
+    },
+    {
+      "front": "必",
+      "back": "TẤT",
+      "backSub": "tất yếu"
+    },
+    {
+      "front": "忘",
+      "back": "VONG",
+      "backSub": "quên"
+    },
+    {
+      "front": "念",
+      "back": "NIỆM",
+      "backSub": "kỷ niệm"
+    },
+    {
+      "front": "思",
+      "back": "TƯ",
+      "backSub": "suy nghĩ"
+    },
+    {
+      "front": "急",
+      "back": "CẤP",
+      "backSub": "vội vàng"
+    },
+    {
+      "front": "恥",
+      "back": "SỈ",
+      "backSub": "mắc cỡ"
+    },
+    {
+      "front": "悲",
+      "back": "BI",
+      "backSub": "đau buồn"
+    },
+    {
+      "front": "息",
+      "back": "TỨC",
+      "backSub": "hơi thở"
+    },
+    {
+      "front": "悪",
+      "back": "ÁC",
+      "backSub": "xấu, không tốt"
+    },
+    {
+      "front": "意",
+      "back": "Ý",
+      "backSub": "ý chí"
+    },
+    {
+      "front": "愛",
+      "back": "ÁI",
+      "backSub": "yêu"
+    },
+    {
+      "front": "感",
+      "back": "CẢM",
+      "backSub": "cảm nhận"
+    },
+    {
+      "front": "成",
+      "back": "THÀNH",
+      "backSub": "thành công"
+    },
+    {
+      "front": "戦",
+      "back": "CHIẾN",
+      "backSub": "chiến tranh"
+    },
+    {
+      "front": "打",
+      "back": "ĐẢ",
+      "backSub": "đánh"
+    },
+    {
+      "front": "押",
+      "back": "ÁP",
+      "backSub": "ấn, đè"
+    },
+    {
+      "front": "払",
+      "back": "PHÁT",
+      "backSub": "trả tiền"
+    },
+    {
+      "front": "招",
+      "back": "CHIÊU",
+      "backSub": "chiêu đãi"
+    },
+    {
+      "front": "持",
+      "back": "TRÌ",
+      "backSub": "cầm, nắm"
+    }
+  ]
+}

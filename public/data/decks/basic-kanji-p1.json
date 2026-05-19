@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 1",
+    "description": "Kanji sơ cấp cho người mới bắt đầu - Trang 1"
+  },
+  "cards": [
+    {
+      "front": "丈",
+      "back": "TRƯỢNG",
+      "backSub": "trượng phu (bền)"
+    },
+    {
+      "front": "世",
+      "back": "THẾ",
+      "backSub": "thế giới"
+    },
+    {
+      "front": "乗",
+      "back": "THỪA",
+      "backSub": "lên xe"
+    },
+    {
+      "front": "丸",
+      "back": "HOÀN",
+      "backSub": "tròn"
+    },
+    {
+      "front": "乳",
+      "back": "NHŨ",
+      "backSub": "sữa"
+    },
+    {
+      "front": "事",
+      "back": "SỰ",
+      "backSub": "công việc"
+    },
+    {
+      "front": "来",
+      "back": "LAI",
+      "backSub": "đến"
+    },
+    {
+      "front": "北",
+      "back": "BẮC",
+      "backSub": "hướng Bắc"
+    },
+    {
+      "front": "半",
+      "back": "BÁN",
+      "backSub": "phân nửa"
+    },
+    {
+      "front": "出",
+      "back": "XUẤT",
+      "backSub": "đi ra"
+    },
+    {
+      "front": "少",
+      "back": "THIẾU",
+      "backSub": "thiếu số, ít"
+    },
+    {
+      "front": "以",
+      "back": "DĨ",
+      "backSub": "mốc thời gian"
+    },
+    {
+      "front": "公",
+      "back": "CÔNG",
+      "backSub": "công viên"
+    },
+    {
+      "front": "左",
+      "back": "TẢ",
+      "backSub": "bên trái"
+    },
+    {
+      "front": "写",
+      "back": "TẢ",
+      "backSub": "miêu tả"
+    },
+    {
+      "front": "平",
+      "back": "BÌNH",
+      "backSub": "hòa bình"
+    },
+    {
+      "front": "原",
+      "back": "NGUYÊN",
+      "backSub": "nguyên nhân"
+    },
+    {
+      "front": "父",
+      "back": "PHỤ",
+      "backSub": "cha"
+    },
+    {
+      "front": "声",
+      "back": "THANH",
+      "backSub": "âm thanh"
+    },
+    {
+      "front": "予",
+      "back": "DỰ",
+      "backSub": "dự định"
+    },
+    {
+      "front": "非",
+      "back": "PHI",
+      "backSub": "phi thường"
+    },
+    {
+      "front": "風",
+      "back": "PHONG",
+      "backSub": "gió"
+    },
+    {
+      "front": "身",
+      "back": "THÂN",
+      "backSub": "thân thể"
+    },
+    {
+      "front": "良",
+      "back": "LƯƠNG",
+      "backSub": "tốt đẹp"
+    },
+    {
+      "front": "長",
+      "back": "TRƯỜNG",
+      "backSub": "dài"
+    },
+    {
+      "front": "比",
+      "back": "TỈ",
+      "backSub": "so sánh"
+    },
+    {
+      "front": "当",
+      "back": "ĐƯƠNG",
+      "backSub": "đương thời"
+    },
+    {
+      "front": "形",
+      "back": "HÌNH",
+      "backSub": "hình dạng"
+    },
+    {
+      "front": "卵",
+      "back": "NOÃN",
+      "backSub": "trứng"
+    },
+    {
+      "front": "料",
+      "back": "LIỆU",
+      "backSub": "vật liệu"
+    },
+    {
+      "front": "式",
+      "back": "THỨC",
+      "backSub": "nghi thức"
+    },
+    {
+      "front": "建",
+      "back": "KIẾN",
+      "backSub": "kiến trúc"
+    },
+    {
+      "front": "区",
+      "back": "KHU",
+      "backSub": "khu vực"
+    },
+    {
+      "front": "医",
+      "back": "Y",
+      "backSub": "y học"
+    },
+    {
+      "front": "円",
+      "back": "VIÊN",
+      "backSub": "đơn vị tiền của Nhật"
+    },
+    {
+      "front": "両",
+      "back": "LƯỠNG",
+      "backSub": "cả 2"
+    },
+    {
+      "front": "南",
+      "back": "NAM",
+      "backSub": "hướng Nam"
+    },
+    {
+      "front": "内",
+      "back": "NỘI",
+      "backSub": "bên trong"
+    },
+    {
+      "front": "肉",
+      "back": "NHỤC",
+      "backSub": "thịt"
+    },
+    {
+      "front": "主",
+      "back": "CHỦ",
+      "backSub": "ông chủ"
+    },
+    {
+      "front": "交",
+      "back": "GIAO",
+      "backSub": "giao thông"
+    },
+    {
+      "front": "京",
+      "back": "KINH",
+      "backSub": "kinh đô"
+    },
+    {
+      "front": "卒",
+      "back": "TỐT",
+      "backSub": "tốt nghiệp"
+    },
+    {
+      "front": "高",
+      "back": "CAO",
+      "backSub": "cao, mắc"
+    },
+    {
+      "front": "究",
+      "back": "CỨU",
+      "backSub": "nghiên cứu"
+    },
+    {
+      "front": "空",
+      "back": "KHÔNG",
+      "backSub": "bầu trời"
+    },
+    {
+      "front": "宅",
+      "back": "TRẠCH",
+      "backSub": "điền trạch (nhà)"
+    },
+    {
+      "front": "守",
+      "back": "THỦ",
+      "backSub": "bảo thủ, giữ"
+    },
+    {
+      "front": "安",
+      "back": "AN",
+      "backSub": "an toàn, rẻ"
+    },
+    {
+      "front": "完",
+      "back": "HOÀN",
+      "backSub": "hoàn thành"
+    }
+  ]
+}

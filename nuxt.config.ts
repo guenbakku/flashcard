@@ -1,5 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2024-07-11',
+
+  runtimeConfig: {
+    public: {
+      siteUrl: '',
+      version: '0.0.1',
+    },
+  },
+
+  app: {
+    head: {
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    },
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
@@ -17,8 +32,6 @@ export default defineNuxtConfig({
       cors: true,
     },
   },
-
-  compatibilityDate: '2024-07-11',
 
   vite: {
     optimizeDeps: {
