@@ -83,11 +83,20 @@ function restart() {
   results.value = {};
 }
 
-watch(cards, () => {
-  if (cards.value?.length) {
-    capturedMasteredCards.value = { ...deck.value?.masteredCards };
+watch(cards, (myCards) => {
+  if (myCards.length) {
+    // Remove stale card IDs from masteredCards that no longer exist in the fetched deck JSON.
+    // This can happen when the deck data is updated (cards renamed or removed).
+    const validFronts = new Set(myCards.map(c => c.front));
+    const cleanedMasteredCards = Object.fromEntries(
+      Object.entries(deck.value?.masteredCards ?? {}).filter(([key]) => validFronts.has(key)),
+    );
+
+    capturedMasteredCards.value = cleanedMasteredCards;
+
     updateDeck(identifier, {
       lastStudied: new Date().toISOString(),
+      masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
     });
   }
 }, {immediate: true});
