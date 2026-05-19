@@ -2,6 +2,7 @@
 import type { NavigationMenuItem } from '@nuxt/ui';
 
 const open = ref(false);
+const { public: { version } } = useRuntimeConfig();
 
 const links = [
   [
@@ -37,7 +38,10 @@ const links = [
               alt="Brand logo"
             >
           </div>
-          <span v-if="!collapsed" class="text-highlighted truncate font-semibold">Flashcard</span>
+          <span v-if="!collapsed" class="text-highlighted truncate font-semibold">
+            Flashcard
+            <span class="text-muted text-xs font-normal align-baseline">v{{ version }}</span>
+          </span>
         </div>
       </template>
 
