@@ -148,8 +148,54 @@ watch(cards, () => {
     <template #body>
       <div class="flex h-full flex-col items-center justify-center gap-8 p-6">
         <ClientOnly>
+          <!-- Loading State -->
+          <template v-if="pending">
+            <p class="text-muted text-xs">Loading card...</p>
+          </template>
+
+          <!-- Empty state -->
+          <template v-else-if="!cards?.length">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
+              </div>
+              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
+              <UButton to="/" icon="i-lucide-house">
+                Về trang chủ
+              </UButton>
+            </div>
+          </template>
+
+          <!-- Known all state -->
+          <template v-else-if="isFilterCorrect && !currentCard && cards?.length">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-party-popper" class="text-success size-10" />
+              </div>
+              <h2 class="text-default text-2xl font-bold">
+                Chúc mừng!
+              </h2>
+              <p class="text-muted">
+                Bạn đã thuộc hết tất cả thẻ trong bộ này
+              </p>
+              <div class="flex gap-3">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-rotate-ccw"
+                  @click="isFilterCorrect = false; restart()"
+                >
+                  Ôn lại tất cả
+                </UButton>
+                <UButton to="/" icon="i-lucide-house">
+                  Về trang chủ
+                </UButton>
+              </div>
+            </div>
+          </template>
+
           <!-- Done state -->
-          <template v-if="isDone">
+          <template v-else-if="isDone">
             <div class="flex flex-col items-center gap-4 text-center">
               <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
                 <UIcon name="i-lucide-trophy" class="text-success size-10" />
@@ -174,21 +220,6 @@ watch(cards, () => {
                   Về trang chủ
                 </UButton>
               </div>
-            </div>
-          </template>
-
-          <template v-else-if="pending">
-            <p class="text-muted text-xs">Loading card...</p>
-          </template>
-          <template v-else-if="!currentCard">
-            <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
-              </div>
-              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
-              <UButton to="/" icon="i-lucide-house">
-                Về trang chủ
-              </UButton>
             </div>
           </template>
 
@@ -272,8 +303,8 @@ watch(cards, () => {
             </div>
 
             <!-- Actions -->
-            <div class="flex w-full max-w-lg gap-3">
-              <template v-if="isBrowseMode">
+            <template v-if="isBrowseMode">
+              <div class="flex w-full max-w-lg gap-3">
                 <UButton
                   color="neutral"
                   variant="subtle"
@@ -297,8 +328,13 @@ watch(cards, () => {
                 >
                   Tiếp theo
                 </UButton>
-              </template>
-              <template v-else>
+              </div>
+              <p class="text-muted text-xs">
+                Chế độ duyệt nhanh – tiến độ không thay đổi
+              </p>
+            </template>
+            <template v-else>
+              <div class="flex w-full max-w-lg gap-3">
                 <UButton
                   color="error"
                   variant="subtle"
@@ -321,12 +357,11 @@ watch(cards, () => {
                 >
                   Đã thuộc
                 </UButton>
-              </template>
-            </div>
-
-            <p class="text-muted text-xs">
-              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : 'Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc' }}
-            </p>
+              </div>
+              <p class="text-muted text-xs">
+                Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc
+              </p>
+            </template>
           </template>
         </ClientOnly>
       </div>
