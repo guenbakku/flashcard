@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare && husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "generate-decks-data": "npx --yes tsx scripts/generate-decks-data.ts"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.106",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
+    "@types/node": "^24.12.4",
     "eslint": "^10.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
