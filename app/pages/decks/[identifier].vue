@@ -7,9 +7,11 @@ const deck = computed(() => getDeck(identifier));
 
 const { data: cards, pending } = useCards(identifier);
 
+const snapshottedCorrect = ref<Record<string, boolean>>({});
+
 const isShuffle = ref(false);
 const isFilterCorrect = ref(false);
-const snapshottedCorrect = ref<Record<string, boolean>>({});
+const isBrowseMode = ref(false);
 
 const displayCards = computed(() => {
   if (!cards.value) {
@@ -34,7 +36,7 @@ const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
 const total = computed(() => displayCards.value?.length ?? 0);
 const progress = computed(() => total.value ? Math.round((Object.values(results.value).length / total.value) * 100) : 0);
 const correctCount = computed(() => Object.values(results.value).filter(v => v).length);
-const isDone = computed(() => total.value && Object.values(results.value).length === total.value);
+const isDone = computed(() => !isBrowseMode.value && total.value && Object.values(results.value).length === total.value);
 
 function flip() {
   isFlipped.value = !isFlipped.value;
@@ -127,6 +129,17 @@ watch(cards, () => {
             @click="isFilterCorrect = !isFilterCorrect; restart()"
           >
             Ẩn thẻ đã thuộc
+          </UButton>
+        </UTooltip>
+        <UTooltip text="Duyệt qua các thẻ mà không thay đổi tiến độ">
+          <UButton
+            :color="isBrowseMode ? 'primary' : 'neutral'"
+            icon="i-lucide-gallery-horizontal-end"
+            variant="subtle"
+            size="sm"
+            @click="isBrowseMode = !isBrowseMode; restart()"
+          >
+            Duyệt nhanh
           </UButton>
         </UTooltip>
       </UDashboardToolbar>
@@ -249,32 +262,59 @@ watch(cards, () => {
 
             <!-- Actions -->
             <div class="flex w-full max-w-lg gap-3">
-              <UButton
-                color="error"
-                variant="subtle"
-                icon="i-lucide-x"
-                size="lg"
-                class="flex-1"
-                :disabled="!isFlipped"
-                @click="answer(false)"
-              >
-                Chưa thuộc
-              </UButton>
-              <UButton
-                color="success"
-                variant="subtle"
-                icon="i-lucide-check"
-                size="lg"
-                class="flex-1"
-                :disabled="!isFlipped"
-                @click="answer(true)"
-              >
-                Đã thuộc
-              </UButton>
+              <template v-if="isBrowseMode">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-arrow-left"
+                  size="lg"
+                  class="flex-1 justify-center"
+                  :disabled="currentIndex === 0"
+                  @click="currentIndex--; isFlipped = false"
+                >
+                  Quay lại
+                </UButton>
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-arrow-right"
+                  trailing
+                  size="lg"
+                  class="flex-1 justify-center"
+                  :disabled="currentIndex === total - 1"
+                  @click="currentIndex++; isFlipped = false"
+                >
+                  Tiếp theo
+                </UButton>
+              </template>
+              <template v-else>
+                <UButton
+                  color="error"
+                  variant="subtle"
+                  icon="i-lucide-x"
+                  size="lg"
+                  class="flex-1 justify-center"
+                  :disabled="!isFlipped"
+                  @click="answer(false)"
+                >
+                  Chưa thuộc
+                </UButton>
+                <UButton
+                  color="success"
+                  variant="subtle"
+                  icon="i-lucide-check"
+                  size="lg"
+                  class="flex-1 justify-center"
+                  :disabled="!isFlipped"
+                  @click="answer(true)"
+                >
+                  Đã thuộc
+                </UButton>
+              </template>
             </div>
 
             <p class="text-muted text-xs">
-              Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc
+              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : 'Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc' }}
             </p>
           </template>
         </ClientOnly>
