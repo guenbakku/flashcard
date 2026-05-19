@@ -9,7 +9,7 @@ const defaultDeck: DeckFromClient = {
 };
 
 const useDecks = () => {
-  const { data: decksFromApi } = useClientFetch<DeckFromApi[]>('/data/decks.json');
+  const { data: decksFromApi, pending } = useClientFetch<DeckFromApi[]>('/data/decks.json');
   const storage = useLocalStorage<Record<string, DeckFromClient>>('decks', {});
 
   const decks = computed(() => {
@@ -45,6 +45,7 @@ const useDecks = () => {
 
   return {
     data: decks,
+    pending,
     getDeck,
     updateDeck,
     deleteDeck,

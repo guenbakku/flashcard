@@ -150,7 +150,23 @@ watch(cards, () => {
         <ClientOnly>
           <!-- Loading State -->
           <template v-if="pending">
-            <p class="text-muted text-xs">Loading card...</p>
+            <div class="w-full max-w-lg space-y-1">
+              <div class="flex justify-between">
+                <USkeleton class="h-4 w-12 rounded" />
+                <USkeleton class="h-4 w-10 rounded" />
+              </div>
+              <USkeleton class="h-2 w-full rounded" />
+            </div>
+            <div class="w-full max-w-lg rounded-2xl relative" style="height: 280px;">
+              <USkeleton class="absolute inset-0 rounded-2xl" />
+              <p class="absolute inset-0 flex items-center justify-center text-muted text-sm animate-pulse">
+                Đang tải thẻ...
+              </p>
+            </div>
+            <div class="flex w-full max-w-lg gap-3">
+              <USkeleton class="h-10 flex-1 rounded-lg" />
+              <USkeleton class="h-10 flex-1 rounded-lg" />
+            </div>
           </template>
 
           <!-- Empty state -->
@@ -194,37 +210,8 @@ watch(cards, () => {
             </div>
           </template>
 
-          <!-- Done state -->
-          <template v-else-if="isDone">
-            <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-trophy" class="text-success size-10" />
-              </div>
-              <h2 class="text-default text-2xl font-bold">
-                Hoàn thành!
-              </h2>
-              <p class="text-muted">
-                Bạn đã thuộc <span class="text-success font-semibold">{{ correctCount }}</span>
-                / {{ total }} thẻ
-              </p>
-              <div class="flex gap-3">
-                <UButton
-                  color="neutral"
-                  variant="subtle"
-                  icon="i-lucide-rotate-ccw"
-                  @click="restart"
-                >
-                  Học lại
-                </UButton>
-                <UButton to="/" icon="i-lucide-house">
-                  Về trang chủ
-                </UButton>
-              </div>
-            </div>
-          </template>
-
           <!-- Study state -->
-          <template v-else>
+          <template v-else-if="currentCard">
             <!-- Progress -->
             <div class="w-full max-w-lg space-y-1">
               <div class="flex justify-between text-xs">
@@ -362,6 +349,39 @@ watch(cards, () => {
                 Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc
               </p>
             </template>
+          </template>
+
+          <!-- Done state -->
+          <template v-else-if="isDone">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-trophy" class="text-success size-10" />
+              </div>
+              <h2 class="text-default text-2xl font-bold">
+                Hoàn thành!
+              </h2>
+              <p class="text-muted">
+                Bạn đã thuộc <span class="text-success font-semibold">{{ correctCount }}</span>
+                / {{ total }} thẻ
+              </p>
+              <div class="flex gap-3">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-rotate-ccw"
+                  @click="restart"
+                >
+                  Học lại
+                </UButton>
+                <UButton to="/" icon="i-lucide-house">
+                  Về trang chủ
+                </UButton>
+              </div>
+            </div>
+          </template>
+
+          <template v-else>
+            <p>Ops!!! Unknown state</p>
           </template>
         </ClientOnly>
       </div>
