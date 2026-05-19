@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: '',
-      version: '0.0.1',
+      version: '1.0.0',
     },
   },
 
