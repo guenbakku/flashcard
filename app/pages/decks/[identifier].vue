@@ -282,7 +282,7 @@ watch(cards, () => {
                       v-if="currentCard.backSub !== undefined"
                       class="text-2xl font-bold text-black text-center"
                     >
-                        {{ currentCard.backSub }}
+                      {{ currentCard.backSub }}
                     </p>
                   </div>
                   <p>&nbsp;</p>

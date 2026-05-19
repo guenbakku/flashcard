@@ -9,7 +9,7 @@ const filteredDecks = computed(() =>
     d.name.toLowerCase().includes(debouncedKeyword.value.toLowerCase())
     || d.description.toLowerCase().includes(debouncedKeyword.value.toLowerCase())
   ) ?? [],
-));
+  ));
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) {
