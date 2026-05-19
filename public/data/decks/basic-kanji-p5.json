@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 5",
+    "description": "Kanji sơ cấp cho người mới bắt đầu - Trang 5"
+  },
+  "cards": [
+    {
+      "front": "楽",
+      "back": "LẠC",
+      "backSub": "vui"
+    },
+    {
+      "front": "案",
+      "back": "ÁN",
+      "backSub": "hướng dẫn"
+    },
+    {
+      "front": "果",
+      "back": "QUẢ",
+      "backSub": "kết quả"
+    },
+    {
+      "front": "新",
+      "back": "TÂN",
+      "backSub": "mới"
+    },
+    {
+      "front": "業",
+      "back": "NGHIỆP",
+      "backSub": "tốt nghiệp"
+    },
+    {
+      "front": "寺",
+      "back": "TỰ",
+      "backSub": "chùa"
+    },
+    {
+      "front": "将",
+      "back": "TƯƠNG",
+      "backSub": "tương lai"
+    },
+    {
+      "front": "専",
+      "back": "CHUYÊN",
+      "backSub": "chuyên môn"
+    },
+    {
+      "front": "対",
+      "back": "ĐỐI",
+      "backSub": "phản đối"
+    },
+    {
+      "front": "外",
+      "back": "NGOẠI",
+      "backSub": "ngoại quốc"
+    },
+    {
+      "front": "多",
+      "back": "ĐA",
+      "backSub": "nhiều"
+    },
+    {
+      "front": "夜",
+      "back": "DẠ",
+      "backSub": "buổi tối"
+    },
+    {
+      "front": "死",
+      "back": "TỬ",
+      "backSub": "chết"
+    },
+    {
+      "front": "残",
+      "back": "TÀN",
+      "backSub": "dư thừa"
+    },
+    {
+      "front": "物",
+      "back": "VẬT",
+      "backSub": "động vật"
+    },
+    {
+      "front": "特",
+      "back": "ĐẶC",
+      "backSub": "đặc biệt"
+    },
+    {
+      "front": "在",
+      "back": "TẠI",
+      "backSub": "hiện tại"
+    },
+    {
+      "front": "去",
+      "back": "KHỨ",
+      "backSub": "quá khứ"
+    },
+    {
+      "front": "赤",
+      "back": "XÍCH",
+      "backSub": "màu đỏ"
+    },
+    {
+      "front": "幸",
+      "back": "HẠNH",
+      "backSub": "hạnh phúc"
+    },
+    {
+      "front": "報",
+      "back": "BÁO",
+      "backSub": "báo cáo"
+    },
+    {
+      "front": "堂",
+      "back": "ĐƯỜNG",
+      "backSub": "nhà lớn"
+    },
+    {
+      "front": "地",
+      "back": "ĐỊA",
+      "backSub": "địa lý, địa cầu"
+    },
+    {
+      "front": "型",
+      "back": "HÌNH",
+      "backSub": "khuôn mẫu"
+    },
+    {
+      "front": "増",
+      "back": "TĂNG",
+      "backSub": "tăng giảm"
+    },
+    {
+      "front": "場",
+      "back": "TRƯỜNG",
+      "backSub": "công trường"
+    },
+    {
+      "front": "私",
+      "back": "TƯ",
+      "backSub": "tôi"
+    },
+    {
+      "front": "秋",
+      "back": "THU",
+      "backSub": "mùa thu"
+    },
+    {
+      "front": "科",
+      "back": "KHOA",
+      "backSub": "khoa học"
+    },
+    {
+      "front": "知",
+      "back": "TRI",
+      "backSub": "biết"
+    },
+    {
+      "front": "短",
+      "back": "ĐOẢN",
+      "backSub": "ngắn"
+    },
+    {
+      "front": "祖",
+      "back": "TỔ",
+      "backSub": "tổ phụ, tổ mẫu"
+    },
+    {
+      "front": "祝",
+      "back": "CHÚC",
+      "backSub": "chúc mừng"
+    },
+    {
+      "front": "神",
+      "back": "THẦN",
+      "backSub": "thần thánh"
+    },
+    {
+      "front": "礼",
+      "back": "LỄ",
+      "backSub": "nghi lễ"
+    },
+    {
+      "front": "社",
+      "back": "XÃ",
+      "backSub": "xã hội"
+    },
+    {
+      "front": "祭",
+      "back": "TẾ",
+      "backSub": "lễ hội"
+    },
+    {
+      "front": "立",
+      "back": "LẬP",
+      "backSub": "đứng"
+    },
+    {
+      "front": "並",
+      "back": "TỊNH",
+      "backSub": "xếp (bàn, chén)"
+    },
+    {
+      "front": "音",
+      "back": "ÂM",
+      "backSub": "âm nhạc"
+    },
+    {
+      "front": "産",
+      "back": "SẢN",
+      "backSub": "sản xuất"
+    },
+    {
+      "front": "衣",
+      "back": "Y",
+      "backSub": "y phục"
+    },
+    {
+      "front": "約",
+      "back": "ƯỚC",
+      "backSub": "giao ước"
+    },
+    {
+      "front": "紙",
+      "back": "CHỈ",
+      "backSub": "tờ giấy"
+    },
+    {
+      "front": "級",
+      "back": "CẤP",
+      "backSub": "cấp độ"
+    },
+    {
+      "front": "紹",
+      "back": "THIỆU",
+      "backSub": "giới thiệu"
+    },
+    {
+      "front": "終",
+      "back": "CHUNG",
+      "backSub": "chung kết"
+    },
+    {
+      "front": "結",
+      "back": "KẾT",
+      "backSub": "kết hôn"
+    },
+    {
+      "front": "給",
+      "back": "CẤP",
+      "backSub": "cung cấp"
+    },
+    {
+      "front": "経",
+      "back": "KINH",
+      "backSub": "kinh tế"
+    }
+  ]
+}

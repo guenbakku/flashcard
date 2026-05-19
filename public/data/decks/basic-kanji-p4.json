@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 4",
+    "description": "Kanji sơ cấp cho người mới bắt đầu - Trang 4"
+  },
+  "cards": [
+    {
+      "front": "掃",
+      "back": "TẢO",
+      "backSub": "dọn dẹp"
+    },
+    {
+      "front": "授",
+      "back": "THỤ",
+      "backSub": "giờ học"
+    },
+    {
+      "front": "探",
+      "back": "THÁM",
+      "backSub": "thám hiểm"
+    },
+    {
+      "front": "前",
+      "back": "TIỀN",
+      "backSub": "trước"
+    },
+    {
+      "front": "割",
+      "back": "CÁT",
+      "backSub": "vỡ"
+    },
+    {
+      "front": "別",
+      "back": "BIỆT",
+      "backSub": "chia tay"
+    },
+    {
+      "front": "利",
+      "back": "LỢI",
+      "backSub": "tiện lợi"
+    },
+    {
+      "front": "列",
+      "back": "LIỆT",
+      "backSub": "hàng lối"
+    },
+    {
+      "front": "則",
+      "back": "TẮC",
+      "backSub": "qui tắc"
+    },
+    {
+      "front": "帰",
+      "back": "QUY",
+      "backSub": "trở về"
+    },
+    {
+      "front": "分",
+      "back": "PHÂN",
+      "backSub": "phút, phân chia"
+    },
+    {
+      "front": "切",
+      "back": "THIẾT",
+      "backSub": "cắt"
+    },
+    {
+      "front": "加",
+      "back": "GIA",
+      "backSub": "tham gia"
+    },
+    {
+      "front": "助",
+      "back": "TRỢ",
+      "backSub": "hỗ trợ"
+    },
+    {
+      "front": "勉",
+      "back": "MIỄN",
+      "backSub": "miễn cưỡng (học)"
+    },
+    {
+      "front": "動",
+      "back": "ĐỘNG",
+      "backSub": "chuyển động"
+    },
+    {
+      "front": "務",
+      "back": "VỤ",
+      "backSub": "sự vụ"
+    },
+    {
+      "front": "勝",
+      "back": "THẮNG",
+      "backSub": "thắng thua"
+    },
+    {
+      "front": "友",
+      "back": "HỮU",
+      "backSub": "bạn bè"
+    },
+    {
+      "front": "反",
+      "back": "PHẢN",
+      "backSub": "phản đối"
+    },
+    {
+      "front": "取",
+      "back": "THỦ",
+      "backSub": "lấy"
+    },
+    {
+      "front": "受",
+      "back": "THỤ",
+      "backSub": "nhận"
+    },
+    {
+      "front": "段",
+      "back": "ĐOẠN",
+      "backSub": "giai đoạn"
+    },
+    {
+      "front": "夏",
+      "back": "HẠ",
+      "backSub": "mùa hè"
+    },
+    {
+      "front": "変",
+      "back": "BIẾN",
+      "backSub": "biến hóa"
+    },
+    {
+      "front": "冬",
+      "back": "ĐÔNG",
+      "backSub": "mùa đông"
+    },
+    {
+      "front": "放",
+      "back": "PHÓNG",
+      "backSub": "giải phóng"
+    },
+    {
+      "front": "政",
+      "back": "CHÍNH",
+      "backSub": "chính trị"
+    },
+    {
+      "front": "故",
+      "back": "CỐ",
+      "backSub": "sự cố"
+    },
+    {
+      "front": "教",
+      "back": "GIÁO",
+      "backSub": "giáo dục"
+    },
+    {
+      "front": "散",
+      "back": "TẢN",
+      "backSub": "tản bộ"
+    },
+    {
+      "front": "数",
+      "back": "SỐ",
+      "backSub": "số học (môn toán)"
+    },
+    {
+      "front": "旅",
+      "back": "LỮ",
+      "backSub": "lữ hành"
+    },
+    {
+      "front": "族",
+      "back": "TỘC",
+      "backSub": "gia tộc"
+    },
+    {
+      "front": "太",
+      "back": "THÁI",
+      "backSub": "mập"
+    },
+    {
+      "front": "夫",
+      "back": "PHU",
+      "backSub": "chồng"
+    },
+    {
+      "front": "失",
+      "back": "THẤT",
+      "backSub": "thất bại"
+    },
+    {
+      "front": "参",
+      "back": "THAM",
+      "backSub": "tham gia"
+    },
+    {
+      "front": "末",
+      "back": "MẠT",
+      "backSub": "cuối..."
+    },
+    {
+      "front": "村",
+      "back": "THÔN",
+      "backSub": "thôn làng"
+    },
+    {
+      "front": "束",
+      "back": "THÚC",
+      "backSub": "ước thúc (hẹn)"
+    },
+    {
+      "front": "東",
+      "back": "ĐÔNG",
+      "backSub": "hướng Đông"
+    },
+    {
+      "front": "林",
+      "back": "LÂM",
+      "backSub": "rừng thưa"
+    },
+    {
+      "front": "校",
+      "back": "HIỆU",
+      "backSub": "học hiệu (trường)"
+    },
+    {
+      "front": "格",
+      "back": "CÁCH",
+      "backSub": "tư cách"
+    },
+    {
+      "front": "機",
+      "back": "CƠ",
+      "backSub": "cơ giới (máy móc)"
+    },
+    {
+      "front": "械",
+      "back": "GIỚI",
+      "backSub": "cơ giới (máy móc)"
+    },
+    {
+      "front": "様",
+      "back": "DẠNG",
+      "backSub": "hình dạng"
+    },
+    {
+      "front": "桜",
+      "back": "ANH",
+      "backSub": "anh đào"
+    },
+    {
+      "front": "森",
+      "back": "SÂM",
+      "backSub": "rừng rậm"
+    }
+  ]
+}
