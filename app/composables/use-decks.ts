@@ -1,10 +1,4 @@
-import type { Deck } from "~/types";
-
-// Static metadata fetched from API (read-only)
-type DeckMeta = Pick<Deck, "identifier" | "name" | "description" | "cardCount">;
-
-// User progress stored in localStorage (mutable)
-type DeckProgress = Pick<Deck, "lastStudied" | "masteredCards">;
+import { deckMetaSchema, type DeckMeta, type DeckProgress } from '~/types';
 
 const defaultProgress: DeckProgress = {
   lastStudied: null,
@@ -12,7 +6,9 @@ const defaultProgress: DeckProgress = {
 };
 
 const useDecks = () => {
-  const { data: decksMeta, pending } = useClientFetch<DeckMeta[]>('/data/decks.json');
+  const { data: decksMeta, pending } = useClientFetch<DeckMeta[]>('/data/decks.json', {
+    transform: (raw) => deckMetaSchema.array().parse(raw),
+  });
   const progress = useLocalStorage<Record<string, DeckProgress>>('decks', {});
 
   const decks = computed(() => {

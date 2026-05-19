@@ -1,11 +1,9 @@
-import type { Card } from '~/types';
-
-type DeckDetail = {
-  cards: Card[];
-};
+import { deckDetailSchema, type DeckDetail } from '~/types';
 
 const useDeck = (identifier: string) => {
-  const { data, pending } = useClientFetch<DeckDetail>(`/data/decks/${identifier}.json`);
+  const { data, pending } = useClientFetch<DeckDetail>(`/data/decks/${identifier}.json`, {
+    transform: (raw) => deckDetailSchema.parse(raw),
+  });
 
   return {
     data,
