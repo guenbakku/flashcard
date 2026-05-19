@@ -43,6 +43,13 @@ To generate deck data files from source:
 npm run generate-decks-data
 ```
 
+## Unit Testing
+
+```bash
+npm run test              # run tests
+npm run test:coverage     # run tests with coverage report (output: .coverage/)
+```
+
 ## Linting
 
 ```bash

@@ -11,6 +11,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
     "generate-decks-data": "npx --yes tsx scripts/generate-decks-data.ts"
   },
   "dependencies": {
@@ -25,11 +27,16 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
+    "@nuxt/test-utils": "^4.0.3",
     "@types/node": "^24.12.4",
+    "@vitest/coverage-v8": "^4.1.6",
+    "@vue/test-utils": "^2.4.10",
     "eslint": "^10.3.0",
+    "happy-dom": "^20.9.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "typescript": "^6.0.3",
+    "vitest": "^4.1.6",
     "vue-tsc": "^3.2.8"
   }
 }
