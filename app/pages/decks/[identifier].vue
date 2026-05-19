@@ -211,7 +211,7 @@ watch(cards, () => {
 
             <!-- Flip card -->
             <div
-              class="flashcard-scene w-full max-w-lg cursor-pointer"
+              class="flashcard-scene w-full max-w-lg cursor-pointer relative"
               style="height: 280px; perspective: 1000px;"
               @click="flip"
             >
@@ -221,6 +221,17 @@ watch(cards, () => {
                 :style="{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }"
               >
                 <!-- Front -->
+                <UBadge
+                  v-if="isBrowseMode && snapshottedCorrect[currentCard.front]"
+                  color="primary"
+                  variant="subtle"
+                  size="md"
+                  class="absolute top-2 right-2 z-10"
+                  style="backface-visibility: hidden;"
+                >
+                  <UIcon name="i-lucide-check" class="size-3" />
+                  Đã thuộc
+                </UBadge>
                 <div
                   class="bg-default border-default absolute inset-0 flex flex-col items-center justify-between rounded-2xl border p-8 py-6 shadow-lg"
                   style="backface-visibility: hidden;"
