@@ -17,9 +17,11 @@ useHead({
   },
 });
 
+const { public: { siteUrl } } = useRuntimeConfig();
+
 const title = 'Flashcard';
 const description = 'Ứng dụng học flashcard';
-const ogImage = `${window?.location.origin}/brand.svg`;
+const ogImage = `${siteUrl}/apple-touch-icon.png`;
 
 useSeoMeta({
   title,

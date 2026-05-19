@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-07-11',
 
+  runtimeConfig: {
+    public: {
+      siteUrl: '',
+    },
+  },
+
   app: {
     head: {
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/brand.svg' }],
