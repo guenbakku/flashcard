@@ -103,7 +103,7 @@ watch(cards, (myCards) => {
 </script>
 
 <template>
-  <UDashboardPanel id="study">
+  <UDashboardPanel id="study-deck">
     <template #header>
       <UDashboardNavbar :title="deck?.name ?? ''">
         <template #leading>
