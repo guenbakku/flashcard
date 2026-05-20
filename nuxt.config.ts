@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     public: {
       siteUrl: '',
       version: '1.0.0',
+      databaseSchemaVersion: 0,
     },
   },
 

@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { deckProgressStorageSchema, type DeckProgress } from '~/types';
-
 const toast = useToast();
-const { public: { version } } = useRuntimeConfig();
 
-const progress = useLocalStorage<Record<string, DeckProgress>>('decks', {});
+const { exportProgress, importProgress } = useDeckProgress();
 const fileInput = useTemplateRef<{ inputRef: HTMLInputElement }>('fileInputRef');
 
 const importError = ref('');
@@ -17,10 +14,7 @@ watch(fileValue, () => {
 });
 
 function handleExport() {
-  const json = JSON.stringify(
-    { version, data: progress.value },
-    null,
-  );
+  const json = JSON.stringify(exportProgress(), null);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -38,15 +32,14 @@ function handleImport() {
   }
 
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     try {
       const parsed = JSON.parse(e.target?.result as string);
       if (typeof parsed !== 'object' || Array.isArray(parsed)) {
         throw new Error();
       }
 
-      const parsedData = deckProgressStorageSchema.parse(parsed.data);
-      progress.value = { ...progress.value, ...parsedData };
+      await importProgress(parsed.data);
       importError.value = '';
       toast.add({ title: 'Đã khôi phục dữ liệu thành công', color: 'success', icon: 'i-lucide-check-circle' });
     } catch {
