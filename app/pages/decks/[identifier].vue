@@ -336,7 +336,7 @@ watch(cards, (myCards) => {
                   variant="subtle"
                   icon="i-lucide-arrow-left"
                   size="lg"
-                  class="flex-1 justify-center"
+                  class="flex-1 justify-center touch-manipulation"
                   :disabled="currentIndex === 0"
                   @click="currentIndex--; isFlipped = false"
                 >
@@ -348,7 +348,7 @@ watch(cards, (myCards) => {
                   icon="i-lucide-arrow-right"
                   trailing
                   size="lg"
-                  class="flex-1 justify-center"
+                  class="flex-1 justify-center touch-manipulation"
                   :disabled="currentIndex === total - 1"
                   @click="currentIndex++; isFlipped = false"
                 >
