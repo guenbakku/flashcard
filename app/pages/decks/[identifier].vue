@@ -2,7 +2,8 @@
 const route = useRoute();
 const identifier = String(route.params.identifier);
 
-const { getDeck, updateDeck } = useDecks();
+const { getDeck } = useDecks();
+const { updateProgress } = useDeckProgress();
 const deck = computed(() => getDeck(identifier));
 
 const { data, pending } = useDeck(identifier);
@@ -54,7 +55,8 @@ function answer(result: boolean) {
   // If answered correctly, add the card to the mastered list
   // If answered incorrectly, remove the card from the mastered list (if exists)
   if (result) {
-    updateDeck(identifier, {
+    updateProgress({
+      identifier,
       masteredCards: {
         ...deck.value?.masteredCards,
         ...{[currentCard.value.front]: true},
@@ -63,7 +65,8 @@ function answer(result: boolean) {
   } else {
     if (deck.value) {
       const {[currentCard.value.front]: _delete, ...rest} = deck.value.masteredCards;
-      updateDeck(identifier, {
+      updateProgress({
+        identifier,
         masteredCards: rest,
       });
     }
@@ -94,7 +97,8 @@ watch(cards, (myCards) => {
 
     capturedMasteredCards.value = cleanedMasteredCards;
 
-    updateDeck(identifier, {
+    updateProgress({
+      identifier,
       lastStudied: new Date().toISOString(),
       masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
     });
