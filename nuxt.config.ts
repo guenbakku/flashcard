@@ -35,9 +35,11 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
+      // Pre-bundle certain dependencies on startup to avoid page reloads
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'zod',
       ],
     },
   },
