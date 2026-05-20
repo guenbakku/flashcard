@@ -392,7 +392,7 @@ watch(cards, (myCards) => {
 
           <!-- STATE: Unknown -->
           <template v-else>
-            <p>Ops!!! Some thing went wrong.</p>
+            <p>Ops!!! Something went wrong.</p>
           </template>
         </ClientOnly>
       </div>
