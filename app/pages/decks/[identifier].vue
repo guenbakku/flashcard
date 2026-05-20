@@ -366,7 +366,7 @@ watch(cards, (myCards) => {
                   variant="subtle"
                   icon="i-lucide-x"
                   size="lg"
-                  class="flex-1 justify-center touch-manipulation"
+                  class="flex-1 justify-center"
                   :disabled="!isFlipped"
                   @click="answer(false)"
                 >
@@ -377,7 +377,7 @@ watch(cards, (myCards) => {
                   variant="subtle"
                   icon="i-lucide-check"
                   size="lg"
-                  class="flex-1 justify-center touch-manipulation"
+                  class="flex-1 justify-center"
                   :disabled="!isFlipped"
                   @click="answer(true)"
                 >
