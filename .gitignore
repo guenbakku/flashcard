@@ -30,3 +30,7 @@ logs
 
 # Coverage
 .coverage
+
+# local test files
+.my-test*
+.my_test*
