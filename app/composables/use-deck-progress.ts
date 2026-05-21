@@ -182,12 +182,12 @@ const useDeckProgress = () => {
       dbSubscription = query.$.subscribe((newDocs: RxDocument<DeckProgressDocType>[]) => {
         progress.value = transformDocsToProgress(newDocs.map(doc => doc.toJSON() as DeckProgressDocType));
       });
+    });
 
-      onUnmounted(() => {
-        if (dbSubscription) {
-          dbSubscription.unsubscribe();
-        }
-      });
+    onUnmounted(() => {
+      if (dbSubscription) {
+        dbSubscription.unsubscribe();
+      }
     });
   }
 
