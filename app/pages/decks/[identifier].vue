@@ -14,6 +14,11 @@ const capturedMasteredCards = ref<Record<string, boolean>>({});
 const isShuffle = ref(false);
 const isFilterCorrect = ref(false);
 const isBrowseMode = ref(false);
+const isFlipped = ref(false);
+
+const browseIndex = ref(0);
+const currentIndex = ref(0);
+const results = ref<Record<string, boolean>>({});
 
 const displayCards = computed(() => {
   if (!cards.value) {
@@ -29,10 +34,6 @@ const displayCards = computed(() => {
   };
   return [...filtered].sort(() => Math.random() - 0.5);
 });
-
-const currentIndex = ref(0);
-const isFlipped = ref(false);
-const results = ref<Record<string, boolean>>({});
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
 const total = computed(() => displayCards.value?.length ?? 0);
@@ -86,10 +87,19 @@ function answer(result: boolean) {
 }
 
 function restart() {
+  browseIndex.value = 0;
   currentIndex.value = 0;
   isFlipped.value = false;
   results.value = {};
 }
+
+watch(browseIndex, (val) => {
+  currentIndex.value = val;
+});
+
+watch(currentIndex, () => {
+  isFlipped.value = false;
+});
 
 watch(cards, (myCards) => {
   if (myCards.length) {
@@ -276,7 +286,17 @@ watch(cards, (myCards) => {
                   {{ progress }}%
                 </UBadge>
               </div>
-              <UProgress v-model="progress" size="sm" />
+              <USlider
+                v-if="isBrowseMode"
+                v-model="browseIndex"
+                :max="total - 1"
+                size="sm"
+              />
+              <UProgress
+                v-else
+                v-model="progress"
+                size="sm"
+              />
             </div>
 
             <!-- Flip card -->
@@ -350,8 +370,8 @@ watch(cards, (myCards) => {
                   icon="i-lucide-arrow-left"
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  :disabled="currentIndex === 0"
-                  @click="currentIndex--; isFlipped = false"
+                  :disabled="browseIndex === 0"
+                  @click="browseIndex--"
                 >
                   Quay lại
                 </UButton>
@@ -362,8 +382,8 @@ watch(cards, (myCards) => {
                   trailing
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  :disabled="currentIndex === total - 1"
-                  @click="currentIndex++; isFlipped = false"
+                  :disabled="browseIndex === total - 1"
+                  @click="browseIndex++"
                 >
                   Tiếp theo
                 </UButton>
