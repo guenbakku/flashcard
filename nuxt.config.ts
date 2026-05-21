@@ -40,6 +40,8 @@ export default defineNuxtConfig({
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'rxdb',
+        'rxdb/plugins/storage-dexie',
         'zod',
       ],
     },
