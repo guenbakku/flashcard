@@ -93,6 +93,12 @@ function restart() {
   results.value = {};
 }
 
+function reStudy() {
+  isFilterCorrect.value = false;
+  capturedMasteredCards.value = deck.value?.masteredCards ?? {};
+  restart();
+}
+
 watch(browseIndex, (val) => {
   currentIndex.value = val;
 });
@@ -257,7 +263,7 @@ watch(cards, (myCards) => {
                   color="neutral"
                   variant="subtle"
                   icon="i-lucide-rotate-ccw"
-                  @click="restart"
+                  @click="reStudy"
                 >
                   Học lại
                 </UButton>
