@@ -72,12 +72,17 @@ function answer(result: boolean) {
     }
   }
 
+  setTimeout(
+    () => {
+      if (currentIndex.value < total.value - 1) {
+        ++currentIndex.value;
+      };
+    },
+    // Purpose of 200ms: delay the loading of new data until the card flipping back completely
+    isFlipped.value ? 200 : 0,
+  );
+
   isFlipped.value = false;
-  setTimeout(() => {
-    if (currentIndex.value < total.value - 1) {
-      ++currentIndex.value;
-    };
-  }, 200);
 }
 
 function restart() {
@@ -255,6 +260,10 @@ watch(cards, (myCards) => {
 
           <!-- STATE: Study -->
           <template v-else-if="currentCard">
+            <p class="text-muted text-xs -mt-24">
+              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : '&nbsp;' }}
+            </p>
+
             <!-- Progress -->
             <div class="w-full max-w-lg space-y-1">
               <div class="flex justify-between text-xs">
@@ -359,9 +368,6 @@ watch(cards, (myCards) => {
                   Tiếp theo
                 </UButton>
               </div>
-              <p class="text-muted text-xs">
-                Chế độ duyệt nhanh – tiến độ không thay đổi
-              </p>
             </template>
             <template v-else>
               <div class="flex w-full max-w-lg gap-3">
@@ -370,8 +376,7 @@ watch(cards, (myCards) => {
                   variant="subtle"
                   icon="i-lucide-x"
                   size="lg"
-                  class="flex-1 justify-center"
-                  :disabled="!isFlipped"
+                  class="flex-1 justify-center touch-manipulation"
                   @click="answer(false)"
                 >
                   Chưa thuộc
@@ -381,16 +386,12 @@ watch(cards, (myCards) => {
                   variant="subtle"
                   icon="i-lucide-check"
                   size="lg"
-                  class="flex-1 justify-center"
-                  :disabled="!isFlipped"
+                  class="flex-1 justify-center touch-manipulation"
                   @click="answer(true)"
                 >
                   Đã thuộc
                 </UButton>
               </div>
-              <p class="text-muted text-xs">
-                Lật thẻ trước khi chọn Chưa Thuộc / Đã thuộc
-              </p>
             </template>
           </template>
 
