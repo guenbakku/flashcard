@@ -186,18 +186,18 @@ watch(cards, (myCards) => {
         <ClientOnly>
           <!-- STATE: Fetching deck data -->
           <template v-if="pending">
+            <div class="w-full max-w-lg rounded-2xl relative" style="height: 280px;">
+              <USkeleton class="absolute inset-0 rounded-2xl" />
+              <p class="absolute inset-0 flex items-center justify-center text-muted text-sm animate-pulse">
+                Đang tải thẻ...
+              </p>
+            </div>
             <div class="w-full max-w-lg space-y-1">
               <div class="flex justify-between">
                 <USkeleton class="h-4 w-12 rounded" />
                 <USkeleton class="h-4 w-10 rounded" />
               </div>
               <USkeleton class="h-2 w-full rounded" />
-            </div>
-            <div class="w-full max-w-lg rounded-2xl relative" style="height: 280px;">
-              <USkeleton class="absolute inset-0 rounded-2xl" />
-              <p class="absolute inset-0 flex items-center justify-center text-muted text-sm animate-pulse">
-                Đang tải thẻ...
-              </p>
             </div>
             <div class="flex w-full max-w-lg gap-3">
               <USkeleton class="h-10 flex-1 rounded-lg" />
