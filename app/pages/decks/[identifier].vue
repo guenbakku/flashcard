@@ -36,10 +36,11 @@ const displayCards = computed(() => {
 });
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
-const total = computed(() => displayCards.value?.length ?? 0);
-const progress = computed(() => total.value ? Math.round((Object.values(results.value).length / total.value) * 100) : 0);
-const correctCount = computed(() => Object.values(results.value).filter(v => v).length);
-const isDone = computed(() => !isBrowseMode.value && total.value && Object.values(results.value).length === total.value);
+const totalDeckCards = computed(() => cards.value.length);
+const totalDisplayCards = computed(() => displayCards.value.length);
+const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v => v).length);
+const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
+const isDone = computed(() => !isBrowseMode.value && totalDisplayCards.value && Object.values(results.value).length === totalDisplayCards.value);
 
 function flip() {
   isFlipped.value = !isFlipped.value;
@@ -75,11 +76,11 @@ function answer(result: boolean) {
 
   setTimeout(
     () => {
-      if (currentIndex.value < total.value - 1) {
+      if (currentIndex.value < totalDisplayCards.value - 1) {
         ++currentIndex.value;
       };
     },
-    // Purpose of 200ms: delay the loading of new data until the card flipping back completely
+    // Purpose of 200ms: delay loading new data until the card flipping back completely
     isFlipped.value ? 200 : 0,
   );
 
@@ -218,7 +219,7 @@ watch(cards, (myCards) => {
           </template>
 
           <!-- STATE: User known all cards -->
-          <template v-else-if="isFilterCorrect && !currentCard && cards?.length">
+          <template v-else-if="isFilterCorrect && totalDeckCards > 0 && totalDisplayCards === 0">
             <div class="flex flex-col items-center gap-4 text-center">
               <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
                 <UIcon name="i-lucide-party-popper" class="text-success size-10" />
@@ -234,7 +235,7 @@ watch(cards, (myCards) => {
                   color="neutral"
                   variant="subtle"
                   icon="i-lucide-rotate-ccw"
-                  @click="isFilterCorrect = false; restart()"
+                  @click="reStudy"
                 >
                   Ôn lại tất cả
                 </UButton>
@@ -255,8 +256,8 @@ watch(cards, (myCards) => {
                 Hoàn thành!
               </h2>
               <p class="text-muted">
-                Bạn đã thuộc <span class="text-success font-semibold">{{ correctCount }}</span>
-                / {{ total }} thẻ
+                Bạn đã thuộc <span class="text-success font-semibold">{{ totalCorrectAnswers }}</span>
+                / {{ totalDisplayCards }} thẻ
               </p>
               <div class="flex gap-3">
                 <UButton
@@ -341,7 +342,7 @@ watch(cards, (myCards) => {
             <!-- Progress -->
             <div class="w-full max-w-lg space-y-1">
               <div class="flex justify-between text-xs">
-                <span class="text-muted">{{ currentIndex + 1 }} / {{ total }}</span>
+                <span class="text-muted">{{ currentIndex + 1 }} / {{ totalDisplayCards }}</span>
                 <UBadge
                   :color="progress > 0 ? 'success' : 'neutral'"
                   variant="subtle"
@@ -353,7 +354,7 @@ watch(cards, (myCards) => {
               <USlider
                 v-if="isBrowseMode"
                 v-model="browseIndex"
-                :max="total - 1"
+                :max="totalDisplayCards - 1"
                 size="md"
               />
               <UProgress
@@ -373,7 +374,7 @@ watch(cards, (myCards) => {
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
                   :disabled="browseIndex === 0"
-                  @click="browseIndex--"
+                  @click="--browseIndex"
                 >
                   Quay lại
                 </UButton>
@@ -384,8 +385,8 @@ watch(cards, (myCards) => {
                   trailing
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  :disabled="browseIndex === total - 1"
-                  @click="browseIndex++"
+                  :disabled="browseIndex === totalDisplayCards - 1"
+                  @click="++browseIndex"
                 >
                   Tiếp theo
                 </UButton>
