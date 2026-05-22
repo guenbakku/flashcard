@@ -4,8 +4,12 @@ import { join } from 'path';
 const decksDir = join(process.cwd(), 'public/data/decks');
 const outputFile = join(process.cwd(), 'public/data/decks.json');
 
+// Parse command-line arguments
+const excludeTestFiles = process.argv.includes('--exclude-test-files');
+
 const decks = readdirSync(decksDir)
   .filter(f => f.endsWith('.json'))
+  .filter(f => !excludeTestFiles || (!f.startsWith('my-test-') && !f.startsWith('my_test_')))
   .map((file) => {
     const identifier = file.replace(/\.json$/, '');
     const { desk, cards } = JSON.parse(readFileSync(join(decksDir, file), 'utf-8'));

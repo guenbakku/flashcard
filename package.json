@@ -6,7 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "preview": "nuxt preview",
-    "generate": "nuxt generate",
+    "generate": "npm run generate-decks-data -- --exclude-test-files && nuxt generate",
     "postinstall": "nuxt prepare && husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
