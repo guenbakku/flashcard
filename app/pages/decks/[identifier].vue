@@ -276,35 +276,6 @@ watch(cards, (myCards) => {
 
           <!-- STATE: Study -->
           <template v-else-if="currentCard">
-            <p class="text-muted text-xs -mt-24">
-              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : '&nbsp;' }}
-            </p>
-
-            <!-- Progress -->
-            <div class="w-full max-w-lg space-y-1">
-              <div class="flex justify-between text-xs">
-                <span class="text-muted">{{ currentIndex + 1 }} / {{ total }}</span>
-                <UBadge
-                  :color="progress > 0 ? 'success' : 'neutral'"
-                  variant="subtle"
-                  size="sm"
-                >
-                  {{ progress }}%
-                </UBadge>
-              </div>
-              <USlider
-                v-if="isBrowseMode"
-                v-model="browseIndex"
-                :max="total - 1"
-                size="sm"
-              />
-              <UProgress
-                v-else
-                v-model="progress"
-                size="sm"
-              />
-            </div>
-
             <!-- Flip card -->
             <div
               class="flashcard-scene w-full max-w-lg cursor-pointer relative"
@@ -367,6 +338,31 @@ watch(cards, (myCards) => {
               </div>
             </div>
 
+            <!-- Progress -->
+            <div class="w-full max-w-lg space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-muted">{{ currentIndex + 1 }} / {{ total }}</span>
+                <UBadge
+                  :color="progress > 0 ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="sm"
+                >
+                  {{ progress }}%
+                </UBadge>
+              </div>
+              <USlider
+                v-if="isBrowseMode"
+                v-model="browseIndex"
+                :max="total - 1"
+                size="md"
+              />
+              <UProgress
+                v-else
+                v-model="progress"
+                size="md"
+              />
+            </div>
+
             <!-- Actions -->
             <template v-if="isBrowseMode">
               <div class="flex w-full max-w-lg gap-3">
@@ -419,6 +415,10 @@ watch(cards, (myCards) => {
                 </UButton>
               </div>
             </template>
+
+            <p class="text-muted text-xs">
+              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : '&nbsp;' }}
+            </p>
           </template>
 
           <!-- STATE: Unknown -->
