@@ -7,6 +7,7 @@ export default defineNuxtConfig({
       siteUrl: '',
       version: '1.0.0',
       databaseSchemaVersion: 0,
+      buildVersion: Date.now(),
     },
   },
 
