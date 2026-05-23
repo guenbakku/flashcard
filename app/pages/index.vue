@@ -74,6 +74,13 @@ function formatDate(dateStr: string | null): string {
             </div>
           </UPageGrid>
 
+          <div v-else-if="filteredDecks.length === 0" class="flex flex-col items-center justify-center gap-4 py-16">
+            <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
+              <UIcon name="i-lucide-frown" class="text-error/80 size-10" />
+            </div>
+            <p>Không tìm thấy bộ thẻ nào</p>
+          </div>
+
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <UPageCard
               v-for="deck in filteredDecks"
