@@ -1,6 +1,7 @@
-import { deckProgressStorageSchema, type DeckProgress, type PartialExcept } from '~/types';
 import type { RxCollection, RxDatabase, RxDocument } from 'rxdb';
 import type { Subscription } from 'rxjs';
+
+import { type DeckProgress, deckProgressStorageSchema, type PartialExcept } from '~/types';
 
 type DeckProgressDocType = DeckProgress;
 
@@ -50,7 +51,7 @@ const getDeckProgressSchema = () => {
 
 const transformDocsToProgress = (documents: DeckProgressDocType[]): Record<string, DeckProgress> => {
   return documents.reduce((acc: Record<string, DeckProgress>, document: DeckProgressDocType) => {
-    acc[document.identifier] = {...document};
+    acc[document.identifier] = { ...document };
     return acc;
   }, {});
 };
@@ -154,7 +155,7 @@ const useDeckProgress = () => {
     if (import.meta.client) {
       const db = await getDb();
       await Promise.all(
-        validatedProgress.map((deckProgress) =>
+        validatedProgress.map(deckProgress =>
           db.deckprogress.upsert({ ...deckProgress }),
         ),
       );

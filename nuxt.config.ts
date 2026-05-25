@@ -1,21 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-07-11',
-
-  runtimeConfig: {
-    public: {
-      siteUrl: '',
-      version: '1.0.0',
-      databaseSchemaVersion: 0,
-      buildVersion: Date.now(),
-    },
-  },
-
-  app: {
-    head: {
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    },
-  },
 
   modules: [
     '@nuxt/eslint',
@@ -27,13 +11,30 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
+  app: {
+    head: {
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    },
+  },
+
   css: ['~/assets/css/main.css'],
+
+  runtimeConfig: {
+    public: {
+      siteUrl: '',
+      version: '1.0.0',
+      databaseSchemaVersion: 0,
+      buildVersion: Date.now(),
+    },
+  },
 
   routeRules: {
     '/api/**': {
       cors: true,
     },
   },
+
+  compatibilityDate: '2024-07-11',
 
   vite: {
     optimizeDeps: {

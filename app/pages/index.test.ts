@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ref } from 'vue';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
+
 import IndexPage from '~/pages/index.vue';
 
 const { mockUseDecks } = vi.hoisted(() => ({ mockUseDecks: vi.fn() }));

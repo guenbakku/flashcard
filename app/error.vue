@@ -2,7 +2,7 @@
 import type { NuxtError } from '#app';
 
 defineProps<{
-  error: NuxtError
+  error: NuxtError;
 }>();
 
 useSeoMeta({

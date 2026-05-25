@@ -1,5 +1,5 @@
-import { deckMetaSchema, type DeckMeta, type DeckProgress } from '~/types';
 import useDeckProgress from '~/composables/use-deck-progress';
+import { type DeckMeta, deckMetaSchema, type DeckProgress } from '~/types';
 
 const defaultProgress: Omit<DeckProgress, 'identifier'> = {
   lastStudied: null,
@@ -8,12 +8,12 @@ const defaultProgress: Omit<DeckProgress, 'identifier'> = {
 
 const useDecks = () => {
   const { data: decksMeta, pending } = useClientFetch<DeckMeta[]>('/data/decks.json', {
-    transform: (raw) => deckMetaSchema.array().parse(raw),
+    transform: raw => deckMetaSchema.array().parse(raw),
   });
   const { progress } = useDeckProgress();
 
   const decks = computed(() => {
-    return decksMeta.value?.map(meta => {
+    return decksMeta.value?.map((meta) => {
       const deckProgress = progress.value[meta.identifier] ?? defaultProgress;
       const masteredCount = Object.keys(deckProgress.masteredCards ?? {}).length;
 

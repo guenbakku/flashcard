@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 
 const { mockUseClientFetch, mockUseDeckProgress } = vi.hoisted(() => ({
@@ -26,7 +26,7 @@ describe('useDecks', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(mockMeta), pending: ref(false) });
     mockUseDeckProgress.mockReturnValue({
       progress: ref({
-        'deck-a': { identifier: 'deck-a', lastStudied: null, masteredCards: { '0': true, '1': true } },
+        'deck-a': { identifier: 'deck-a', lastStudied: null, masteredCards: { 0: true, 1: true } },
       }),
       updateProgress: vi.fn(),
       deleteProgress: vi.fn(),
@@ -35,7 +35,7 @@ describe('useDecks', () => {
     const { data } = useDecks();
 
     expect(data.value[0]!.progress).toBe(50); // 2/4
-    expect(data.value[1]!.progress).toBe(0);  // no progress
+    expect(data.value[1]!.progress).toBe(0); // no progress
   });
 
   it('returns empty array when decksMeta is null', () => {

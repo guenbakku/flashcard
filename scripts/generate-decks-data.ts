@@ -13,7 +13,7 @@ const decks = readdirSync(decksDir)
   .map((file) => {
     const identifier = file.replace(/\.json$/, '');
     const { desk, cards } = JSON.parse(readFileSync(join(decksDir, file), 'utf-8'));
-    return { ...desk, identifier,cardCount: cards.length };
+    return { ...desk, identifier, cardCount: cards.length };
   });
 
 // Check duplicated identifier

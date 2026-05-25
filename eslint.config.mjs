@@ -1,16 +1,31 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs';
 import stylistic from '@stylistic/eslint-plugin';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
-export default withNuxt({
-  plugins: { '@stylistic': stylistic },
-  rules: {
-    'vue/no-multiple-template-root': 'off',
-    'vue/max-attributes-per-line': ['error', { singleline: 3 }],
-    '@stylistic/indent': ['error', 2],
-    'vue/html-indent': ['error', 2],
-    '@stylistic/comma-dangle': ['error', 'always-multiline'],
-    '@stylistic/brace-style': ['error', '1tbs'],
-    '@stylistic/semi': ['error', 'always'],
+import withNuxt from './.nuxt/eslint.config.mjs';
+
+export default withNuxt([
+  stylistic.configs.recommended,
+  stylistic.configs.customize({
+    semi: true,
+    braceStyle: '1tbs',
+  }),
+  {
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'vue/no-multiple-template-root': 'off',
+      'vue/max-attributes-per-line': [
+        'error',
+        { singleline: 3 },
+      ],
+      'vue/html-indent': [
+        'error',
+        2,
+      ],
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+    },
   },
-});
+]);

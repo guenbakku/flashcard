@@ -61,12 +61,12 @@ function answer(result: boolean) {
       identifier,
       masteredCards: {
         ...deck.value?.masteredCards,
-        ...{[currentCard.value.front]: true},
+        ...{ [currentCard.value.front]: true },
       },
     });
   } else {
     if (deck.value) {
-      const {[currentCard.value.front]: _delete, ...rest} = deck.value.masteredCards;
+      const { [currentCard.value.front]: _delete, ...rest } = deck.value.masteredCards;
       updateProgress({
         identifier,
         masteredCards: rest,
@@ -125,7 +125,7 @@ watch(cards, (myCards) => {
       masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
     });
   }
-}, {immediate: true});
+}, { immediate: true });
 </script>
 
 <template>
