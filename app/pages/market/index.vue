@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
 
 const { data: decks, pending } = useMarketDecks();
-const { decks: myDecks, copyMarketDeck } = useMyDecks();
-const toast = useToast();
-const copyingDeckIdentifier = ref<string | null>(null);
 
 const keyword = useState(() => '');
 const debouncedKeyword = refDebounced(keyword, 300);
@@ -15,32 +11,12 @@ const filteredDecks = computed(() =>
     || d.description.toLowerCase().includes(debouncedKeyword.value.toLowerCase())
   )) ?? [],
 );
-
-const copiedDecks = computed(() => new Set(myDecks.value.map(deck => deck.identifier)));
-
-async function handleCopyDeck(identifier: string) {
-  const deckMeta = decks.value?.find(d => d.identifier === identifier);
-  if (!deckMeta) {
-    return;
-  }
-
-  copyingDeckIdentifier.value = identifier;
-
-  try {
-    await copyMarketDeck(deckMeta);
-    toast.add({ title: 'Đã sao chép bộ thẻ vào Bộ thẻ của tôi', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
-    toast.add({ title: 'Sao chép bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  } finally {
-    copyingDeckIdentifier.value = null;
-  }
-}
 </script>
 
 <template>
-  <UDashboardPanel id="home">
+  <UDashboardPanel id="market">
     <template #header>
-      <UDashboardNavbar title="Bộ thẻ tham khảo">
+      <UDashboardNavbar title="Thư viện">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -122,24 +98,13 @@ async function handleCopyDeck(identifier: string) {
               <template #footer>
                 <div class="flex flex-wrap gap-2">
                   <UButton
-                    v-if="copiedDecks.has(deck.identifier)"
-                    :to="`/decks/${deck.identifier}`"
+                    :to="{ name: 'market-identifier', params: { identifier: deck.identifier } }"
                     size="sm"
                     variant="subtle"
                     icon="i-lucide-book-open"
                     class="flex-1"
                   >
-                    Xem bộ
-                  </UButton>
-                  <UButton
-                    v-else
-                    :disabled="copyingDeckIdentifier === deck.identifier"
-                    size="sm"
-                    color="primary"
-                    class="flex-1"
-                    @click="handleCopyDeck(deck.identifier)"
-                  >
-                    {{ copyingDeckIdentifier === deck.identifier ? 'Đang sao chép...' : 'Sao chép' }}
+                    Xem bộ thẻ
                   </UButton>
                 </div>
               </template>

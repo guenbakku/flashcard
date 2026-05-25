@@ -13,9 +13,9 @@ const links = [
       onSelect: () => open.value = false,
     },
     {
-      label: 'Bộ thẻ tham khảo',
-      icon: 'i-lucide-layers',
-      to: '/market',
+      label: 'Thư viện',
+      icon: 'i-lucide-store',
+      to: { name: 'market' },
       onSelect: () => open.value = false,
     },
   ],
