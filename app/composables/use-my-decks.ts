@@ -1,3 +1,4 @@
+import type { Subscription } from 'rxjs';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
@@ -68,19 +69,24 @@ const useMyDecks = () => {
     deckDocs.value = documents.map(toPlainDocument);
     loaded.value = true;
     pending.value = false;
-
-    const subscription = query.$.subscribe((newDocuments: unknown[]) => {
-      deckDocs.value = newDocuments.map(toPlainDocument);
-    });
-
-    onUnmounted(() => {
-      subscription.unsubscribe();
-    });
   };
 
   if (import.meta.client) {
-    onMounted(() => {
-      void initialize();
+    void initialize();
+
+    let dbSubscription: Subscription | null = null;
+
+    onMounted(async () => {
+      const db = await useIndexedDb();
+      const query = db.deck.find();
+
+      dbSubscription = query.$.subscribe((newDocuments: unknown[]) => {
+        deckDocs.value = newDocuments.map(toPlainDocument);
+      });
+    });
+
+    onUnmounted(() => {
+      dbSubscription?.unsubscribe();
     });
   }
 
@@ -294,16 +300,10 @@ const useMyDecks = () => {
       return null;
     }
 
-    const existingDeck = getDeck(meta.identifier);
-    if (existingDeck) {
-      return meta.identifier;
-    }
-
     const raw = await $fetch(`/data/decks/${meta.identifier}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
     await createDeck({
-      identifier: meta.identifier,
       name: meta.name,
       description: meta.description,
       cards: deckDetail.cards,

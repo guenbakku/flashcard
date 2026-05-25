@@ -1,6 +1,6 @@
 import { type DeckDetail, deckDetailSchema } from '~/types';
 
-const useDeck = (identifier: string) => {
+const useMarketDeck = (identifier: string) => {
   const { data, pending } = useClientFetch<DeckDetail>(`/data/decks/${identifier}.json`, {
     transform: raw => deckDetailSchema.parse(raw),
   });
@@ -11,4 +11,4 @@ const useDeck = (identifier: string) => {
   };
 };
 
-export default useDeck;
+export default useMarketDeck;

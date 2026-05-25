@@ -11,7 +11,7 @@ const toast = useToast();
 const isFlipped = ref(false);
 const currentIndex = ref(0);
 
-const { data, pending: deckDetailPending } = useDeck(identifier);
+const { data, pending: deckDetailPending } = useMarketDeck(identifier);
 const cards = computed(() => data.value?.cards ?? []);
 const pending = computed(() => decksListPending.value || deckDetailPending.value);
 
