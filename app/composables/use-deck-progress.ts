@@ -1,15 +1,9 @@
-import type { RxCollection, RxDatabase, RxDocument } from 'rxdb';
+import type { RxDocument } from 'rxdb';
 import type { Subscription } from 'rxjs';
 
-import { type DeckProgress, deckProgressStorageSchema, type PartialExcept } from '~/types';
+import { deckProgressStorageSchema, type ExtractDocTypes, type PartialExcept } from '~/types';
 
-type DeckProgressDocType = DeckProgress;
-
-type MyDatabaseCollections = {
-  deckprogress: RxCollection<DeckProgressDocType>;
-};
-
-type MyDatabase = RxDatabase<MyDatabaseCollections>;
+type DeckProgress = ExtractDocTypes<Awaited<ReturnType<typeof useIndexedDb>>>['deckprogress'];
 
 const getProgressState = () => useState<Record<string, DeckProgress>>('deckProgress', () => ({}));
 const getLoadedState = () => useState<boolean>('deckProgressLoaded', () => false);
@@ -20,73 +14,11 @@ const defaultProgress: DeckProgress = {
   masteredCards: {},
 };
 
-const getDeckProgressSchema = () => {
-  const { public: { databaseSchemaVersion } } = useRuntimeConfig();
-
-  return {
-    title: 'deck-progress schema',
-    version: Number(databaseSchemaVersion),
-    description: 'Deck progress stored in indexedDB',
-    type: 'object',
-    primaryKey: 'identifier',
-    properties: {
-      identifier: {
-        type: 'string',
-        maxLength: 128,
-      },
-      lastStudied: {
-        anyOf: [
-          { type: 'string', format: 'date-time' },
-          { type: 'null' },
-        ],
-      },
-      masteredCards: {
-        type: 'object',
-        additionalProperties: { type: 'boolean' },
-      },
-    },
-    required: ['identifier', 'lastStudied', 'masteredCards'],
-  };
-};
-
-const transformDocsToProgress = (documents: DeckProgressDocType[]): Record<string, DeckProgress> => {
-  return documents.reduce((acc: Record<string, DeckProgress>, document: DeckProgressDocType) => {
+const transformDocsToProgress = (documents: DeckProgress[]): Record<string, DeckProgress> => {
+  return documents.reduce((acc: Record<string, DeckProgress>, document: DeckProgress) => {
     acc[document.identifier] = { ...document };
     return acc;
   }, {});
-};
-
-let _dbPromise: Promise<MyDatabase> | null = null;
-
-const getDb = async (): Promise<MyDatabase> => {
-  if (!import.meta.client) {
-    throw new Error('Deck progress database is only available in the browser');
-  }
-
-  if (_dbPromise) {
-    return _dbPromise;
-  }
-
-  _dbPromise = (async () => {
-    const { createRxDatabase } = await import('rxdb');
-    const { getRxStorageDexie } = await import('rxdb/plugins/storage-dexie');
-
-    const db = await createRxDatabase<MyDatabaseCollections>({
-      name: 'flashcard_app',
-      storage: getRxStorageDexie(),
-      closeDuplicates: true,
-    });
-
-    await db.addCollections({
-      deckprogress: {
-        schema: getDeckProgressSchema(),
-      },
-    });
-
-    return db;
-  })();
-
-  return _dbPromise;
 };
 
 const initializeProgress = async () => {
@@ -97,7 +29,7 @@ const initializeProgress = async () => {
     return;
   }
 
-  const db = await getDb();
+  const db = await useIndexedDb();
   const docs = await db.deckprogress.find().exec();
 
   progressState.value = transformDocsToProgress(docs);
@@ -125,7 +57,7 @@ const useDeckProgress = () => {
     };
 
     if (import.meta.client) {
-      const db = await getDb();
+      const db = await useIndexedDb();
       await db.deckprogress.upsert({ ...nextProgress });
     }
   };
@@ -135,7 +67,7 @@ const useDeckProgress = () => {
     progress.value = rest;
 
     if (import.meta.client) {
-      const db = await getDb();
+      const db = await useIndexedDb();
       const doc = await db.deckprogress.findOne(identifier).exec();
       if (doc) {
         await doc.remove();
@@ -153,7 +85,7 @@ const useDeckProgress = () => {
     progress.value = transformDocsToProgress(validatedProgress);
 
     if (import.meta.client) {
-      const db = await getDb();
+      const db = await useIndexedDb();
       await Promise.all(
         validatedProgress.map(deckProgress =>
           db.deckprogress.upsert({ ...deckProgress }),
@@ -175,13 +107,13 @@ const useDeckProgress = () => {
     let dbSubscription: Subscription | null = null;
 
     onMounted(async () => {
-      const db = await getDb();
+      const db = await useIndexedDb();
       // create an observable query
       const query = db.deckprogress.find();
 
       // subscribe to the query
-      dbSubscription = query.$.subscribe((newDocs: RxDocument<DeckProgressDocType>[]) => {
-        progress.value = transformDocsToProgress(newDocs.map(doc => doc.toJSON() as DeckProgressDocType));
+      dbSubscription = query.$.subscribe((newDocs: RxDocument<DeckProgress>[]) => {
+        progress.value = transformDocsToProgress(newDocs.map(doc => doc.toJSON() as DeckProgress));
       });
     });
 
