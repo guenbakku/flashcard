@@ -178,40 +178,26 @@ const useMyDecks = () => {
       return;
     }
 
-    const existingProgress: DeckProgress = {
-      identifier: deckDoc.id,
-      lastStudied: deckDoc.lastStudied ?? null,
-      masteredCards: deckDoc.masteredCards ?? {},
-    };
-
     const nextProgress = {
-      ...existingProgress,
-      ...data,
+      lastStudied: data.lastStudied ?? deckDoc.lastStudied ?? null,
+      masteredCards: {
+        ...(deckDoc.masteredCards ?? {}),
+      },
     };
 
+    for (const key in data.masteredCards) {
+      if (data.masteredCards[key]) {
+        nextProgress.masteredCards[key] = data.masteredCards[key];
+      } else {
+        const { [key]: _, ...rest } = nextProgress.masteredCards;
+        nextProgress.masteredCards = rest;
+      }
+    }
+
     await deckDoc.update({
       $set: {
-        lastStudied: nextProgress.lastStudied,
+        lastStudied: data.lastStudied ?? deckDoc.lastStudied ?? null,
         masteredCards: nextProgress.masteredCards,
-      },
-    });
-  };
-
-  const deleteProgress = async (identifier: string) => {
-    if (!import.meta.client) {
-      return;
-    }
-
-    const db = await useIndexedDb();
-    const deckDoc = await db.deck.findOne(identifier).exec();
-    if (!deckDoc) {
-      return;
-    }
-
-    await deckDoc.update({
-      $set: {
-        lastStudied: null,
-        masteredCards: {},
       },
     });
   };
@@ -265,6 +251,7 @@ const useMyDecks = () => {
         cardCount: payload.cards.length,
       },
     });
+
     await writeDeckCards(payload.identifier, payload.cards);
 
     const currentProgress = progress.value[payload.identifier];
@@ -320,9 +307,8 @@ const useMyDecks = () => {
     getDeckDetail,
     createDeck,
     updateDeck,
-    updateProgress,
     deleteDeck,
-    deleteProgress,
+    updateProgress,
     exportProgress,
     importProgress,
     copyMarketDeck,

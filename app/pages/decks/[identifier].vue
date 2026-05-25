@@ -62,23 +62,10 @@ function answer(result: boolean) {
   // Update the learning status of the card in the deck
   // If answered correctly, add the card to the mastered list
   // If answered incorrectly, remove the card from the mastered list (if exists)
-  if (result) {
-    updateProgress({
-      identifier,
-      masteredCards: {
-        ...deck.value?.masteredCards,
-        ...{ [currentCard.value.front]: true },
-      },
-    });
-  } else {
-    if (deck.value) {
-      const { [currentCard.value.front]: _delete, ...rest } = deck.value.masteredCards;
-      updateProgress({
-        identifier,
-        masteredCards: rest,
-      });
-    }
-  }
+  updateProgress({
+    identifier,
+    masteredCards: { [currentCard.value.front]: result },
+  });
 
   setTimeout(
     () => {
