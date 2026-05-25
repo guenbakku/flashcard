@@ -21,20 +21,22 @@ const schema = {
       type: 'string',
       maxLength: 128,
     },
+    cardCount: {
+      type: 'number',
+      minimum: 0,
+    },
     lastStudied: {
       type: 'string',
       format: 'date-time',
     },
     masteredCards: {
-      type: 'array',
-      uniqueItems: true,
-      items: {
-        type: 'string',
-        maxLength: 64,
+      type: 'object',
+      additionalProperties: {
+        type: 'boolean',
       },
     },
   },
-  required: ['id', 'name', 'masteredCards'],
+  required: ['id', 'name', 'cardCount', 'masteredCards'],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);

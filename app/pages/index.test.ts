@@ -4,9 +4,9 @@ import { ref } from 'vue';
 
 import IndexPage from '~/pages/index.vue';
 
-const { mockUseDecks } = vi.hoisted(() => ({ mockUseDecks: vi.fn() }));
+const { mockUseMyDecks } = vi.hoisted(() => ({ mockUseMyDecks: vi.fn() }));
 
-vi.mock('~/composables/use-decks', () => ({ default: mockUseDecks }));
+vi.mock('~/composables/use-my-decks', () => ({ default: mockUseMyDecks }));
 
 const mockDecks = [
   { identifier: 'deck-a', name: 'JavaScript Basics', description: 'Learn JS', cardCount: 10, progress: 0, lastStudied: null },
@@ -17,14 +17,14 @@ const mountPage = () => mountSuspended(IndexPage);
 
 describe('pages/index.vue', () => {
   beforeEach(() => {
-    mockUseDecks.mockReset();
+    mockUseMyDecks.mockReset();
     vi.useFakeTimers();
   });
 
   afterEach(() => vi.useRealTimers());
 
   it('shows "Chưa học" when deck has not been studied', async () => {
-    mockUseDecks.mockReturnValue({ data: ref([mockDecks[0]]), pending: ref(false) });
+    mockUseMyDecks.mockReturnValue({ decks: ref([mockDecks[0]]), pending: ref(false) });
 
     const wrapper = await mountPage();
 
@@ -33,7 +33,7 @@ describe('pages/index.vue', () => {
 
   describe('filteredDecks', () => {
     it('returns all decks when keyword is empty', async () => {
-      mockUseDecks.mockReturnValue({ data: ref(mockDecks), pending: ref(false) });
+      mockUseMyDecks.mockReturnValue({ decks: ref(mockDecks), pending: ref(false) });
 
       const wrapper = await mountPage();
 
@@ -42,7 +42,7 @@ describe('pages/index.vue', () => {
     });
 
     it('filters decks by name', async () => {
-      mockUseDecks.mockReturnValue({ data: ref(mockDecks), pending: ref(false) });
+      mockUseMyDecks.mockReturnValue({ decks: ref(mockDecks), pending: ref(false) });
 
       const wrapper = await mountPage();
       await wrapper.find('input').setValue('javascript');
@@ -53,7 +53,7 @@ describe('pages/index.vue', () => {
     });
 
     it('filters decks by description', async () => {
-      mockUseDecks.mockReturnValue({ data: ref(mockDecks), pending: ref(false) });
+      mockUseMyDecks.mockReturnValue({ decks: ref(mockDecks), pending: ref(false) });
 
       const wrapper = await mountPage();
       await wrapper.find('input').setValue('Learn Vue');
@@ -64,7 +64,7 @@ describe('pages/index.vue', () => {
     });
 
     it('returns empty when no deck matches keyword', async () => {
-      mockUseDecks.mockReturnValue({ data: ref(mockDecks), pending: ref(false) });
+      mockUseMyDecks.mockReturnValue({ decks: ref(mockDecks), pending: ref(false) });
 
       const wrapper = await mountPage();
       await wrapper.find('input').setValue('xyz-not-exist');

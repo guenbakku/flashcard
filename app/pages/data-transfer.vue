@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const toast = useToast();
 
-const { exportProgress, importProgress } = useDeckProgress();
+const { exportProgress, importProgress } = useMyDecks();
 const fileInput = useTemplateRef<{ inputRef: HTMLInputElement }>('fileInputRef');
 
 const importError = ref('');

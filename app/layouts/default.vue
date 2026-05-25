@@ -7,9 +7,15 @@ const { public: { version } } = useRuntimeConfig();
 const links = [
   [
     {
-      label: 'Bộ thẻ',
+      label: 'Bộ thẻ của tôi',
       icon: 'i-lucide-layers',
       to: '/',
+      onSelect: () => open.value = false,
+    },
+    {
+      label: 'Bộ thẻ tham khảo',
+      icon: 'i-lucide-layers',
+      to: '/market',
       onSelect: () => open.value = false,
     },
   ],

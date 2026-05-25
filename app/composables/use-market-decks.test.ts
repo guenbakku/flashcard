@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 
-const { mockUseClientFetch, mockUseDeckProgress } = vi.hoisted(() => ({
+const { mockUseClientFetch, mockUseMyDecks } = vi.hoisted(() => ({
   mockUseClientFetch: vi.fn(),
-  mockUseDeckProgress: vi.fn(),
+  mockUseMyDecks: vi.fn(),
 }));
 
 vi.mock('~/composables/use-client-fetch', () => ({ default: mockUseClientFetch }));
-vi.mock('~/composables/use-deck-progress', () => ({ default: mockUseDeckProgress }));
+vi.mock('~/composables/use-my-decks', () => ({ default: mockUseMyDecks }));
 
-const { default: useDecks } = await import('~/composables/use-decks');
+const { default: useDecks } = await import('~/composables/use-market-decks');
 
 const mockMeta = [
   { identifier: 'deck-a', name: 'Deck A', description: 'First deck', cardCount: 4 },
@@ -19,31 +19,13 @@ const mockMeta = [
 describe('useDecks', () => {
   beforeEach(() => {
     mockUseClientFetch.mockReset();
-    mockUseDeckProgress.mockReset();
-  });
-
-  it('computes progress percentage based on mastered cards', () => {
-    mockUseClientFetch.mockReturnValue({ data: ref(mockMeta), pending: ref(false) });
-    mockUseDeckProgress.mockReturnValue({
-      progress: ref({
-        'deck-a': { identifier: 'deck-a', lastStudied: null, masteredCards: { 0: true, 1: true } },
-      }),
-      updateProgress: vi.fn(),
-      deleteProgress: vi.fn(),
-    });
-
-    const { data } = useDecks();
-
-    expect(data.value[0]!.progress).toBe(50); // 2/4
-    expect(data.value[1]!.progress).toBe(0); // no progress
+    mockUseMyDecks.mockReset();
   });
 
   it('returns empty array when decksMeta is null', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(null), pending: ref(false) });
-    mockUseDeckProgress.mockReturnValue({
+    mockUseMyDecks.mockReturnValue({
       progress: ref({}),
-      updateProgress: vi.fn(),
-      deleteProgress: vi.fn(),
     });
 
     const { data } = useDecks();
@@ -53,10 +35,8 @@ describe('useDecks', () => {
 
   it('getDeck returns the correct deck by identifier', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(mockMeta), pending: ref(false) });
-    mockUseDeckProgress.mockReturnValue({
+    mockUseMyDecks.mockReturnValue({
       progress: ref({}),
-      updateProgress: vi.fn(),
-      deleteProgress: vi.fn(),
     });
 
     const { getDeck } = useDecks();
