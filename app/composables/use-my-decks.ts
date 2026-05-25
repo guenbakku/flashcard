@@ -1,17 +1,10 @@
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
-import type { Card, DeckDetail, DeckMeta, DeckProgress, PartialExcept } from '~/types';
+import type { Card, DeckMeta, DeckProgress, MyDeckDetail, PartialExcept } from '~/types';
 import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
 
 type MyDeckDocument = DocTypes['deck'];
-
-type MyDeckDetail = DeckDetail & {
-  identifier: string;
-  name: string;
-  description: string;
-  cardCount: number;
-};
 
 const getDecksState = () => useState<MyDeckDocument[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
@@ -93,15 +86,15 @@ const useMyDecks = () => {
 
   const getDeck = (identifier: string) => decks.value.find(deck => deck.identifier === identifier);
 
-  const getDeckDetail = async (identifier: string): Promise<MyDeckDetail | null> => {
+  const getDeckDetail = async (identifier: string): Promise<MyDeckDetail | undefined> => {
     if (!import.meta.client) {
-      return null;
+      return undefined;
     }
 
     const db = await useIndexedDb();
     const deckDoc = await db.deck.findOne(identifier).exec();
     if (!deckDoc) {
-      return null;
+      return undefined;
     }
 
     const cards = await db.card.find().where('deckId').eq(identifier).exec();
@@ -112,6 +105,8 @@ const useMyDecks = () => {
       description: deckDoc.description ?? '',
       cardCount: deckDoc.cardCount ?? cards.length,
       cards: cards.map(card => card.toJSON() as Card),
+      masteredCards: deckDoc.masteredCards,
+      lastStudied: deckDoc.lastStudied,
     };
   };
 

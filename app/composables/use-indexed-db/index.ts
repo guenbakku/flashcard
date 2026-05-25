@@ -1,5 +1,6 @@
 import { addRxPlugin } from 'rxdb';
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
+import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 
 import type { ExtractDocTypes, InferRxDatabase } from '~/types';
 
@@ -9,6 +10,7 @@ import deckProgressCollectionFactory from './deck-progress.collection';
 import { getDb } from './utils';
 
 addRxPlugin(RxDBQueryBuilderPlugin);
+addRxPlugin(RxDBUpdatePlugin);
 
 type MyDatabase
   = InferRxDatabase<ReturnType<typeof deckProgressCollectionFactory>>

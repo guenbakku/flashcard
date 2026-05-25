@@ -1,45 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-
-import type { Card } from '~/types';
+import type { MyDeckDetail } from '~/types';
 
 const route = useRoute();
-const router = useRouter();
 const identifier = String(route.params.identifier);
 
-const toast = useToast();
-const { getDeck: getMarketDeck } = useMarketDecks();
-const { getDeckDetail, deleteDeck, copyMarketDeck, progress, updateProgress } = useMyDecks();
+const { getDeckDetail, updateProgress, pending } = useMyDecks();
 
-const marketDeck = computed(() => getMarketDeck(identifier));
-const localDeck = ref<null | {
-  identifier: string;
-  name: string;
-  description: string;
-  cardCount: number;
-  cards: Card[];
-}>(null);
-const isLoadingDeck = ref(true);
-const isCopying = ref(false);
+const deck = ref<MyDeckDetail>();
+const cards = computed(() => deck.value?.cards ?? []);
 
-const deck = computed(() => {
-  if (!localDeck.value) {
-    return null;
+onMounted(async () => {
+  if (import.meta.client) {
+    deck.value = await getDeckDetail(identifier);
   }
-
-  const deckProgress = progress.value[identifier] ?? {
-    lastStudied: null,
-    masteredCards: {},
-  };
-
-  return {
-    ...localDeck.value,
-    lastStudied: deckProgress.lastStudied,
-    masteredCards: deckProgress.masteredCards,
-  };
 });
 
-const cards = computed(() => localDeck.value?.cards ?? []);
 const capturedMasteredCards = ref<Record<string, boolean>>({});
 
 const isShuffle = ref(false);
@@ -51,20 +26,10 @@ const browseIndex = ref(0);
 const currentIndex = ref(0);
 const results = ref<Record<string, boolean>>({});
 
-const isLocalDeck = computed(() => !!localDeck.value);
-const isMarketDeck = computed(() => !localDeck.value && !!marketDeck.value);
-
-onMounted(async () => {
-  if (import.meta.client) {
-    localDeck.value = await getDeckDetail(identifier);
-  }
-  isLoadingDeck.value = false;
-});
-
 const displayCards = computed(() => {
   if (!cards.value) {
     return [];
-  }
+  };
 
   const filtered = isFilterCorrect.value
     ? cards.value.filter(c => !capturedMasteredCards.value[c.front])
@@ -72,15 +37,20 @@ const displayCards = computed(() => {
 
   if (!isShuffle.value) {
     return filtered;
-  }
-
+  };
   return [...filtered].sort(() => Math.random() - 0.5);
 });
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
 const totalDeckCards = computed(() => cards.value.length);
 const totalDisplayCards = computed(() => displayCards.value.length);
-const progressPercent = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
+const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v => v).length);
+const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
+const isDone = computed(() => !isBrowseMode.value && totalDisplayCards.value && Object.values(results.value).length === totalDisplayCards.value);
+
+function flip() {
+  isFlipped.value = !isFlipped.value;
+}
 
 function answer(result: boolean) {
   if (!currentCard.value) {
@@ -89,28 +59,36 @@ function answer(result: boolean) {
 
   results.value[currentCard.value.front] = result;
 
+  // Update the learning status of the card in the deck
+  // If answered correctly, add the card to the mastered list
+  // If answered incorrectly, remove the card from the mastered list (if exists)
   if (result) {
     updateProgress({
       identifier,
       masteredCards: {
         ...deck.value?.masteredCards,
-        [currentCard.value.front]: true,
+        ...{ [currentCard.value.front]: true },
       },
     });
-  } else if (deck.value) {
-    const masteredCards = (deck.value.masteredCards ?? {}) as Record<string, boolean>;
-    const { [currentCard.value.front]: _discard, ...rest } = masteredCards;
-    updateProgress({
-      identifier,
-      masteredCards: rest,
-    });
+  } else {
+    if (deck.value) {
+      const { [currentCard.value.front]: _delete, ...rest } = deck.value.masteredCards;
+      updateProgress({
+        identifier,
+        masteredCards: rest,
+      });
+    }
   }
 
-  setTimeout(() => {
-    if (currentIndex.value < totalDisplayCards.value - 1) {
-      ++currentIndex.value;
-    }
-  }, isFlipped.value ? 200 : 0);
+  setTimeout(
+    () => {
+      if (currentIndex.value < totalDisplayCards.value - 1) {
+        ++currentIndex.value;
+      };
+    },
+    // Purpose of 200ms: delay loading new data until the card flipping back completely
+    isFlipped.value ? 200 : 0,
+  );
 
   isFlipped.value = false;
 }
@@ -122,37 +100,10 @@ function restart() {
   results.value = {};
 }
 
-async function copyDeckToMyDeck() {
-  if (!marketDeck.value) {
-    return;
-  }
-
-  isCopying.value = true;
-
-  try {
-    await copyMarketDeck(marketDeck.value);
-    localDeck.value = await getDeckDetail(identifier);
-    toast.add({ title: 'Đã sao chép bộ thẻ vào Bộ thẻ của tôi', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
-    toast.add({ title: 'Sao chép bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  } finally {
-    isCopying.value = false;
-  }
-}
-
-async function deleteCurrentDeck() {
-  if (!localDeck.value) {
-    return;
-  }
-
-  const confirmed = window.confirm('Bạn có chắc muốn xóa bộ thẻ này?');
-  if (!confirmed) {
-    return;
-  }
-
-  await deleteDeck(identifier);
-  toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-trash' });
-  await router.push('/');
+function reStudy() {
+  isFilterCorrect.value = false;
+  capturedMasteredCards.value = deck.value?.masteredCards ?? {};
+  restart();
 }
 
 watch(browseIndex, (val) => {
@@ -164,29 +115,29 @@ watch(currentIndex, () => {
 });
 
 watch(cards, (myCards) => {
-  if (!myCards.length) {
-    return;
+  if (myCards.length) {
+    // Remove stale card IDs from masteredCards that no longer exist in the fetched deck JSON.
+    // This can happen when the deck data is updated (cards renamed or removed).
+    const validFronts = new Set(myCards.map(c => c.front));
+    const cleanedMasteredCards = Object.fromEntries(
+      Object.entries(deck.value?.masteredCards ?? {}).filter(([key]) => validFronts.has(key)),
+    );
+
+    capturedMasteredCards.value = cleanedMasteredCards;
+
+    updateProgress({
+      identifier,
+      lastStudied: new Date().toISOString(),
+      masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
+    });
   }
-
-  const validFronts = new Set(myCards.map(card => card.front));
-  const cleanedMasteredCards = Object.fromEntries(
-    Object.entries(deck.value?.masteredCards ?? {}).filter(([key]) => validFronts.has(key)),
-  ) as Record<string, boolean>;
-
-  capturedMasteredCards.value = cleanedMasteredCards;
-
-  updateProgress({
-    identifier,
-    lastStudied: new Date().toISOString(),
-    masteredCards: cleanedMasteredCards,
-  });
 }, { immediate: true });
 </script>
 
 <template>
   <UDashboardPanel id="study-deck">
     <template #header>
-      <UDashboardNavbar :title="deck?.name ?? marketDeck?.name ?? 'Bộ thẻ'">
+      <UDashboardNavbar :title="deck?.name ?? ''">
         <template #leading>
           <UDashboardSidebarCollapse />
           <UButton
@@ -199,7 +150,7 @@ watch(cards, (myCards) => {
         </template>
       </UDashboardNavbar>
 
-      <UDashboardToolbar v-if="isLocalDeck" class="justify-start gap-2">
+      <UDashboardToolbar class="justify-start gap-2">
         <UTooltip text="Xáo trộn thứ tự thẻ">
           <UButton
             :color="isShuffle ? 'primary' : 'neutral'"
@@ -233,139 +184,253 @@ watch(cards, (myCards) => {
             Duyệt nhanh
           </UButton>
         </UTooltip>
-        <UButton
-          color="error"
-          variant="subtle"
-          icon="i-lucide-trash"
-          @click="deleteCurrentDeck"
-        >
-          Xóa bộ
-        </UButton>
       </UDashboardToolbar>
     </template>
 
     <template #body>
       <div class="flex h-full flex-col items-center justify-center gap-8 p-6">
         <ClientOnly>
-          <template v-if="isLoadingDeck">
+          <!-- STATE: Fetching deck data -->
+          <template v-if="pending">
             <div class="w-full max-w-lg rounded-2xl relative" style="height: 280px;">
               <USkeleton class="absolute inset-0 rounded-2xl" />
               <p class="absolute inset-0 flex items-center justify-center text-muted text-sm animate-pulse">
-                Đang tải bộ thẻ...
+                Đang tải thẻ...
               </p>
+            </div>
+            <div class="w-full max-w-lg space-y-1">
+              <div class="flex justify-between">
+                <USkeleton class="h-4 w-12 rounded" />
+                <USkeleton class="h-4 w-10 rounded" />
+              </div>
+              <USkeleton class="h-2 w-full rounded" />
+            </div>
+            <div class="flex w-full max-w-lg gap-3">
+              <USkeleton class="h-10 flex-1 rounded-lg" />
+              <USkeleton class="h-10 flex-1 rounded-lg" />
             </div>
           </template>
 
-          <template v-else-if="isLocalDeck">
-            <template v-if="!cards.length">
-              <div class="flex flex-col items-center gap-4 text-center">
-                <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                  <UIcon name="i-lucide-globe-off" class="text-error size-10" />
-                </div>
-                <p class="text-muted text-sm">Không tìm thấy thẻ nào trong bộ này.</p>
+          <!-- STATE: deck data empty -->
+          <template v-else-if="!cards?.length">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
+              </div>
+              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
+              <UButton to="/" icon="i-lucide-house">
+                Về trang chủ
+              </UButton>
+            </div>
+          </template>
+
+          <!-- STATE: User known all cards -->
+          <template v-else-if="isFilterCorrect && totalDeckCards > 0 && totalDisplayCards === 0">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-party-popper" class="text-success size-10" />
+              </div>
+              <h2 class="text-default text-2xl font-bold">
+                Chúc mừng!
+              </h2>
+              <p class="text-muted">
+                Bạn đã thuộc hết tất cả thẻ trong bộ này
+              </p>
+              <div class="flex gap-3">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-rotate-ccw"
+                  @click="reStudy"
+                >
+                  Ôn lại tất cả
+                </UButton>
                 <UButton to="/" icon="i-lucide-house">
                   Về trang chủ
                 </UButton>
               </div>
-            </template>
-
-            <template v-else>
-              <div class="w-full max-w-4xl rounded-2xl border border-default bg-default/20 p-6 shadow-sm">
-                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p class="text-2xl font-semibold">{{ deck?.name }}</p>
-                    <p class="text-sm text-muted">{{ deck?.description }}</p>
-                  </div>
-                  <div class="flex flex-wrap gap-2 text-sm text-muted">
-                    <span>{{ totalDeckCards }} thẻ</span>
-                    <span>Tiến độ: {{ progressPercent }}%</span>
-                  </div>
-                </div>
-
-                <div class="mt-8 w-full">
-                  <div class="flex flex-col gap-4">
-                    <div class="rounded-3xl border border-default bg-elevated/70 p-6">
-                      <div class="flex items-center justify-between gap-4">
-                        <div>
-                          <p class="text-base font-semibold">Thẻ hiện tại</p>
-                          <p class="text-sm text-muted">{{ currentIndex + 1 }} / {{ totalDisplayCards }}</p>
-                        </div>
-                        <UButton
-                          icon="i-lucide-refresh-ccw"
-                          variant="subtle"
-                          color="neutral"
-                          size="sm"
-                          @click="restart"
-                        >
-                          Làm lại
-                        </UButton>
-                      </div>
-
-                      <div class="mt-6">
-                        <div class="rounded-3xl border border-default bg-default px-6 py-8 text-center">
-                          <p class="text-lg font-semibold">{{ currentCard?.front }}</p>
-                          <p class="mt-4 text-sm text-muted">{{ currentCard?.backSub }}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="flex flex-col gap-3 md:flex-row">
-                      <UButton
-                        class="flex-1"
-                        color="success"
-                        @click="answer(true)"
-                      >
-                        Đúng
-                      </UButton>
-                      <UButton
-                        class="flex-1"
-                        color="error"
-                        variant="outline"
-                        @click="answer(false)"
-                      >
-                        Sai
-                      </UButton>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </template>
-
-          <template v-else-if="isMarketDeck">
-            <div class="w-full max-w-lg rounded-3xl border border-default bg-default/30 p-8 text-center">
-              <div class="mb-4">
-                <p class="text-lg font-semibold">{{ marketDeck?.name }}</p>
-                <p class="text-sm text-muted">{{ marketDeck?.description }}</p>
-              </div>
-              <p class="text-muted">Bạn phải sao chép bộ này vào "Bộ thẻ của tôi" trước khi học.</p>
-              <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <UButton
-                  :loading="isCopying"
-                  color="primary"
-                  @click="copyDeckToMyDeck"
-                >
-                  {{ isCopying ? 'Đang sao chép...' : 'Sao chép bộ thẻ' }}
-                </UButton>
-                <UButton to="/market" variant="subtle" color="neutral">
-                  Quay lại Market
-                </UButton>
-              </div>
             </div>
           </template>
 
-          <template v-else>
+          <!-- STATE: User done all cards -->
+          <template v-else-if="isDone">
             <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-alert-circle" class="text-error size-10" />
+              <div class="bg-success/10 flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-trophy" class="text-success size-10" />
               </div>
-              <h2 class="text-default text-2xl font-bold">Không tìm thấy bộ thẻ</h2>
-              <p class="text-muted">Bộ thẻ này không tồn tại hoặc chưa được sao chép vào Bộ thẻ của tôi.</p>
+              <h2 class="text-default text-2xl font-bold">
+                Hoàn thành!
+              </h2>
+              <p class="text-muted">
+                Bạn đã thuộc <span class="text-success font-semibold">{{ totalCorrectAnswers }}</span>
+                / {{ totalDisplayCards }} thẻ
+              </p>
               <div class="flex gap-3">
-                <UButton to="/" icon="i-lucide-home">Về trang chủ</UButton>
-                <UButton to="/market" variant="subtle">Xem Market</UButton>
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-rotate-ccw"
+                  @click="reStudy"
+                >
+                  Học lại
+                </UButton>
+                <UButton to="/" icon="i-lucide-house">
+                  Về trang chủ
+                </UButton>
               </div>
             </div>
+          </template>
+
+          <!-- STATE: Study -->
+          <template v-else-if="currentCard">
+            <!-- Flip card -->
+            <div
+              class="flashcard-scene w-full max-w-lg cursor-pointer relative"
+              style="height: 280px; perspective: 1000px;"
+              @click="flip"
+            >
+              <div
+                class="flashcard-card relative size-full"
+                style="transform-style: preserve-3d; transition: transform 0.5s;"
+                :style="{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }"
+              >
+                <!-- Front -->
+                <UBadge
+                  v-if="isBrowseMode && capturedMasteredCards[currentCard.front]"
+                  color="primary"
+                  variant="subtle"
+                  size="md"
+                  class="absolute top-2 right-2 z-10"
+                  style="backface-visibility: hidden;"
+                >
+                  <UIcon name="i-lucide-check" class="size-3" />
+                  Đã thuộc
+                </UBadge>
+                <div
+                  class="bg-default border-default absolute inset-0 flex flex-col items-center justify-between rounded-2xl border p-8 py-6 shadow-lg"
+                  style="backface-visibility: hidden;"
+                >
+                  <p class="text-muted mb-4 text-xs uppercase tracking-widest">
+                    Mặt trước
+                  </p>
+                  <p class="text-default text-5xl font-bold">
+                    {{ currentCard.front }}
+                  </p>
+                  <p class="text-muted mt-6 text-sm">
+                    Nhấn để lật thẻ
+                  </p>
+                </div>
+
+                <!-- Back -->
+                <div
+                  class="bg-primary absolute inset-0 flex flex-col items-center justify-between rounded-2xl p-8 py-6 shadow-lg"
+                  style="backface-visibility: hidden; transform: rotateY(180deg);"
+                >
+                  <p class="mb-4 text-xs uppercase tracking-widest text-black/70">
+                    Mặt sau
+                  </p>
+                  <div>
+                    <p class="text-3xl font-bold text-black text-center">
+                      {{ currentCard.back }}
+                    </p>
+                    <p
+                      v-if="currentCard.backSub !== undefined"
+                      class="text-2xl font-bold text-black text-center"
+                    >
+                      {{ currentCard.backSub }}
+                    </p>
+                  </div>
+                  <p>&nbsp;</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="w-full max-w-lg space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-muted">{{ currentIndex + 1 }} / {{ totalDisplayCards }}</span>
+                <UBadge
+                  :color="progress > 0 ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="sm"
+                >
+                  {{ progress }}%
+                </UBadge>
+              </div>
+              <USlider
+                v-if="isBrowseMode"
+                v-model="browseIndex"
+                :max="totalDisplayCards - 1"
+                size="md"
+              />
+              <UProgress
+                v-else
+                v-model="progress"
+                size="md"
+              />
+            </div>
+
+            <!-- Actions -->
+            <template v-if="isBrowseMode">
+              <div class="flex w-full max-w-lg gap-3">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-arrow-left"
+                  size="lg"
+                  class="flex-1 justify-center touch-manipulation"
+                  :disabled="browseIndex === 0"
+                  @click="--browseIndex"
+                >
+                  Quay lại
+                </UButton>
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-arrow-right"
+                  trailing
+                  size="lg"
+                  class="flex-1 justify-center touch-manipulation"
+                  :disabled="browseIndex === totalDisplayCards - 1"
+                  @click="++browseIndex"
+                >
+                  Tiếp theo
+                </UButton>
+              </div>
+            </template>
+            <template v-else>
+              <div class="flex w-full max-w-lg gap-3">
+                <UButton
+                  color="error"
+                  variant="subtle"
+                  icon="i-lucide-x"
+                  size="lg"
+                  class="flex-1 justify-center touch-manipulation"
+                  @click="answer(false)"
+                >
+                  Chưa thuộc
+                </UButton>
+                <UButton
+                  color="success"
+                  variant="subtle"
+                  icon="i-lucide-check"
+                  size="lg"
+                  class="flex-1 justify-center touch-manipulation"
+                  @click="answer(true)"
+                >
+                  Đã thuộc
+                </UButton>
+              </div>
+            </template>
+
+            <p class="text-muted text-xs">
+              {{ isBrowseMode ? 'Chế độ duyệt nhanh – tiến độ không thay đổi' : '&nbsp;' }}
+            </p>
+          </template>
+
+          <!-- STATE: Unknown -->
+          <template v-else>
+            <p>Ops!!! Something went wrong.</p>
           </template>
         </ClientOnly>
       </div>

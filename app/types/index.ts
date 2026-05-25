@@ -16,7 +16,7 @@ export const deckMetaSchema = z.object({
 
 export const deckProgressSchema = z.object({
   identifier: z.string(),
-  lastStudied: z.iso.datetime().nullable(),
+  lastStudied: z.iso.datetime().nullish(),
   masteredCards: z.record(z.string(), z.boolean()),
 });
 
@@ -34,6 +34,13 @@ export type DeckProgress = z.infer<typeof deckProgressSchema>;
 
 export type Deck = DeckMeta & DeckProgress & {
   progress: number;
+};
+
+export type MyDeckDetail = DeckProgress & DeckDetail & {
+  identifier: string;
+  name: string;
+  description: string;
+  cardCount: number;
 };
 
 /**
