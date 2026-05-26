@@ -1,4 +1,5 @@
 import { addRxPlugin } from 'rxdb';
+import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 
@@ -9,6 +10,7 @@ import deckCollectionFactory from './deck.collection';
 import deckProgressCollectionFactory from './deck-progress.collection';
 import { getDb } from './utils';
 
+addRxPlugin(RxDBCleanupPlugin);
 addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBUpdatePlugin);
 

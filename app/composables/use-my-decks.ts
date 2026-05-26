@@ -9,7 +9,6 @@ type DeckDocument = DocTypes['deck'];
 
 const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
-const getPendingState = () => useState<boolean>('myDecksPending', () => true);
 
 const normalizeDeck = (document: DeckDocument) => {
   const cardCount = document.cardCount ?? 0;
@@ -29,7 +28,6 @@ const normalizeDeck = (document: DeckDocument) => {
 const useMyDecks = () => {
   const deckDocs = getDecksState();
   const loaded = getLoadedState();
-  const pending = getPendingState();
 
   const decks = computed(() => deckDocs.value.map(doc => normalizeDeck(doc)));
 
@@ -68,9 +66,6 @@ const useMyDecks = () => {
 
     deckDocs.value = documents.map(toPlainDocument);
     loaded.value = true;
-    pending.value = false;
-
-    return db;
   };
 
   if (import.meta.client) {
@@ -279,8 +274,8 @@ const useMyDecks = () => {
 
   return {
     decks,
-    pending,
     progress,
+    pending: computed(() => !getLoadedState().value),
     getDeck,
     getAllCardsOfDeck,
     createDeck,
