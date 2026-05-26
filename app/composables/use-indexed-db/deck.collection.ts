@@ -35,8 +35,12 @@ const schema = {
         type: 'boolean',
       },
     },
+    createdAt: {
+      type: 'string',
+      format: 'date-time',
+    },
   },
-  required: ['id', 'name', 'cardCount', 'masteredCards'],
+  required: ['id', 'name', 'cardCount', 'masteredCards', 'createdAt'],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);
