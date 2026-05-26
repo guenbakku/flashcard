@@ -99,21 +99,28 @@ const useMyDecks = () => {
 
   const getAllCardsOfDeck = async (deckId: string) => {
     const db = await useIndexedDb();
-    return await db.card.find().where('deckId').eq(deckId).exec();
+    return await db.card.find().where('deckId').eq(deckId).sort({ order: 'asc' }).exec();
   };
 
   const writeDeckCards = async (deckId: string, cards: Card[]) => {
     const db = await useIndexedDb();
     const existingCards = await db.card.find().where('deckId').eq(deckId).exec();
 
+    let cardOrder = 0;
+
     await Promise.all(existingCards.map(card => card.remove()));
-    await Promise.all(cards.map(card => db.card.insert({
-      id: generateUid(),
-      deckId,
-      front: card.front,
-      back: card.back,
-      backSub: card.backSub ?? '',
-    })));
+    await Promise.all(cards.map((card) => {
+      db.card.insert({
+        id: generateUid(),
+        deckId,
+        front: card.front,
+        back: card.back,
+        backSub: card.backSub ?? '',
+        order: cardOrder,
+      });
+
+      ++cardOrder;
+    }));
   };
 
   const createDeck = async (payload: { name: string; description: string; cards: Card[]; id?: string }) => {

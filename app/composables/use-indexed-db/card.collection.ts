@@ -29,8 +29,11 @@ const schema = {
       type: 'string',
       maxLength: 64,
     },
+    order: {
+      type: 'number',
+    },
   },
-  required: ['id', 'deckId', 'front', 'back'],
+  required: ['id', 'deckId', 'front', 'back', 'order'],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);
