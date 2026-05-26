@@ -1,40 +1,77 @@
 <script setup lang="ts">
+import * as z from 'zod';
+
+const toast = useToast();
+
 const route = useRoute();
 const id = String(route.params.deckId);
 
-const { data: decks, getDeck, pending: decksListPending } = useMarketDecks();
-const deck = computed(() => getDeck(id));
-
 const { copyMarketDeck } = useMyDecks();
-const toast = useToast();
 
-const isFlipped = ref(false);
-const currentIndex = ref(0);
+const { getDeck, pending: decksListPending } = useMarketDecks();
+const deck = computed(() => getDeck(id));
 
 const { data, pending: deckDetailPending } = useMarketDeck(id);
 const cards = computed(() => data.value?.cards ?? []);
 const pending = computed(() => decksListPending.value || deckDetailPending.value);
 
+const isFlipped = ref(false);
+const currentIndex = ref(0);
 const currentCard = computed(() => cards.value?.[currentIndex.value]);
 const totalDeckCards = computed(() => cards.value.length);
+
+const modalOpen = ref(false);
+
+const formRef = useTemplateRef('formRef');
+
+const formSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(1, 'Đây là trường bắt buộc')
+    .max(128, 'Nội dung không được vượt quá 128 ký tự'),
+  description: z.string()
+    .trim()
+    .max(128, 'Nội dung không được vượt quá 128 ký tự')
+    .optional(),
+});
+
+type Schema = z.output<typeof formSchema>;
+const formState = reactive<Schema>({
+  name: '',
+  description: '',
+});
 
 function flip() {
   isFlipped.value = !isFlipped.value;
 }
 
-async function handleCopyDeck(id: string) {
-  const deckMeta = decks.value?.find(d => d.id === id);
-  if (!deckMeta) {
+async function handleCopyDeck() {
+  if (!deck.value) {
+    toast.add({ title: 'Không có dữ liệu để sao chép', color: 'error', icon: 'i-lucide-alert-circle' });
     return;
   }
 
+  const deckMeta = {
+    id: deck.value.id,
+    name: formState.name,
+    description: formState.description,
+  };
+
   try {
     await copyMarketDeck(deckMeta);
-    toast.add({ title: 'Đã sao chép bộ thẻ vào Bộ thẻ của tôi', color: 'success', icon: 'i-lucide-check-circle' });
+    modalOpen.value = false;
+    toast.add({ title: 'Đã sao chép vào Bộ thẻ của tôi', color: 'success', icon: 'i-lucide-check-circle' });
   } catch {
     toast.add({ title: 'Sao chép bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }
+
+watch(modalOpen, (value) => {
+  if (value) {
+    formState.name = deck.value?.name ?? '';
+    formState.description = deck.value?.description ?? '';
+  }
+});
 
 watch(currentIndex, () => {
   isFlipped.value = false;
@@ -58,17 +95,51 @@ watch(currentIndex, () => {
       </UDashboardNavbar>
 
       <UDashboardToolbar class="justify-start gap-2">
-        <UTooltip text="Copy bộ thẻ này về tài khoản của bạn để học và chỉnh sửa theo ý thích">
+        <UModal
+          v-model:open="modalOpen"
+          title="Sao chép bộ thẻ"
+          description="Bộ thẻ sẽ xuất hiện trong trang Bộ thẻ của tôi. Bạn có thể chỉnh sửa lại sau khi sao chép."
+        >
           <UButton
             color="primary"
             icon="i-lucide-copy"
             variant="subtle"
             size="sm"
-            @click="handleCopyDeck(id)"
           >
-            Copy bộ thẻ
+            Sao chép bộ thẻ
           </UButton>
-        </UTooltip>
+
+          <template #body>
+            <UForm
+              ref="formRef"
+              :schema="formSchema"
+              :state="formState"
+              class="space-y-4 w-full"
+              @submit.prevent="handleCopyDeck"
+            >
+              <UFormField label="Tên bộ thẻ" name="name" required>
+                <UInput v-model="formState.name" class="w-full" />
+              </UFormField>
+
+              <UFormField label="Mô tả" name="description">
+                <UInput v-model="formState.description" class="w-full" />
+              </UFormField>
+
+              <!-- Hidden submit button to trigger form submission on "Enter" key press -->
+              <button type="submit" class="hidden" />
+            </UForm>
+          </template>
+
+          <template #footer>
+            <UButton
+              label="Xác nhận"
+              color="primary"
+              variant="subtle"
+              :disabled="!!formRef?.errors.length"
+              @click="formRef?.submit()"
+            />
+          </template>
+        </UModal>
       </UDashboardToolbar>
     </template>
 

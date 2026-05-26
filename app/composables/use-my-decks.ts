@@ -2,10 +2,11 @@ import type { Subscription } from 'rxjs';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
-import type { Card, DeckMeta, DeckProgress, PartialExcept } from '~/types';
+import type { Card, DeckProgress, PartialExcept } from '~/types';
 import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
 
 type DeckDocument = DocTypes['deck'] & { readonly progress: number };
+type MarketDeckMeta = Pick<DeckDocument, 'id' | 'name' | 'description'>;
 
 const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
@@ -213,7 +214,7 @@ const useMyDecks = () => {
     }
   };
 
-  const copyMarketDeck = async (meta: DeckMeta) => {
+  const copyMarketDeck = async (meta: MarketDeckMeta) => {
     if (!import.meta.client) {
       return null;
     }
