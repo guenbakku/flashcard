@@ -6,7 +6,7 @@ import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import type { ExtractDocTypes, InferRxDatabase } from '~/types';
 
 import cardCollectionFactory from './card.collection';
-import deckCollectionFactory from './deck.collection';
+import deckCollectionFactory, { hook as deckCollectionHook } from './deck.collection';
 import deckProgressCollectionFactory from './deck-progress.collection';
 import { getDb } from './utils';
 
@@ -27,5 +27,10 @@ const useIndexedDb = () => getDb<MyDatabase>({
   ...cardCollectionFactory(),
   ...deckProgressCollectionFactory(),
 });
+
+if (import.meta.client) {
+  const db = await useIndexedDb();
+  deckCollectionHook(db);
+}
 
 export default useIndexedDb;

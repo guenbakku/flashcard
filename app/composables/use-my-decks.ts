@@ -5,31 +5,13 @@ import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
 import type { Card, DeckMeta, DeckProgress, PartialExcept } from '~/types';
 import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
 
-type DeckDocument = DocTypes['deck'];
+type DeckDocument = DocTypes['deck'] & { readonly progress: number };
 
 const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 
-const normalizeDeck = (document: DeckDocument) => {
-  const cardCount = document.cardCount ?? 0;
-  const masteredCards = document.masteredCards ?? {};
-
-  return {
-    id: document.id,
-    name: document.name,
-    description: document.description ?? '',
-    cardCount,
-    lastStudied: document.lastStudied ?? null,
-    masteredCards,
-    progress: cardCount ? Math.round((Object.keys(masteredCards).length / cardCount) * 100) : 0,
-  } as const;
-};
-
 const useMyDecks = () => {
   const deckDocs = getDecksState();
-  const loaded = getLoadedState();
-
-  const decks = computed(() => deckDocs.value.map(doc => normalizeDeck(doc)));
 
   const progress = computed(() => {
     return deckDocs.value.reduce((acc, doc) => {
@@ -42,43 +24,19 @@ const useMyDecks = () => {
     }, {} as Record<string, DeckProgress>);
   });
 
-  const toPlainDocument = (document: unknown): DeckDocument => {
-    if (
-      typeof document === 'object'
-      && document
-      && 'toJSON' in document
-      && typeof (document as { toJSON?: unknown }).toJSON === 'function'
-    ) {
-      return (document as { toJSON: () => DeckDocument }).toJSON();
-    }
-
-    return document as DeckDocument;
-  };
-
-  const initialize = async () => {
-    if (!import.meta.client || loaded.value) {
-      return;
-    }
-
-    const db = await useIndexedDb();
-    const query = db.deck.find();
-    const documents = await query.exec();
-
-    deckDocs.value = documents.map(toPlainDocument);
-    loaded.value = true;
-  };
-
   if (import.meta.client) {
-    void initialize();
-
     let dbSubscription: Subscription | null = null;
 
     onMounted(async () => {
+      const loaded = getLoadedState();
+      loaded.value = false;
+
       const db = await useIndexedDb();
       const query = db.deck.find();
 
-      dbSubscription = query.$.subscribe((newDocuments: unknown[]) => {
-        deckDocs.value = newDocuments.map(toPlainDocument);
+      dbSubscription = query.$.subscribe((newDocs) => {
+        deckDocs.value = newDocs as unknown as DeckDocument[];
+        loaded.value = true;
       });
     });
 
@@ -118,7 +76,7 @@ const useMyDecks = () => {
     }));
   };
 
-  const createDeck = async (payload: { name: string; description: string; cards: Card[]; id?: string }) => {
+  const createDeck = async (payload: { name: string; description: string | undefined; cards: Card[]; id?: string }) => {
     if (!import.meta.client) {
       return null;
     }
@@ -206,7 +164,7 @@ const useMyDecks = () => {
     }));
   };
 
-  const updateDeck = async (payload: { id: string; name: string; description: string; cards: Card[] }) => {
+  const updateDeck = async (payload: { id: string; name: string; description: string | undefined; cards: Card[] }) => {
     if (!import.meta.client) {
       return;
     }
@@ -273,8 +231,7 @@ const useMyDecks = () => {
   };
 
   return {
-    decks,
-    progress,
+    deckDocs,
     pending: computed(() => !getLoadedState().value),
     getDeck,
     getAllCardsOfDeck,

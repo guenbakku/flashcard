@@ -1,5 +1,7 @@
 import { toTypedRxJsonSchema } from 'rxdb';
 
+import type { InferRxDatabase } from '~/types';
+
 import { collectionFactory } from './utils';
 
 const schema = {
@@ -48,5 +50,15 @@ const typedSchema = toTypedRxJsonSchema(schema);
 const factory = collectionFactory('deck', {
   schema: typedSchema,
 });
+
+export const hook = (db: InferRxDatabase<ReturnType<typeof factory>>) => {
+  db.deck.postCreate(function (plainData, rxDocument) {
+    Object.defineProperty(rxDocument, 'progress', {
+      get: function () {
+        return plainData.cardCount ? Math.round((Object.keys(plainData.masteredCards).length / plainData.cardCount) * 100) : 0;
+      },
+    });
+  });
+};
 
 export default factory;

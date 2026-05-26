@@ -2,13 +2,17 @@
 import { refDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
 
-import type { Card, Deck } from '~/types';
-const { decks, pending, createDeck, updateDeck, deleteDeck, getAllCardsOfDeck } = useMyDecks();
+import type { DocTypes } from '~/composables/use-indexed-db';
+import type { Card } from '~/types';
+
+type DeckDocument = DocTypes['deck'];
+
+const { deckDocs, pending, createDeck, updateDeck, deleteDeck, getAllCardsOfDeck } = useMyDecks();
 
 const keyword = useState(() => '');
 const debouncedKeyword = refDebounced(keyword, 300);
 const filteredDecks = computed(() =>
-  decks.value?.filter((d) => {
+  deckDocs.value?.filter((d) => {
     const term = debouncedKeyword.value.toLowerCase();
     return d.name.toLowerCase().includes(term)
       || (d.description ?? '').toLowerCase().includes(term);
@@ -17,9 +21,9 @@ const filteredDecks = computed(() =>
 
 const isEditorOpen = ref(false);
 const editorMode = ref<'create' | 'edit'>('create');
-const editingDeckId = ref<string | null>(null);
+const editingDeckId = ref<string>();
 const editorName = ref('');
-const editorDescription = ref('');
+const editorDescription = ref<string>();
 const editorCards = ref<Array<Card & { uid: string }>>([
   { uid: 'card-0', front: '', back: '', backSub: '' },
 ]);
@@ -36,7 +40,7 @@ function openCreateEditor() {
   isEditorOpen.value = true;
 }
 
-async function openEditEditor(deck: Deck) {
+async function openEditEditor(deck: DeckDocument) {
   isEditorOpen.value = true;
   editorMode.value = 'edit';
   editingDeckId.value = deck.id;
@@ -78,10 +82,10 @@ function removeCard(index: number) {
 function resetEditor() {
   isEditorOpen.value = false;
   editorMode.value = 'create';
-  editingDeckId.value = null;
+  editingDeckId.value = undefined;
   editorName.value = '';
   editorDescription.value = '';
-  editorCards.value = [{ uid: 'card-0', front: '', back: '', backSub: '' }];
+  editorCards.value = [{ uid: generateUid(), front: '', back: '', backSub: '' }];
 }
 
 async function saveDeck() {
@@ -106,14 +110,14 @@ async function saveDeck() {
       await updateDeck({
         id: editingDeckId.value,
         name: editorName.value.trim(),
-        description: editorDescription.value.trim(),
+        description: editorDescription.value?.trim(),
         cards,
       });
       toast.add({ title: 'Đã cập nhật bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
     } else {
       await createDeck({
         name: editorName.value.trim(),
-        description: editorDescription.value.trim(),
+        description: editorDescription.value?.trim(),
         cards,
       });
       toast.add({ title: 'Đã tạo bộ thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
@@ -153,7 +157,7 @@ function updateEditorCard(index: number, field: 'front' | 'back' | 'backSub', va
   };
 }
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | undefined): string {
   if (!dateStr) {
     return 'Chưa học';
   }
