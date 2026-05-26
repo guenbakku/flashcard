@@ -2,16 +2,16 @@ import type { Subscription } from 'rxjs';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
-import type { Card, DeckMeta, DeckProgress, MyDeckDetail, PartialExcept } from '~/types';
+import type { Card, DeckMeta, DeckProgress, PartialExcept } from '~/types';
 import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
 
-type MyDeckDocument = DocTypes['deck'];
+type DeckDocument = DocTypes['deck'];
 
-const getDecksState = () => useState<MyDeckDocument[]>('myDeckDocs', () => []);
+const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 const getPendingState = () => useState<boolean>('myDecksPending', () => true);
 
-const normalizeDeck = (document: MyDeckDocument) => {
+const normalizeDeck = (document: DeckDocument) => {
   const cardCount = document.cardCount ?? 0;
   const masteredCards = document.masteredCards ?? {};
 
@@ -44,17 +44,17 @@ const useMyDecks = () => {
     }, {} as Record<string, DeckProgress>);
   });
 
-  const toPlainDocument = (document: unknown): MyDeckDocument => {
+  const toPlainDocument = (document: unknown): DeckDocument => {
     if (
       typeof document === 'object'
       && document
       && 'toJSON' in document
       && typeof (document as { toJSON?: unknown }).toJSON === 'function'
     ) {
-      return (document as { toJSON: () => MyDeckDocument }).toJSON();
+      return (document as { toJSON: () => DeckDocument }).toJSON();
     }
 
-    return document as MyDeckDocument;
+    return document as DeckDocument;
   };
 
   const initialize = async () => {
@@ -69,6 +69,8 @@ const useMyDecks = () => {
     deckDocs.value = documents.map(toPlainDocument);
     loaded.value = true;
     pending.value = false;
+
+    return db;
   };
 
   if (import.meta.client) {
@@ -90,46 +92,14 @@ const useMyDecks = () => {
     });
   }
 
-  const getDeck = (id: string) => decks.value.find(deck => deck.id === id);
-
-  const getDeckDetail = async (id: string): Promise<MyDeckDetail | undefined> => {
-    if (!import.meta.client) {
-      return undefined;
-    }
-
+  const getDeck = async (id: string) => {
     const db = await useIndexedDb();
-    const deckDoc = await db.deck.findOne(id).exec();
-    if (!deckDoc) {
-      return undefined;
-    }
-
-    const cards = await db.card.find().where('deckId').eq(id).exec();
-
-    return {
-      id,
-      name: deckDoc.name,
-      description: deckDoc.description ?? '',
-      cardCount: deckDoc.cardCount ?? cards.length,
-      cards: cards.map(card => card.toJSON() as Card),
-      masteredCards: deckDoc.masteredCards,
-      lastStudied: deckDoc.lastStudied,
-    };
+    return await db.deck.findOne(id).exec();
   };
 
-  const generateId = () => {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-
-    return `deck-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  };
-
-  const getCardId = () => {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const getAllCardsOfDeck = async (deckId: string) => {
+    const db = await useIndexedDb();
+    return await db.card.find().where('deckId').eq(deckId).exec();
   };
 
   const writeDeckCards = async (deckId: string, cards: Card[]) => {
@@ -138,7 +108,7 @@ const useMyDecks = () => {
 
     await Promise.all(existingCards.map(card => card.remove()));
     await Promise.all(cards.map(card => db.card.insert({
-      id: `${deckId}:${getCardId()}`,
+      id: generateUid(),
       deckId,
       front: card.front,
       back: card.back,
@@ -152,7 +122,7 @@ const useMyDecks = () => {
     }
 
     const db = await useIndexedDb();
-    const id = payload.id ?? generateId();
+    const id = payload.id ?? generateUid();
 
     await db.deck.insert({
       id,
@@ -305,7 +275,7 @@ const useMyDecks = () => {
     pending,
     progress,
     getDeck,
-    getDeckDetail,
+    getAllCardsOfDeck,
     createDeck,
     updateDeck,
     deleteDeck,

@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import type { MyDeckDetail } from '~/types';
+import type { DocTypes } from '~/composables/use-indexed-db';
+
+type DeckDocument = DocTypes['deck'];
+type CardDocument = DocTypes['card'];
 
 const route = useRoute();
 const id = String(route.params.deckId);
 
-const { getDeckDetail, updateProgress, pending } = useMyDecks();
+const { getDeck, getAllCardsOfDeck, updateProgress, pending } = useMyDecks();
 
-const deck = ref<MyDeckDetail>();
-const cards = computed(() => deck.value?.cards ?? []);
+const deck = ref<DeckDocument | null>(null);
+const cards = ref<CardDocument[]>([]);
 
 onMounted(async () => {
   if (import.meta.client) {
-    deck.value = await getDeckDetail(id);
+    deck.value = await getDeck(id);
+    cards.value = await getAllCardsOfDeck(id) ?? [];
   }
 });
 

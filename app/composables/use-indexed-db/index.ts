@@ -12,11 +12,13 @@ import { getDb } from './utils';
 addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBUpdatePlugin);
 
-type MyDatabase
+export type MyDatabase
   = InferRxDatabase<ReturnType<typeof deckProgressCollectionFactory>>
     & InferRxDatabase<ReturnType<typeof cardCollectionFactory>>
     & InferRxDatabase<ReturnType<typeof deckCollectionFactory>>
     ;
+
+export type DocTypes = ExtractDocTypes<MyDatabase>;
 
 const useIndexedDb = () => getDb<MyDatabase>({
   ...deckCollectionFactory(),
@@ -25,5 +27,3 @@ const useIndexedDb = () => getDb<MyDatabase>({
 });
 
 export default useIndexedDb;
-
-export type DocTypes = ExtractDocTypes<MyDatabase>;

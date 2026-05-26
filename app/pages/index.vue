@@ -3,7 +3,7 @@ import { refDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
 
 import type { Card, Deck } from '~/types';
-const { decks, pending, createDeck, updateDeck, deleteDeck, getDeckDetail } = useMyDecks();
+const { decks, pending, createDeck, updateDeck, deleteDeck, getAllCardsOfDeck } = useMyDecks();
 
 const keyword = useState(() => '');
 const debouncedKeyword = refDebounced(keyword, 300);
@@ -43,14 +43,15 @@ async function openEditEditor(deck: Deck) {
   editorName.value = deck.name;
   editorDescription.value = deck.description;
 
-  const deckDetail = await getDeckDetail(deck.id);
-  if (deckDetail?.cards?.length) {
-    editorCards.value = deckDetail.cards.map((card: Card, index: number) => ({
+  const cards = await getAllCardsOfDeck(deck.id) ?? [];
+  if (cards?.length) {
+    editorCards.value = cards.map((card: Card, index: number) => ({
       uid: `card-${deck.id}-${index}-${Date.now()}`,
       front: card.front,
       back: card.back,
       backSub: card.backSub ?? '',
     }));
+
     return;
   }
 
@@ -59,7 +60,7 @@ async function openEditEditor(deck: Deck) {
 
 function addCard() {
   editorCards.value.push({
-    uid: `card-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    uid: generateUid(),
     front: '',
     back: '',
     backSub: '',
