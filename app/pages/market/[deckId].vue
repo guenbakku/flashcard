@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const route = useRoute();
-const identifier = String(route.params.identifier);
+const id = String(route.params.deckId);
 
 const { data: decks, getDeck, pending: decksListPending } = useMarketDecks();
-const deck = computed(() => getDeck(identifier));
+const deck = computed(() => getDeck(id));
 
 const { copyMarketDeck } = useMyDecks();
 const toast = useToast();
@@ -11,7 +11,7 @@ const toast = useToast();
 const isFlipped = ref(false);
 const currentIndex = ref(0);
 
-const { data, pending: deckDetailPending } = useMarketDeck(identifier);
+const { data, pending: deckDetailPending } = useMarketDeck(id);
 const cards = computed(() => data.value?.cards ?? []);
 const pending = computed(() => decksListPending.value || deckDetailPending.value);
 
@@ -22,8 +22,8 @@ function flip() {
   isFlipped.value = !isFlipped.value;
 }
 
-async function handleCopyDeck(identifier: string) {
-  const deckMeta = decks.value?.find(d => d.identifier === identifier);
+async function handleCopyDeck(id: string) {
+  const deckMeta = decks.value?.find(d => d.id === id);
   if (!deckMeta) {
     return;
   }
@@ -64,7 +64,7 @@ watch(currentIndex, () => {
             icon="i-lucide-copy"
             variant="subtle"
             size="sm"
-            @click="handleCopyDeck(identifier)"
+            @click="handleCopyDeck(id)"
           >
             Copy bộ thẻ
           </UButton>

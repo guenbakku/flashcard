@@ -2,7 +2,7 @@
 import type { MyDeckDetail } from '~/types';
 
 const route = useRoute();
-const identifier = String(route.params.identifier);
+const id = String(route.params.deckId);
 
 const { getDeckDetail, updateProgress, pending } = useMyDecks();
 
@@ -11,7 +11,7 @@ const cards = computed(() => deck.value?.cards ?? []);
 
 onMounted(async () => {
   if (import.meta.client) {
-    deck.value = await getDeckDetail(identifier);
+    deck.value = await getDeckDetail(id);
   }
 });
 
@@ -63,7 +63,7 @@ function answer(result: boolean) {
   // If answered correctly, add the card to the mastered list
   // If answered incorrectly, remove the card from the mastered list (if exists)
   updateProgress({
-    identifier,
+    id,
     masteredCards: { [currentCard.value.front]: result },
   });
 
@@ -113,7 +113,7 @@ watch(cards, (myCards) => {
     capturedMasteredCards.value = cleanedMasteredCards;
 
     updateProgress({
-      identifier,
+      id,
       lastStudied: new Date().toISOString(),
       masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
     });

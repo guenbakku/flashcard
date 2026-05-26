@@ -9,8 +9,8 @@ const { mockUseMyDecks } = vi.hoisted(() => ({ mockUseMyDecks: vi.fn() }));
 vi.mock('~/composables/use-my-decks', () => ({ default: mockUseMyDecks }));
 
 const mockDecks = [
-  { identifier: 'deck-a', name: 'JavaScript Basics', description: 'Learn JS', cardCount: 10, progress: 0, lastStudied: null },
-  { identifier: 'deck-b', name: 'Vue Framework', description: 'Learn Vue', cardCount: 5, progress: 50, lastStudied: '2024-01-15T10:00:00' },
+  { id: 'deck-a', name: 'JavaScript Basics', description: 'Learn JS', cardCount: 10, progress: 0, lastStudied: null },
+  { id: 'deck-b', name: 'Vue Framework', description: 'Learn Vue', cardCount: 5, progress: 50, lastStudied: '2024-01-15T10:00:00' },
 ];
 
 const mountPage = () => mountSuspended(IndexPage);

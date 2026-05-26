@@ -12,8 +12,8 @@ vi.mock('~/composables/use-my-decks', () => ({ default: mockUseMyDecks }));
 const { default: useDecks } = await import('~/composables/use-market-decks');
 
 const mockMeta = [
-  { identifier: 'deck-a', name: 'Deck A', description: 'First deck', cardCount: 4 },
-  { identifier: 'deck-b', name: 'Deck B', description: 'Second deck', cardCount: 2 },
+  { id: 'deck-a', name: 'Deck A', description: 'First deck', cardCount: 4 },
+  { id: 'deck-b', name: 'Deck B', description: 'Second deck', cardCount: 2 },
 ];
 
 describe('useDecks', () => {
@@ -33,7 +33,7 @@ describe('useDecks', () => {
     expect(data.value).toEqual([]);
   });
 
-  it('getDeck returns the correct deck by identifier', () => {
+  it('getDeck returns the correct deck by id', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(mockMeta), pending: ref(false) });
     mockUseMyDecks.mockReturnValue({
       progress: ref({}),
@@ -41,7 +41,7 @@ describe('useDecks', () => {
 
     const { getDeck } = useDecks();
 
-    expect(getDeck('deck-b')?.identifier).toBe('deck-b');
+    expect(getDeck('deck-b')?.id).toBe('deck-b');
     expect(getDeck('not-exist')).toBeUndefined();
   });
 });

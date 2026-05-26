@@ -71,7 +71,7 @@ const filteredDecks = computed(() =>
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <UPageCard
               v-for="deck in filteredDecks"
-              :key="deck.identifier"
+              :key="deck.id"
               :title="deck.name"
               variant="subtle"
               class="hover:z-1"
@@ -98,7 +98,7 @@ const filteredDecks = computed(() =>
               <template #footer>
                 <div class="flex flex-wrap gap-2">
                   <UButton
-                    :to="{ name: 'market-identifier', params: { identifier: deck.identifier } }"
+                    :to="{ name: 'market-deckId', params: { deckId: deck.id } }"
                     size="sm"
                     variant="subtle"
                     icon="i-lucide-book-open"

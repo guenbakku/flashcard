@@ -8,14 +8,14 @@ export const cardSchema = z.object({
 });
 
 export const deckMetaSchema = z.object({
-  identifier: z.string(),
+  id: z.string(),
   name: z.string(),
   description: z.string(),
   cardCount: z.number(),
 });
 
 export const deckProgressSchema = z.object({
-  identifier: z.string(),
+  id: z.string(),
   lastStudied: z.iso.datetime().nullish(),
   masteredCards: z.record(z.string(), z.boolean()),
 });
@@ -37,7 +37,7 @@ export type Deck = DeckMeta & DeckProgress & {
 };
 
 export type MyDeckDetail = DeckProgress & DeckDetail & {
-  identifier: string;
+  id: string;
   name: string;
   description: string;
   cardCount: number;

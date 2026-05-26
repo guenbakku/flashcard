@@ -16,7 +16,7 @@ const normalizeDeck = (document: MyDeckDocument) => {
   const masteredCards = document.masteredCards ?? {};
 
   return {
-    identifier: document.id,
+    id: document.id,
     name: document.name,
     description: document.description ?? '',
     cardCount,
@@ -36,7 +36,7 @@ const useMyDecks = () => {
   const progress = computed(() => {
     return deckDocs.value.reduce((acc, doc) => {
       acc[doc.id] = {
-        identifier: doc.id,
+        id: doc.id,
         lastStudied: doc.lastStudied ?? null,
         masteredCards: doc.masteredCards ?? {},
       };
@@ -90,23 +90,23 @@ const useMyDecks = () => {
     });
   }
 
-  const getDeck = (identifier: string) => decks.value.find(deck => deck.identifier === identifier);
+  const getDeck = (id: string) => decks.value.find(deck => deck.id === id);
 
-  const getDeckDetail = async (identifier: string): Promise<MyDeckDetail | undefined> => {
+  const getDeckDetail = async (id: string): Promise<MyDeckDetail | undefined> => {
     if (!import.meta.client) {
       return undefined;
     }
 
     const db = await useIndexedDb();
-    const deckDoc = await db.deck.findOne(identifier).exec();
+    const deckDoc = await db.deck.findOne(id).exec();
     if (!deckDoc) {
       return undefined;
     }
 
-    const cards = await db.card.find().where('deckId').eq(identifier).exec();
+    const cards = await db.card.find().where('deckId').eq(id).exec();
 
     return {
-      identifier,
+      id,
       name: deckDoc.name,
       description: deckDoc.description ?? '',
       cardCount: deckDoc.cardCount ?? cards.length,
@@ -146,13 +146,13 @@ const useMyDecks = () => {
     })));
   };
 
-  const createDeck = async (payload: { name: string; description: string; cards: Card[]; identifier?: string }) => {
+  const createDeck = async (payload: { name: string; description: string; cards: Card[]; id?: string }) => {
     if (!import.meta.client) {
       return null;
     }
 
     const db = await useIndexedDb();
-    const id = payload.identifier ?? generateId();
+    const id = payload.id ?? generateId();
 
     await db.deck.insert({
       id,
@@ -160,6 +160,7 @@ const useMyDecks = () => {
       description: payload.description,
       cardCount: payload.cards.length,
       masteredCards: {},
+      createdAt: new Date().toISOString(),
     });
 
     await writeDeckCards(id, payload.cards);
@@ -167,13 +168,13 @@ const useMyDecks = () => {
     return id;
   };
 
-  const updateProgress = async (data: PartialExcept<DeckProgress, 'identifier'>) => {
+  const updateProgress = async (data: PartialExcept<DeckProgress, 'id'>) => {
     if (!import.meta.client) {
       return;
     }
 
     const db = await useIndexedDb();
-    const deckDoc = await db.deck.findOne(data.identifier).exec();
+    const deckDoc = await db.deck.findOne(data.id).exec();
     if (!deckDoc) {
       return;
     }
@@ -219,7 +220,7 @@ const useMyDecks = () => {
 
     const db = await useIndexedDb();
     await Promise.all(validatedProgress.map(async (deckProgress) => {
-      const deckDoc = await db.deck.findOne(deckProgress.identifier).exec();
+      const deckDoc = await db.deck.findOne(deckProgress.id).exec();
       if (!deckDoc) {
         return;
       }
@@ -233,13 +234,13 @@ const useMyDecks = () => {
     }));
   };
 
-  const updateDeck = async (payload: { identifier: string; name: string; description: string; cards: Card[] }) => {
+  const updateDeck = async (payload: { id: string; name: string; description: string; cards: Card[] }) => {
     if (!import.meta.client) {
       return;
     }
 
     const db = await useIndexedDb();
-    const deckDoc = await db.deck.findOne(payload.identifier).exec();
+    const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
       return;
     }
@@ -252,9 +253,9 @@ const useMyDecks = () => {
       },
     });
 
-    await writeDeckCards(payload.identifier, payload.cards);
+    await writeDeckCards(payload.id, payload.cards);
 
-    const currentProgress = progress.value[payload.identifier];
+    const currentProgress = progress.value[payload.id];
     if (currentProgress) {
       const validFronts = new Set(payload.cards.map(card => card.front));
       const cleanedMasteredCards = Object.fromEntries(
@@ -262,21 +263,21 @@ const useMyDecks = () => {
       );
 
       await updateProgress({
-        identifier: payload.identifier,
+        id: payload.id,
         masteredCards: cleanedMasteredCards,
       });
     }
   };
 
-  const deleteDeck = async (identifier: string) => {
+  const deleteDeck = async (id: string) => {
     if (!import.meta.client) {
       return;
     }
 
     const db = await useIndexedDb();
-    await db.card.find().where('deckId').eq(identifier).remove();
+    await db.card.find().where('deckId').eq(id).remove();
 
-    const deckDoc = await db.deck.findOne(identifier).exec();
+    const deckDoc = await db.deck.findOne(id).exec();
     if (deckDoc) {
       await deckDoc.remove();
     }
@@ -287,7 +288,7 @@ const useMyDecks = () => {
       return null;
     }
 
-    const raw = await $fetch(`/data/decks/${meta.identifier}.json`);
+    const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
     await createDeck({
@@ -296,7 +297,7 @@ const useMyDecks = () => {
       cards: deckDetail.cards,
     });
 
-    return meta.identifier;
+    return meta.id;
   };
 
   return {

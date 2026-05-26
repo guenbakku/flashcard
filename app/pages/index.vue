@@ -39,14 +39,14 @@ function openCreateEditor() {
 async function openEditEditor(deck: Deck) {
   isEditorOpen.value = true;
   editorMode.value = 'edit';
-  editingDeckId.value = deck.identifier;
+  editingDeckId.value = deck.id;
   editorName.value = deck.name;
   editorDescription.value = deck.description;
 
-  const deckDetail = await getDeckDetail(deck.identifier);
+  const deckDetail = await getDeckDetail(deck.id);
   if (deckDetail?.cards?.length) {
     editorCards.value = deckDetail.cards.map((card: Card, index: number) => ({
-      uid: `card-${deck.identifier}-${index}-${Date.now()}`,
+      uid: `card-${deck.id}-${index}-${Date.now()}`,
       front: card.front,
       back: card.back,
       backSub: card.backSub ?? '',
@@ -103,7 +103,7 @@ async function saveDeck() {
   try {
     if (editorMode.value === 'edit' && editingDeckId.value) {
       await updateDeck({
-        identifier: editingDeckId.value,
+        id: editingDeckId.value,
         name: editorName.value.trim(),
         description: editorDescription.value.trim(),
         cards,
@@ -124,13 +124,13 @@ async function saveDeck() {
   }
 }
 
-async function handleDeleteDeck(identifier: string) {
+async function handleDeleteDeck(id: string) {
   const confirmed = window.confirm('Bạn có chắc muốn xóa bộ thẻ này?');
   if (!confirmed) {
     return;
   }
 
-  await deleteDeck(identifier);
+  await deleteDeck(id);
   toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-trash' });
 }
 
@@ -321,7 +321,7 @@ function formatDate(dateStr: string | null): string {
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <UPageCard
               v-for="deck in filteredDecks"
-              :key="deck.identifier"
+              :key="deck.id"
               :title="deck.name"
               variant="subtle"
               class="hover:z-1"
@@ -365,7 +365,7 @@ function formatDate(dateStr: string | null): string {
               <template #footer>
                 <div class="flex flex-wrap gap-2">
                   <UButton
-                    :to="`/decks/${deck.identifier}`"
+                    :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
                     size="sm"
                     variant="subtle"
                     icon="i-lucide-play"
@@ -386,7 +386,7 @@ function formatDate(dateStr: string | null): string {
                     color="error"
                     variant="subtle"
                     icon="i-lucide-trash"
-                    @click="handleDeleteDeck(deck.identifier)"
+                    @click="handleDeleteDeck(deck.id)"
                   >
                     Xóa
                   </UButton>

@@ -16,7 +16,7 @@ describe('useMarketDeck', () => {
     mockUseClientFetch.mockReset();
   });
 
-  it('fetches from the correct URL based on identifier', () => {
+  it('fetches from the correct URL based on id', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(null), pending: ref(false) });
 
     useMarketDeck('my-deck');
