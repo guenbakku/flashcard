@@ -83,7 +83,7 @@ const filteredDecks = computed(() =>
               </template>
               <template #description>
                 <div class="mt-auto space-y-2">
-                  <p class="text-sm text-muted line-clamp-3">
+                  <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
                     {{ deck.description }}
                   </p>
                   <div class="flex items-center justify-between text-sm">

@@ -226,7 +226,7 @@ watch(updationModalOpen, (val) => {
                 </p>
               </template>
               <template #description>
-                <p class="text-sm text-muted line-clamp-3">
+                <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
                   {{ deck.description }}
                 </p>
               </template>
@@ -301,7 +301,7 @@ watch(updationModalOpen, (val) => {
         </UFormField>
 
         <UFormField label="Mô tả" name="description">
-          <UInput v-model="creationFormState.description" class="w-full" />
+          <UTextarea v-model="creationFormState.description" class="w-full" />
         </UFormField>
 
         <!-- Hidden submit button to trigger form submission on "Enter" key press -->
@@ -338,7 +338,7 @@ watch(updationModalOpen, (val) => {
         </UFormField>
 
         <UFormField label="Mô tả" name="description">
-          <UInput v-model="updationFormState.description" class="w-full" />
+          <UTextarea v-model="updationFormState.description" class="w-full" />
         </UFormField>
 
         <!-- Hidden submit button to trigger form submission on "Enter" key press -->

@@ -122,7 +122,7 @@ watch(currentIndex, () => {
               </UFormField>
 
               <UFormField label="Mô tả" name="description">
-                <UInput v-model="formState.description" class="w-full" />
+                <UTextarea v-model="formState.description" class="w-full" />
               </UFormField>
 
               <!-- Hidden submit button to trigger form submission on "Enter" key press -->
