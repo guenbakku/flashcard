@@ -1,13 +1,12 @@
 <script setup lang="ts">
+import type { DropdownMenuItem } from '@nuxt/ui';
 import { refDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import * as z from 'zod';
 
-import type { DocTypes } from '~/composables/use-indexed-db';
-import type { Card } from '~/types';
+const toast = useToast();
 
-type DeckDocument = DocTypes['deck'];
-
-const { deckDocs, pending, createDeck, updateDeck, deleteDeck, getAllCardsOfDeck } = useMyDecks();
+const { deckDocs, pending, createDeck, deleteDeck, updateDeck } = useMyDecks();
 
 const keyword = useState(() => '');
 const debouncedKeyword = refDebounced(keyword, 300);
@@ -19,142 +18,103 @@ const filteredDecks = computed(() =>
   }) ?? [],
 );
 
-const isEditorOpen = ref(false);
-const editorMode = ref<'create' | 'edit'>('create');
-const editingDeckId = ref<string>();
-const editorName = ref('');
-const editorDescription = ref<string>();
-const editorCards = ref<Array<Card & { uid: string }>>([
-  { uid: 'card-0', front: '', back: '', backSub: '' },
-]);
+function generateDropdownItems(id: string): DropdownMenuItem[] {
+  return [
+    {
+      label: 'Chỉnh sửa',
+      icon: 'i-lucide-edit',
+      onSelect: () => {
+        selectingDeckId.value = id;
+        updationModalOpen.value = true;
+      },
+    },
+    {
+      label: 'Xóa',
+      icon: 'i-lucide-trash',
+      color: 'error',
+      onSelect: () => {
+        selectingDeckId.value = id;
+        deletionModalOpen.value = true;
+      },
+    },
+  ];
+}
 
-const toast = useToast();
-
-const canSaveEditor = computed(() => {
-  return !!editorName.value.trim()
-    && editorCards.value.some(card => card.front.trim() && card.back.trim());
+const formSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(1, 'Đây là trường bắt buộc')
+    .max(128, 'Nội dung không được vượt quá 128 ký tự'),
+  description: z.string()
+    .trim()
+    .max(128, 'Nội dung không được vượt quá 128 ký tự')
+    .optional(),
 });
 
-function openCreateEditor() {
-  resetEditor();
-  isEditorOpen.value = true;
-}
+type Schema = z.output<typeof formSchema>;
 
-async function openEditEditor(deck: DeckDocument) {
-  isEditorOpen.value = true;
-  editorMode.value = 'edit';
-  editingDeckId.value = deck.id;
-  editorName.value = deck.name;
-  editorDescription.value = deck.description;
+// Creation Modal
+const creationModalOpen = ref(false);
+const creationFormRef = useTemplateRef('creationFormRef');
+const creationFormState = reactive<Schema>({
+  name: '',
+  description: '',
+});
 
-  const cards = await getAllCardsOfDeck(deck.id) ?? [];
-  if (cards?.length) {
-    editorCards.value = cards.map((card: Card, index: number) => ({
-      uid: `card-${deck.id}-${index}-${Date.now()}`,
-      front: card.front,
-      back: card.back,
-      backSub: card.backSub ?? '',
-    }));
+// Updation Modal & Deletion Modal
+const updationModalOpen = ref(false);
+const updationFormRef = useTemplateRef('updationFormRef');
+const updationFormState = reactive<Schema>({
+  name: '',
+  description: '',
+});
+// ---
+const deletionModalOpen = ref(false);
+const selectingDeckId = ref<string>();
 
-    return;
+async function handleCreateDeck() {
+  try {
+    await createDeck({
+      name: creationFormState.name,
+      description: creationFormState.description,
+    });
+    creationModalOpen.value = false;
+    toast.add({ title: 'Đã tạo bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
+  } catch {
+    toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
-
-  editorCards.value = [{ uid: 'card-0', front: '', back: '', backSub: '' }];
 }
 
-function addCard() {
-  editorCards.value.push({
-    uid: generateUid(),
-    front: '',
-    back: '',
-    backSub: '',
-  });
-}
-
-function removeCard(index: number) {
-  if (editorCards.value.length <= 1) {
-    return;
-  }
-
-  editorCards.value.splice(index, 1);
-}
-
-function resetEditor() {
-  isEditorOpen.value = false;
-  editorMode.value = 'create';
-  editingDeckId.value = undefined;
-  editorName.value = '';
-  editorDescription.value = '';
-  editorCards.value = [{ uid: generateUid(), front: '', back: '', backSub: '' }];
-}
-
-async function saveDeck() {
-  if (!canSaveEditor.value) {
-    return;
-  }
-
-  const cards = editorCards.value
-    .filter(card => card.front.trim() && card.back.trim())
-    .map(card => ({
-      front: card.front.trim(),
-      back: card.back.trim(),
-      backSub: card.backSub?.trim() ?? '',
-    }));
-
-  if (!cards.length) {
+async function handleUpdateDeck() {
+  if (!selectingDeckId.value) {
     return;
   }
 
   try {
-    if (editorMode.value === 'edit' && editingDeckId.value) {
-      await updateDeck({
-        id: editingDeckId.value,
-        name: editorName.value.trim(),
-        description: editorDescription.value?.trim(),
-        cards,
-      });
-      toast.add({ title: 'Đã cập nhật bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-    } else {
-      await createDeck({
-        name: editorName.value.trim(),
-        description: editorDescription.value?.trim(),
-        cards,
-      });
-      toast.add({ title: 'Đã tạo bộ thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
-    }
-
-    resetEditor();
+    updateDeck({
+      id: selectingDeckId.value,
+      name: updationFormState.name,
+      description: updationFormState.description,
+    });
+    updationModalOpen.value = false;
+    toast.add({ title: 'Đã lưu bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
   } catch {
-    toast.add({ title: 'Lưu bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    toast.add({ title: 'Chỉnh sửa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }
 
-async function handleDeleteDeck(id: string) {
-  const confirmed = window.confirm('Bạn có chắc muốn xóa bộ thẻ này?');
-  if (!confirmed) {
+async function handleDeleteDeck() {
+  if (!selectingDeckId.value) {
     return;
   }
 
-  await deleteDeck(id);
-  toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-trash' });
-}
-
-function updateEditorCard(index: number, field: 'front' | 'back' | 'backSub', value: string) {
-  const existingCard = editorCards.value[index] ?? {
-    uid: `card-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    front: '',
-    back: '',
-    backSub: '',
-  };
-
-  editorCards.value[index] = {
-    ...existingCard,
-    front: existingCard.front ?? '',
-    back: existingCard.back ?? '',
-    backSub: existingCard.backSub ?? '',
-    uid: existingCard.uid,
-    [field]: value,
-  };
+  try {
+    await deleteDeck(selectingDeckId.value);
+    deletionModalOpen.value = false;
+    toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
+  } catch {
+    toast.add({ title: 'Xóa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+  }
 }
 
 function formatDate(dateStr: string | undefined): string {
@@ -170,6 +130,21 @@ function formatDate(dateStr: string | undefined): string {
     minute: '2-digit',
   });
 }
+
+watch(creationModalOpen, (val) => {
+  if (val) {
+    creationFormState.name = '';
+    creationFormState.description = '';
+  }
+});
+
+watch(updationModalOpen, (val) => {
+  if (val) {
+    const updatingDeck = deckDocs.value.find(deck => deck.id === selectingDeckId.value);
+    updationFormState.name = updatingDeck?.name ?? '';
+    updationFormState.description = updatingDeck?.description;
+  }
+});
 </script>
 
 <template>
@@ -197,108 +172,22 @@ function formatDate(dateStr: string | undefined): string {
             />
           </template>
         </UInput>
-        <UButton
-          icon="i-lucide-plus"
-          color="primary"
-          variant="solid"
-          class="ml-3"
-          @click="openCreateEditor"
-        />
+        <UTooltip text="Tạo bộ thẻ mới">
+          <UButton
+            icon="i-lucide-plus"
+            color="primary"
+            variant="solid"
+            class="ml-3 rounded-full"
+            size="sm"
+            @click="creationModalOpen = true"
+          />
+        </UTooltip>
       </UDashboardToolbar>
     </template>
 
     <template #body>
       <div class="p-4 sm:p-6">
         <ClientOnly>
-          <div v-if="isEditorOpen" class="mb-6">
-            <UCard>
-              <div class="space-y-4">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p class="text-lg font-semibold">
-                      {{ editorMode === 'create' ? 'Tạo bộ thẻ mới' : 'Chỉnh sửa bộ thẻ' }}
-                    </p>
-                    <p class="text-sm text-muted">
-                      Điền tên bộ thẻ, mô tả và nội dung thẻ của bạn.
-                    </p>
-                  </div>
-                  <div class="flex gap-2">
-                    <UButton
-                      variant="ghost"
-                      color="neutral"
-                      @click="resetEditor"
-                    >
-                      Hủy
-                    </UButton>
-                    <UButton
-                      :disabled="!canSaveEditor"
-                      color="primary"
-                      @click="saveDeck"
-                    >
-                      Lưu bộ thẻ
-                    </UButton>
-                  </div>
-                </div>
-
-                <div class="grid gap-4 sm:grid-cols-2">
-                  <UInput v-model="editorName" label="Tên bộ thẻ" />
-                  <UInput v-model="editorDescription" label="Mô tả" />
-                </div>
-
-                <div class="space-y-4">
-                  <div class="flex items-center justify-between">
-                    <p class="font-semibold">Danh sách thẻ</p>
-                    <UButton
-                      size="sm"
-                      variant="subtle"
-                      icon="i-lucide-plus"
-                      @click="addCard"
-                    >
-                      Thêm thẻ
-                    </UButton>
-                  </div>
-
-                  <div class="space-y-4">
-                    <div
-                      v-for="(card, index) in editorCards"
-                      :key="card.uid"
-                      class="grid gap-3 rounded-2xl border border-default p-4"
-                    >
-                      <div class="grid gap-3 sm:grid-cols-2">
-                        <UInput
-                          v-model="card.front"
-                          label="Mặt trước"
-                          @update:model-value="value => updateEditorCard(index, 'front', value)"
-                        />
-                        <UInput
-                          v-model="card.back"
-                          label="Mặt sau"
-                          @update:model-value="value => updateEditorCard(index, 'back', value)"
-                        />
-                      </div>
-                      <UInput
-                        v-model="card.backSub"
-                        label="Ghi chú"
-                        @update:model-value="value => updateEditorCard(index, 'backSub', value)"
-                      />
-                      <div class="flex justify-end">
-                        <UButton
-                          size="sm"
-                          variant="ghost"
-                          color="error"
-                          :disabled="editorCards.length === 1"
-                          @click="removeCard(index)"
-                        >
-                          Xóa thẻ
-                        </UButton>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </UCard>
-          </div>
-
           <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div v-for="i in 2" :key="i" class="border-default bg-default/50 rounded-xl border p-4 space-y-3">
               <USkeleton class="h-5 w-3/4 rounded" />
@@ -368,33 +257,23 @@ function formatDate(dateStr: string | undefined): string {
               </div>
 
               <template #footer>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex gap-3">
                   <UButton
                     :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
                     size="sm"
                     variant="subtle"
                     icon="i-lucide-play"
-                    class="flex-1"
                   >
                     Học ngay
                   </UButton>
-                  <UButton
-                    size="sm"
-                    variant="subtle"
-                    icon="i-lucide-edit"
-                    @click="openEditEditor(deck)"
-                  >
-                    Chỉnh sửa
-                  </UButton>
-                  <UButton
-                    size="sm"
-                    color="error"
-                    variant="subtle"
-                    icon="i-lucide-trash"
-                    @click="handleDeleteDeck(deck.id)"
-                  >
-                    Xóa
-                  </UButton>
+                  <UDropdownMenu :items="generateDropdownItems(deck.id)">
+                    <UButton
+                      size="sm"
+                      color="neutral"
+                      variant="subtle"
+                      icon="i-lucide-ellipsis"
+                    />
+                  </UDropdownMenu>
                 </div>
               </template>
             </UPageCard>
@@ -403,4 +282,98 @@ function formatDate(dateStr: string | undefined): string {
       </div>
     </template>
   </UDashboardPanel>
+
+  <!-- Creation Modal -->
+  <UModal
+    v-model:open="creationModalOpen"
+    title="Tạo bộ thẻ mới"
+  >
+    <template #body>
+      <UForm
+        ref="creationFormRef"
+        :schema="formSchema"
+        :state="creationFormState"
+        class="space-y-4 w-full"
+        @submit.prevent="handleCreateDeck"
+      >
+        <UFormField label="Tên bộ thẻ" name="name" required>
+          <UInput v-model="creationFormState.name" class="w-full" />
+        </UFormField>
+
+        <UFormField label="Mô tả" name="description">
+          <UInput v-model="creationFormState.description" class="w-full" />
+        </UFormField>
+
+        <!-- Hidden submit button to trigger form submission on "Enter" key press -->
+        <button type="submit" class="hidden" />
+      </UForm>
+    </template>
+
+    <template #footer>
+      <UButton
+        label="Xác nhận"
+        color="primary"
+        variant="solid"
+        :disabled="!!creationFormRef?.errors.length"
+        @click="creationFormRef?.submit()"
+      />
+    </template>
+  </UModal>
+
+  <!-- Updation Modal -->
+  <UModal
+    v-model:open="updationModalOpen"
+    title="Chỉnh sửa bộ thẻ"
+  >
+    <template #body>
+      <UForm
+        ref="updationFormRef"
+        :schema="formSchema"
+        :state="updationFormState"
+        class="space-y-4 w-full"
+        @submit.prevent="handleUpdateDeck"
+      >
+        <UFormField label="Tên bộ thẻ" name="name" required>
+          <UInput v-model="updationFormState.name" class="w-full" />
+        </UFormField>
+
+        <UFormField label="Mô tả" name="description">
+          <UInput v-model="updationFormState.description" class="w-full" />
+        </UFormField>
+
+        <!-- Hidden submit button to trigger form submission on "Enter" key press -->
+        <button type="submit" class="hidden" />
+      </UForm>
+    </template>
+
+    <template #footer>
+      <UButton
+        label="Xác nhận"
+        color="primary"
+        variant="solid"
+        :disabled="!!updationFormRef?.errors.length"
+        @click="updationFormRef?.submit()"
+      />
+    </template>
+  </UModal>
+
+  <!-- Deletion Modal -->
+  <UModal
+    v-model:open="deletionModalOpen"
+    title="Xóa bộ thẻ"
+  >
+    <template #body>
+      <p class="text-muted">Bạn có chắc muốn xóa bộ thẻ này?</p>
+      <p class="mt-2">{{ deckDocs?.find(deck => deck.id === selectingDeckId)?.name }}</p>
+    </template>
+
+    <template #footer>
+      <UButton
+        label="Xác nhận"
+        color="error"
+        variant="solid"
+        @click="handleDeleteDeck"
+      />
+    </template>
+  </UModal>
 </template>

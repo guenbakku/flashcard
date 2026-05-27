@@ -33,7 +33,7 @@ const useMyDecks = () => {
       loaded.value = false;
 
       const db = await useIndexedDb();
-      const query = db.deck.find();
+      const query = db.deck.find().sort({ createdAt: 'desc' });
 
       dbSubscription = query.$.subscribe((newDocs) => {
         deckDocs.value = newDocs as unknown as DeckDocument[];
@@ -57,11 +57,19 @@ const useMyDecks = () => {
   };
 
   const writeDeckCards = async (deckId: string, cards: Card[]) => {
+    if (cards.length === 0) {
+      return;
+    }
+
     const db = await useIndexedDb();
-    const existingCards = await db.card.find().where('deckId').eq(deckId).exec();
+    const deckDoc = await db.deck.findOne(deckId).exec();
+
+    if (!deckDoc) {
+      throw new Error(`Provided deckId not found: ${deckId}`);
+    }
 
     let cardOrder = 0;
-
+    const existingCards = await db.card.find().where('deckId').eq(deckId).exec();
     await Promise.all(existingCards.map(card => card.remove()));
     await Promise.all(cards.map((card) => {
       db.card.insert({
@@ -75,28 +83,12 @@ const useMyDecks = () => {
 
       ++cardOrder;
     }));
-  };
 
-  const createDeck = async (payload: { name: string; description: string | undefined; cards: Card[]; id?: string }) => {
-    if (!import.meta.client) {
-      return null;
-    }
-
-    const db = await useIndexedDb();
-    const id = payload.id ?? generateUid();
-
-    await db.deck.insert({
-      id,
-      name: payload.name,
-      description: payload.description,
-      cardCount: payload.cards.length,
-      masteredCards: {},
-      createdAt: new Date().toISOString(),
+    await deckDoc.update({
+      $set: {
+        cardCount: cards.length,
+      },
     });
-
-    await writeDeckCards(id, payload.cards);
-
-    return id;
   };
 
   const updateProgress = async (data: PartialExcept<DeckProgress, 'id'>) => {
@@ -165,7 +157,27 @@ const useMyDecks = () => {
     }));
   };
 
-  const updateDeck = async (payload: { id: string; name: string; description: string | undefined; cards: Card[] }) => {
+  const createDeck = async (payload: { name: string; description?: string }) => {
+    if (!import.meta.client) {
+      return null;
+    }
+
+    const db = await useIndexedDb();
+    const id = generateUid();
+
+    await db.deck.insert({
+      id,
+      name: payload.name,
+      description: payload.description,
+      cardCount: 0,
+      masteredCards: {},
+      createdAt: new Date().toISOString(),
+    });
+
+    return id;
+  };
+
+  const updateDeck = async (payload: { id: string; name: string; description?: string }) => {
     if (!import.meta.client) {
       return;
     }
@@ -173,31 +185,15 @@ const useMyDecks = () => {
     const db = await useIndexedDb();
     const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
-      return;
+      throw new Error(`Provided id not found: ${payload.id}`);
     }
 
     await deckDoc.update({
       $set: {
         name: payload.name,
         description: payload.description,
-        cardCount: payload.cards.length,
       },
     });
-
-    await writeDeckCards(payload.id, payload.cards);
-
-    const currentProgress = progress.value[payload.id];
-    if (currentProgress) {
-      const validFronts = new Set(payload.cards.map(card => card.front));
-      const cleanedMasteredCards = Object.fromEntries(
-        Object.entries(currentProgress.masteredCards).filter(([front]) => validFronts.has(front)),
-      );
-
-      await updateProgress({
-        id: payload.id,
-        masteredCards: cleanedMasteredCards,
-      });
-    }
   };
 
   const deleteDeck = async (id: string) => {
@@ -207,11 +203,7 @@ const useMyDecks = () => {
 
     const db = await useIndexedDb();
     await db.card.find().where('deckId').eq(id).remove();
-
-    const deckDoc = await db.deck.findOne(id).exec();
-    if (deckDoc) {
-      await deckDoc.remove();
-    }
+    await db.deck.findOne(id).remove();
   };
 
   const copyMarketDeck = async (meta: MarketDeckMeta) => {
@@ -222,13 +214,16 @@ const useMyDecks = () => {
     const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
-    await createDeck({
+    const id = await createDeck({
       name: meta.name,
       description: meta.description,
-      cards: deckDetail.cards,
     });
 
-    return meta.id;
+    if (id) {
+      await writeDeckCards(id, deckDetail.cards);
+    }
+
+    return id;
   };
 
   return {
