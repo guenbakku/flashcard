@@ -1,22 +1,15 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
-import { refDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
 import * as z from 'zod';
 
 const toast = useToast();
 
-const { deckDocs, pending, createDeck, deleteDeck, updateDeck } = useMyDecks();
+const { deckDocs, pending, createDeck, deleteDeck, updateDeck, filterDecks } = useMyDecks();
 
 const keyword = useState(() => '');
-const debouncedKeyword = refDebounced(keyword, 300);
-const filteredDecks = computed(() =>
-  deckDocs.value?.filter((d) => {
-    const term = debouncedKeyword.value.toLowerCase();
-    return d.name.toLowerCase().includes(term)
-      || (d.description ?? '').toLowerCase().includes(term);
-  }) ?? [],
-);
+watchDebounced(keyword, (newVal) => {
+  filterDecks(newVal);
+}, { debounce: 300 });
 
 function generateDropdownItems(id: string): DropdownMenuItem[] {
   return [
@@ -205,7 +198,7 @@ watch(updationModalOpen, (val) => {
             </div>
           </UPageGrid>
 
-          <div v-else-if="filteredDecks.length === 0" class="flex flex-col items-center justify-center gap-4 py-16">
+          <div v-else-if="deckDocs.length === 0" class="flex flex-col items-center justify-center gap-4 py-16">
             <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
               <UIcon name="i-lucide-frown" class="text-error/80 size-10" />
             </div>
@@ -214,7 +207,7 @@ watch(updationModalOpen, (val) => {
 
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <UPageCard
-              v-for="deck in filteredDecks"
+              v-for="deck in deckDocs"
               :key="deck.id"
               :title="deck.name"
               variant="subtle"

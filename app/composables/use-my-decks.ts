@@ -1,4 +1,5 @@
-import type { Subscription } from 'rxjs';
+import { BehaviorSubject, from, type Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
@@ -13,6 +14,7 @@ const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 
 const useMyDecks = () => {
   const deckDocs = getDecksState();
+  const loaded = getLoadedState();
 
   const progress = computed(() => {
     return deckDocs.value.reduce((acc, doc) => {
@@ -25,26 +27,42 @@ const useMyDecks = () => {
     }, {} as Record<string, DeckProgress>);
   });
 
-  if (import.meta.client) {
-    let dbSubscription: Subscription | null = null;
+  const keywordFilter$ = new BehaviorSubject<string>('');
+  const filteredDecks$ = keywordFilter$.pipe(
+    switchMap(keyword => (from(useIndexedDb()).pipe(
+      switchMap((db) => {
+        let selector: object = {};
+        if (keyword) {
+          const splittedKeywords = keyword.split(' ').filter(k => k.trim() !== '');
+          selector = {
+            $or: [
+              { $and: splittedKeywords.map(k => ({ name: { $regex: `.*${k}.*`, $options: 'i' } })) },
+              { $and: splittedKeywords.map(k => ({ description: { $regex: `.*${k}.*`, $options: 'i' } })) },
+            ],
+          };
+        }
 
-    onMounted(async () => {
-      const loaded = getLoadedState();
-      loaded.value = false;
+        return db.deck.find({ selector }).sort({ createdAt: 'desc' }).$;
+      }),
+    ))),
+  );
 
-      const db = await useIndexedDb();
-      const query = db.deck.find().sort({ createdAt: 'desc' });
-
-      dbSubscription = query.$.subscribe((newDocs) => {
-        deckDocs.value = newDocs as unknown as DeckDocument[];
-        loaded.value = true;
-      });
+  // Subscribe to filteredDecks$ and update deckDocs state
+  let dbSubscription: Subscription | null = null;
+  onMounted(async () => {
+    dbSubscription = filteredDecks$.subscribe((newDocs) => {
+      deckDocs.value = newDocs as unknown as DeckDocument[];
+      loaded.value = true;
     });
+  });
+  // Cleanup subscription on unmount
+  onUnmounted(() => {
+    dbSubscription?.unsubscribe();
+  });
 
-    onUnmounted(() => {
-      dbSubscription?.unsubscribe();
-    });
-  }
+  const filterDecks = (keyword: string) => {
+    keywordFilter$.next(keyword);
+  };
 
   const getDeck = async (id: string) => {
     const db = await useIndexedDb();
@@ -85,11 +103,7 @@ const useMyDecks = () => {
     });
   };
 
-  const updateProgress = async (data: PartialExcept<DeckProgress, 'id'>) => {
-    if (!import.meta.client) {
-      return;
-    }
-
+  const updateProgress = onlyClient(async (data: PartialExcept<DeckProgress, 'id'>) => {
     const db = await useIndexedDb();
     const deckDoc = await db.deck.findOne(data.id).exec();
     if (!deckDoc) {
@@ -118,7 +132,7 @@ const useMyDecks = () => {
         masteredCards: nextProgress.masteredCards,
       },
     });
-  };
+  });
 
   const exportProgress = () => {
     const runtimeConfig = useRuntimeConfig();
@@ -129,11 +143,8 @@ const useMyDecks = () => {
     };
   };
 
-  const importProgress = async (data: DeckProgress[]) => {
+  const importProgress = onlyClient(async (data: DeckProgress[]) => {
     const validatedProgress = deckProgressStorageSchema.parse(data);
-    if (!import.meta.client) {
-      return;
-    }
 
     const db = await useIndexedDb();
     await Promise.all(validatedProgress.map(async (deckProgress) => {
@@ -149,13 +160,9 @@ const useMyDecks = () => {
         },
       });
     }));
-  };
+  });
 
-  const createDeck = async (payload: { name: string; description?: string }) => {
-    if (!import.meta.client) {
-      return null;
-    }
-
+  const createDeck = onlyClient(async (payload: { name: string; description?: string }) => {
     const db = await useIndexedDb();
     const id = generateUid();
 
@@ -169,13 +176,9 @@ const useMyDecks = () => {
     });
 
     return id;
-  };
+  });
 
-  const updateDeck = async (payload: { id: string; name: string; description?: string }) => {
-    if (!import.meta.client) {
-      return;
-    }
-
+  const updateDeck = onlyClient(async (payload: { id: string; name: string; description?: string }) => {
     const db = await useIndexedDb();
     const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
@@ -188,23 +191,15 @@ const useMyDecks = () => {
         description: payload.description,
       },
     });
-  };
+  });
 
-  const deleteDeck = async (id: string) => {
-    if (!import.meta.client) {
-      return;
-    }
-
+  const deleteDeck = onlyClient(async (id: string) => {
     const db = await useIndexedDb();
     await db.card.find().where('deckId').eq(id).remove();
     await db.deck.findOne(id).remove();
-  };
+  });
 
-  const copyMarketDeck = async (meta: MarketDeckMeta) => {
-    if (!import.meta.client) {
-      return null;
-    }
-
+  const copyMarketDeck = onlyClient(async (meta: MarketDeckMeta) => {
     const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
@@ -218,11 +213,12 @@ const useMyDecks = () => {
     }
 
     return id;
-  };
+  });
 
   return {
     deckDocs,
     pending: computed(() => !getLoadedState().value),
+    filterDecks,
     getDeck,
     getAllCardsOfDeck,
     createDeck,
