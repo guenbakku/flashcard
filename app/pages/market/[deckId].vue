@@ -134,7 +134,7 @@ watch(currentIndex, () => {
             <UButton
               label="Xác nhận"
               color="primary"
-              variant="subtle"
+              variant="solid"
               :disabled="!!formRef?.errors.length"
               @click="formRef?.submit()"
             />
