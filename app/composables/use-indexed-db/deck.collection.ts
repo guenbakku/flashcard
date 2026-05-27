@@ -43,6 +43,7 @@ const schema = {
     },
   },
   required: ['id', 'name', 'cardCount', 'masteredCards', 'createdAt'],
+  index: ['createdAt'],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);

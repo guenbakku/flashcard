@@ -34,6 +34,7 @@ const schema = {
     },
   },
   required: ['id', 'deckId', 'front', 'back', 'order'],
+  index: ['order'],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);

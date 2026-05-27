@@ -68,21 +68,15 @@ const useMyDecks = () => {
       throw new Error(`Provided deckId not found: ${deckId}`);
     }
 
-    let cardOrder = 0;
-    const existingCards = await db.card.find().where('deckId').eq(deckId).exec();
-    await Promise.all(existingCards.map(card => card.remove()));
-    await Promise.all(cards.map((card) => {
-      db.card.insert({
-        id: generateUid(),
-        deckId,
-        front: card.front,
-        back: card.back,
-        backSub: card.backSub ?? '',
-        order: cardOrder,
-      });
-
-      ++cardOrder;
-    }));
+    await db.card.find().where('deckId').eq(deckId).remove();
+    await db.card.bulkInsert(cards.map((card, index) => ({
+      id: generateUid(),
+      deckId,
+      front: card.front,
+      back: card.back,
+      backSub: card.backSub,
+      order: index,
+    })));
 
     await deckDoc.update({
       $set: {
