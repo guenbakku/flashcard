@@ -32,17 +32,6 @@ export type DeckMeta = z.infer<typeof deckMetaSchema>;
 export type DeckDetail = z.infer<typeof deckDetailSchema>;
 export type DeckProgress = z.infer<typeof deckProgressSchema>;
 
-export type Deck = DeckMeta & DeckProgress & {
-  progress: number;
-};
-
-export type MyDeckDetail = DeckProgress & DeckDetail & {
-  id: string;
-  name: string;
-  description: string;
-  cardCount: number;
-};
-
 /**
  * ----------------------------------------------------------------------------
  * Definitions of utility types used across the app
