@@ -13,10 +13,8 @@ const deck = ref<DeckDocument | null>(null);
 const cards = ref<CardDocument[]>([]);
 
 onMounted(async () => {
-  if (import.meta.client) {
-    deck.value = await getDeck(id);
-    cards.value = await getAllCardsOfDeck(id) ?? [];
-  }
+  deck.value = await getDeck(id);
+  cards.value = await getAllCardsOfDeck(id) ?? [];
 });
 
 const capturedMasteredCards = ref<Record<string, boolean>>({});
