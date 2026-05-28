@@ -57,6 +57,8 @@ export default defineNuxtConfig({
         'rxdb/plugins/query-builder',
         'rxdb/plugins/storage-dexie',
         'rxdb/plugins/update',
+        'rxjs',
+        'rxjs/operators',
         'zod',
       ],
     },
