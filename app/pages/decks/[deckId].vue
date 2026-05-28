@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DocTypes } from '~/composables/use-indexed-db';
+import type { DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDocument = DocTypes['deck'];
 type CardDocument = DocTypes['card'];

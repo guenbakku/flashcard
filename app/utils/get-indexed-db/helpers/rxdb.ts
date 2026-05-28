@@ -6,7 +6,7 @@ type Collections = Record<string, RxCollectionCreator<any>>;
 
 let _dbInstance: Promise<RxDatabase> | null = null;
 
-export const getDb = async <DatabaseType>(collections: Collections): Promise<DatabaseType> => {
+export const initDb = async <DatabaseType>(collections: Collections): Promise<DatabaseType> => {
   if (!import.meta.client) {
     throw new Error('Database instance is only available in the browser.');
   }

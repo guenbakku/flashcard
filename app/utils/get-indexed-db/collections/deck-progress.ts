@@ -1,6 +1,6 @@
 import { toTypedRxJsonSchema } from 'rxdb';
 
-import { collectionFactory } from './utils';
+import { collectionFactory } from '../helpers';
 
 const schema = {
   title: 'deck-progress schema',

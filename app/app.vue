@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { registerGracefulDbClosing } from '~/composables/use-indexed-db';
+import { registerGracefulDbClosing } from '~/utils/get-indexed-db';
 
 registerGracefulDbClosing();
 

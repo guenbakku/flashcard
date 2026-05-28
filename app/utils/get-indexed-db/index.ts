@@ -6,10 +6,10 @@ import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 
 import type { ExtractDocTypes, InferRxCollection } from '~/types';
 
-import cardCollectionFactory from './card.collection';
-import deckCollectionFactory, { hook as deckCollectionHook } from './deck.collection';
-import deckProgressCollectionFactory from './deck-progress.collection';
-import { closeDb, getDb } from './utils';
+import cardCollectionFactory from './collections/card';
+import deckCollectionFactory, { hook as deckCollectionHook } from './collections/deck';
+import deckProgressCollectionFactory from './collections/deck-progress';
+import { initDb } from './helpers';
 
 addRxPlugin(RxDBCleanupPlugin);
 addRxPlugin(RxDBLeaderElectionPlugin);
@@ -25,24 +25,16 @@ export type MyDatabase
 
 export type DocTypes = ExtractDocTypes<MyDatabase>;
 
-const useIndexedDb = () => getDb<MyDatabase>({
+const getIndexedDb = () => initDb<MyDatabase>({
   ...deckCollectionFactory(),
   ...cardCollectionFactory(),
   ...deckProgressCollectionFactory(),
 });
 
 if (import.meta.client) {
-  const db = await useIndexedDb();
+  const db = await getIndexedDb();
   deckCollectionHook(db);
 }
 
-export const registerGracefulDbClosing = () => {
-  const handleBeforeUnload = async (_event: BeforeUnloadEvent) => {
-    closeDb();
-  };
-
-  onMounted(() => window.addEventListener('beforeunload', handleBeforeUnload));
-  onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload));
-};
-
-export default useIndexedDb;
+export default getIndexedDb;
+export { registerGracefulDbClosing } from './helpers';

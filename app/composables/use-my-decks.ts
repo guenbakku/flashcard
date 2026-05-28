@@ -2,9 +2,10 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
-import useIndexedDb, { type DocTypes } from '~/composables/use-indexed-db';
 import type { Card, DeckProgress, PartialExcept } from '~/types';
 import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
+import type { DocTypes } from '~/utils/get-indexed-db';
+import getIndexedDb from '~/utils/get-indexed-db';
 
 type DeckDocument = DocTypes['deck'] & { readonly progress: number };
 type MarketDeckMeta = Pick<DeckDocument, 'id' | 'name' | 'description'>;
@@ -29,7 +30,7 @@ const useMyDecks = () => {
 
   const keywordFilter$ = new BehaviorSubject<string>('');
   const filteredDecks$ = keywordFilter$.pipe(
-    switchMap(keyword => (from(useIndexedDb()).pipe(
+    switchMap(keyword => (from(getIndexedDb()).pipe(
       switchMap((db) => {
         let selector: object = {};
         if (keyword) {
@@ -65,12 +66,12 @@ const useMyDecks = () => {
   };
 
   const getDeck = async (id: string) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     return await db.deck.findOne(id).exec();
   };
 
   const getAllCardsOfDeck = async (deckId: string) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     return await db.card.find().where('deckId').eq(deckId).sort({ order: 'asc' }).exec();
   };
 
@@ -79,7 +80,7 @@ const useMyDecks = () => {
       return;
     }
 
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     const deckDoc = await db.deck.findOne(deckId).exec();
 
     if (!deckDoc) {
@@ -104,7 +105,7 @@ const useMyDecks = () => {
   };
 
   const updateProgress = onlyClient(async (data: PartialExcept<DeckProgress, 'id'>) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     const deckDoc = await db.deck.findOne(data.id).exec();
     if (!deckDoc) {
       return;
@@ -146,7 +147,7 @@ const useMyDecks = () => {
   const importProgress = onlyClient(async (data: DeckProgress[]) => {
     const validatedProgress = deckProgressStorageSchema.parse(data);
 
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     await Promise.all(validatedProgress.map(async (deckProgress) => {
       const deckDoc = await db.deck.findOne(deckProgress.id).exec();
       if (!deckDoc) {
@@ -163,7 +164,7 @@ const useMyDecks = () => {
   });
 
   const createDeck = onlyClient(async (payload: { name: string; description?: string }) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     const id = generateUid();
 
     await db.deck.insert({
@@ -179,7 +180,7 @@ const useMyDecks = () => {
   });
 
   const updateDeck = onlyClient(async (payload: { id: string; name: string; description?: string }) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
       throw new Error(`Provided id not found: ${payload.id}`);
@@ -194,7 +195,7 @@ const useMyDecks = () => {
   });
 
   const deleteDeck = onlyClient(async (id: string) => {
-    const db = await useIndexedDb();
+    const db = await getIndexedDb();
     await db.card.find().where('deckId').eq(id).remove();
     await db.deck.findOne(id).remove();
   });

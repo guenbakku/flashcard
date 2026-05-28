@@ -2,7 +2,7 @@ import { toTypedRxJsonSchema } from 'rxdb';
 
 import type { InferRxCollection } from '~/types';
 
-import { collectionFactory } from './utils';
+import { collectionFactory } from '../helpers';
 
 const schema = {
   title: 'deck schema',
