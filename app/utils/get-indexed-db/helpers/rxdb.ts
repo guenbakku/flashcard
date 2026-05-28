@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import type { RxCollectionCreator, RxDatabase } from 'rxdb';
+import { createRxDatabase, type RxCollectionCreator, type RxDatabase } from 'rxdb';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 type Collections = Record<string, RxCollectionCreator<any>>;
 
@@ -16,9 +16,6 @@ export const initDb = async <DatabaseType>(collections: Collections): Promise<Da
   }
 
   _dbInstance = (async () => {
-    const { createRxDatabase } = await import('rxdb');
-    const { getRxStorageDexie } = await import('rxdb/plugins/storage-dexie');
-
     const db = await createRxDatabase({
       name: 'flashcard_app',
       storage: getRxStorageDexie(),

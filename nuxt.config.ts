@@ -52,6 +52,8 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'rxdb',
+        'rxdb/plugins/cleanup',
+        'rxdb/plugins/leader-election',
         'rxdb/plugins/query-builder',
         'rxdb/plugins/storage-dexie',
         'rxdb/plugins/update',
