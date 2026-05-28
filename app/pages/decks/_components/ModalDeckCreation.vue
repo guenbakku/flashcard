@@ -1,0 +1,73 @@
+<script setup lang="ts">
+import { type DeckMeta, deckMetaSchema } from './types';
+
+const modalOpen = defineModel<boolean>('open');
+
+const toast = useToast();
+const { createDeck } = useMyDecks();
+
+const initialState: DeckMeta = {
+  name: '',
+  description: undefined,
+};
+const state = reactive<DeckMeta>({ ...initialState });
+const formRef = useTemplateRef('formRef');
+
+watch(modalOpen, (value) => {
+  if (value) {
+    state.name = initialState.name;
+    state.description = initialState.description;
+  }
+});
+
+async function handleCreateDeck() {
+  try {
+    await createDeck({
+      name: state.name,
+      description: state.description,
+    });
+    modalOpen.value = false;
+    toast.add({ title: 'Đã tạo bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
+  } catch {
+    toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+  }
+}
+</script>
+
+<template>
+  <UModal
+    v-model:open="modalOpen"
+    title="Tạo bộ thẻ mới"
+  >
+    <template #body>
+      <UForm
+        ref="formRef"
+        :schema="deckMetaSchema"
+        :state="state"
+        class="space-y-4 w-full"
+        @submit.prevent="handleCreateDeck"
+      >
+        <UFormField label="Tên bộ thẻ" name="name" required>
+          <UInput v-model="state.name" class="w-full" />
+        </UFormField>
+
+        <UFormField label="Mô tả" name="description">
+          <UTextarea v-model="state.description" class="w-full" />
+        </UFormField>
+
+        <!-- Hidden submit button to trigger form submission on "Enter" key press -->
+        <button type="submit" class="hidden" />
+      </UForm>
+    </template>
+
+    <template #footer>
+      <UButton
+        label="Xác nhận"
+        color="primary"
+        variant="solid"
+        :disabled="!!formRef?.errors.length"
+        @click="formRef?.submit()"
+      />
+    </template>
+  </UModal>
+</template>

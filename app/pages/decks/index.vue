@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
-import * as z from 'zod';
 
-const toast = useToast();
+import ModalDeckCreation from './_components/ModalDeckCreation.vue';
+import ModalDeckDeletion from './_components/ModalDeckDeletion.vue';
+import ModalDeckUpdation from './_components/ModalDeckUpdation.vue';
 
-const { deckDocs, pending, createDeck, deleteDeck, updateDeck, filterDecks } = useMyDecks();
+const { deckDocs, pending, filterDecks } = useMyDecks();
 
 const keyword = useState(() => '');
 watchDebounced(keyword, (newVal) => {
   filterDecks(newVal);
 }, { debounce: 300 });
+
+const creationModalOpen = ref(false);
+const updationModalOpen = ref(false);
+const deletionModalOpen = ref(false);
+// ---
+const selectingDeckId = ref<string>();
+const selectingDeck = computed(() => deckDocs.value.find(deck => deck.id === selectingDeckId.value) ?? { id: '', name: '' });
 
 function generateDropdownItems(id: string): DropdownMenuItem[] {
   return [
@@ -33,83 +41,6 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
   ];
 }
 
-const formSchema = z.object({
-  name: z.string()
-    .trim()
-    .min(1, 'Đây là trường bắt buộc')
-    .max(128, 'Nội dung không được vượt quá 128 ký tự'),
-  description: z.string()
-    .trim()
-    .max(128, 'Nội dung không được vượt quá 128 ký tự')
-    .optional(),
-});
-
-type Schema = z.output<typeof formSchema>;
-
-// Creation Modal
-const creationModalOpen = ref(false);
-const creationFormRef = useTemplateRef('creationFormRef');
-const creationFormState = reactive<Schema>({
-  name: '',
-  description: '',
-});
-
-// Updation Modal & Deletion Modal
-const updationModalOpen = ref(false);
-const updationFormRef = useTemplateRef('updationFormRef');
-const updationFormState = reactive<Schema>({
-  name: '',
-  description: '',
-});
-// ---
-const deletionModalOpen = ref(false);
-const selectingDeckId = ref<string>();
-
-async function handleCreateDeck() {
-  try {
-    await createDeck({
-      name: creationFormState.name,
-      description: creationFormState.description,
-    });
-    creationModalOpen.value = false;
-    toast.add({ title: 'Đã tạo bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
-    toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  }
-}
-
-async function handleUpdateDeck() {
-  if (!selectingDeckId.value) {
-    return;
-  }
-
-  try {
-    updateDeck({
-      id: selectingDeckId.value,
-      name: updationFormState.name,
-      description: updationFormState.description,
-    });
-    updationModalOpen.value = false;
-    toast.add({ title: 'Đã lưu bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
-    toast.add({ title: 'Chỉnh sửa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  }
-}
-
-async function handleDeleteDeck() {
-  if (!selectingDeckId.value) {
-    return;
-  }
-
-  try {
-    await deleteDeck(selectingDeckId.value);
-    deletionModalOpen.value = false;
-    toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
-    toast.add({ title: 'Xóa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  }
-}
-
 function formatDate(dateStr: string | undefined): string {
   if (!dateStr) {
     return 'Chưa học';
@@ -123,21 +54,6 @@ function formatDate(dateStr: string | undefined): string {
     minute: '2-digit',
   });
 }
-
-watch(creationModalOpen, (val) => {
-  if (val) {
-    creationFormState.name = '';
-    creationFormState.description = '';
-  }
-});
-
-watch(updationModalOpen, (val) => {
-  if (val) {
-    const updatingDeck = deckDocs.value.find(deck => deck.id === selectingDeckId.value);
-    updationFormState.name = updatingDeck?.name ?? '';
-    updationFormState.description = updatingDeck?.description;
-  }
-});
 </script>
 
 <template>
@@ -276,97 +192,7 @@ watch(updationModalOpen, (val) => {
     </template>
   </UDashboardPanel>
 
-  <!-- Creation Modal -->
-  <UModal
-    v-model:open="creationModalOpen"
-    title="Tạo bộ thẻ mới"
-  >
-    <template #body>
-      <UForm
-        ref="creationFormRef"
-        :schema="formSchema"
-        :state="creationFormState"
-        class="space-y-4 w-full"
-        @submit.prevent="handleCreateDeck"
-      >
-        <UFormField label="Tên bộ thẻ" name="name" required>
-          <UInput v-model="creationFormState.name" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Mô tả" name="description">
-          <UTextarea v-model="creationFormState.description" class="w-full" />
-        </UFormField>
-
-        <!-- Hidden submit button to trigger form submission on "Enter" key press -->
-        <button type="submit" class="hidden" />
-      </UForm>
-    </template>
-
-    <template #footer>
-      <UButton
-        label="Xác nhận"
-        color="primary"
-        variant="solid"
-        :disabled="!!creationFormRef?.errors.length"
-        @click="creationFormRef?.submit()"
-      />
-    </template>
-  </UModal>
-
-  <!-- Updation Modal -->
-  <UModal
-    v-model:open="updationModalOpen"
-    title="Chỉnh sửa bộ thẻ"
-  >
-    <template #body>
-      <UForm
-        ref="updationFormRef"
-        :schema="formSchema"
-        :state="updationFormState"
-        class="space-y-4 w-full"
-        @submit.prevent="handleUpdateDeck"
-      >
-        <UFormField label="Tên bộ thẻ" name="name" required>
-          <UInput v-model="updationFormState.name" class="w-full" />
-        </UFormField>
-
-        <UFormField label="Mô tả" name="description">
-          <UTextarea v-model="updationFormState.description" class="w-full" />
-        </UFormField>
-
-        <!-- Hidden submit button to trigger form submission on "Enter" key press -->
-        <button type="submit" class="hidden" />
-      </UForm>
-    </template>
-
-    <template #footer>
-      <UButton
-        label="Xác nhận"
-        color="primary"
-        variant="solid"
-        :disabled="!!updationFormRef?.errors.length"
-        @click="updationFormRef?.submit()"
-      />
-    </template>
-  </UModal>
-
-  <!-- Deletion Modal -->
-  <UModal
-    v-model:open="deletionModalOpen"
-    title="Xóa bộ thẻ"
-  >
-    <template #body>
-      <p class="text-muted">Bạn có chắc muốn xóa bộ thẻ này?</p>
-      <p class="mt-2">{{ deckDocs?.find(deck => deck.id === selectingDeckId)?.name }}</p>
-    </template>
-
-    <template #footer>
-      <UButton
-        label="Xác nhận"
-        color="error"
-        variant="solid"
-        @click="handleDeleteDeck"
-      />
-    </template>
-  </UModal>
+  <ModalDeckCreation v-model:open="creationModalOpen"/>
+  <ModalDeckUpdation v-model:open="updationModalOpen" :deck="selectingDeck" />
+  <ModalDeckDeletion v-model:open="deletionModalOpen" :deck="selectingDeck" />
 </template>
