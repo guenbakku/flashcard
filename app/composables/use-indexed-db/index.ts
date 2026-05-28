@@ -1,5 +1,6 @@
 import { addRxPlugin } from 'rxdb';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
+import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 
@@ -11,6 +12,7 @@ import deckProgressCollectionFactory from './deck-progress.collection';
 import { getDb } from './utils';
 
 addRxPlugin(RxDBCleanupPlugin);
+addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBUpdatePlugin);
 
