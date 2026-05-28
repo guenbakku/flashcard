@@ -52,11 +52,11 @@ export type MyDeckDetail = DeckProgress & DeckDetail & {
 export type PartialExcept<T, K extends keyof T> = Omit<Partial<T>, K> & Pick<T, K>;
 
 /**
- * Utility Type to automatically convert a Collection Factory Result structure into its corresponding RxDatabase structure.
+ * Utility Type to automatically convert a Collection Factory Result structure into its corresponding RxCollection structure.
  *
  * @template T - The return type of the factory execution (e.g., { deckprogress: RxCollectionCreator<DocType> })
  */
-export type InferRxDatabase<T> = {
+export type InferRxCollection<T> = {
   [P in keyof T]: T[P] extends RxCollectionCreator<infer D>
     ? RxCollection<D>
     : T[P] extends () => RxCollectionCreator<infer D> // Handles cases where the creator is wrapped in a function

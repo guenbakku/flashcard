@@ -1,6 +1,6 @@
 import { toTypedRxJsonSchema } from 'rxdb';
 
-import type { InferRxDatabase } from '~/types';
+import type { InferRxCollection } from '~/types';
 
 import { collectionFactory } from './utils';
 
@@ -52,7 +52,7 @@ const factory = collectionFactory('deck', {
   schema: typedSchema,
 });
 
-export const hook = (db: InferRxDatabase<ReturnType<typeof factory>>) => {
+export const hook = (db: InferRxCollection<ReturnType<typeof factory>>) => {
   db.deck.postCreate(function (plainData, rxDocument) {
     Object.defineProperty(rxDocument, 'progress', {
       get: function () {

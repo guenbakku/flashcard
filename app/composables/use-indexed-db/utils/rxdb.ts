@@ -1,35 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ExtractDocumentTypeFromTypedRxJsonSchema, RxCollectionCreator, RxDatabase } from 'rxdb';
+
+import type { RxCollectionCreator, RxDatabase } from 'rxdb';
 
 type Collections = Record<string, RxCollectionCreator<any>>;
 
-let _dbPromise: Promise<RxDatabase> | null = null;
-
-export const collectionFactory = <
-  K extends string,
-  C extends RxCollectionCreator<any>,
->(
-  name: K,
-  collectionCreator: C | (() => C),
-) => () => {
-  type ActualCreator = C extends (...args: any[]) => infer R ? R : C;
-  type InferredDocType = ExtractDocumentTypeFromTypedRxJsonSchema<ActualCreator['schema']>;
-
-  return {
-    [name]: toValue(collectionCreator),
-  } as unknown as { [P in K]: RxCollectionCreator<InferredDocType> };
-};
+let _dbInstance: Promise<RxDatabase> | null = null;
 
 export const getDb = async <DatabaseType>(collections: Collections): Promise<DatabaseType> => {
   if (!import.meta.client) {
-    throw new Error('Deck progress database is only available in the browser');
+    throw new Error('Database instance is only available in the browser.');
   }
 
-  if (_dbPromise) {
-    return _dbPromise as DatabaseType;
+  if (_dbInstance) {
+    return _dbInstance as DatabaseType;
   }
 
-  _dbPromise = (async () => {
+  _dbInstance = (async () => {
     const { createRxDatabase } = await import('rxdb');
     const { getRxStorageDexie } = await import('rxdb/plugins/storage-dexie');
 
@@ -56,5 +42,13 @@ export const getDb = async <DatabaseType>(collections: Collections): Promise<Dat
     return db;
   })();
 
-  return _dbPromise as DatabaseType;
+  return _dbInstance as DatabaseType;
+};
+
+export const closeDb = async () => {
+  if (_dbInstance) {
+    _dbInstance.then(
+      db => db.close().then(_dbInstance = null),
+    );
+  }
 };
