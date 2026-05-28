@@ -104,7 +104,7 @@ const useMyDecks = () => {
     });
   };
 
-  const updateProgress = onlyClient(async (data: PartialExcept<DeckProgress, 'id'>) => {
+  const updateProgress = clientOnly(async (data: PartialExcept<DeckProgress, 'id'>) => {
     const db = await getIndexedDb();
     const deckDoc = await db.deck.findOne(data.id).exec();
     if (!deckDoc) {
@@ -144,7 +144,7 @@ const useMyDecks = () => {
     };
   };
 
-  const importProgress = onlyClient(async (data: DeckProgress[]) => {
+  const importProgress = clientOnly(async (data: DeckProgress[]) => {
     const validatedProgress = deckProgressStorageSchema.parse(data);
 
     const db = await getIndexedDb();
@@ -163,7 +163,7 @@ const useMyDecks = () => {
     }));
   });
 
-  const createDeck = onlyClient(async (payload: { name: string; description?: string }) => {
+  const createDeck = clientOnly(async (payload: { name: string; description?: string }) => {
     const db = await getIndexedDb();
     const id = generateUid();
 
@@ -179,7 +179,7 @@ const useMyDecks = () => {
     return id;
   });
 
-  const updateDeck = onlyClient(async (payload: { id: string; name: string; description?: string }) => {
+  const updateDeck = clientOnly(async (payload: { id: string; name: string; description?: string }) => {
     const db = await getIndexedDb();
     const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
@@ -194,13 +194,13 @@ const useMyDecks = () => {
     });
   });
 
-  const deleteDeck = onlyClient(async (id: string) => {
+  const deleteDeck = clientOnly(async (id: string) => {
     const db = await getIndexedDb();
     await db.card.find().where('deckId').eq(id).remove();
     await db.deck.findOne(id).remove();
   });
 
-  const copyMarketDeck = onlyClient(async (meta: MarketDeckMeta) => {
+  const copyMarketDeck = clientOnly(async (meta: MarketDeckMeta) => {
     const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
