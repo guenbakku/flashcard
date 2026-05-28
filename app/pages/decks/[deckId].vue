@@ -14,7 +14,7 @@ const cards = ref<CardDocument[]>([]);
 
 onMounted(async () => {
   deck.value = await getDeck(id);
-  cards.value = await getAllCardsOfDeck(id) ?? [];
+  cards.value = await getAllCardsOfDeck(id);
 });
 
 const capturedMasteredCards = ref<Record<string, boolean>>({});
