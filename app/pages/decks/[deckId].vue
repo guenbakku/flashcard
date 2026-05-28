@@ -132,7 +132,7 @@ watch(cards, (myCards) => {
         <template #leading>
           <UDashboardSidebarCollapse />
           <UButton
-            to="/"
+            :to="{ name: 'decks' }"
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"

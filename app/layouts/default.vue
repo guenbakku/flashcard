@@ -9,7 +9,7 @@ const links = [
     {
       label: 'Bộ thẻ của tôi',
       icon: 'i-lucide-layers',
-      to: '/',
+      to: { name: 'decks' },
       onSelect: () => open.value = false,
     },
     {
