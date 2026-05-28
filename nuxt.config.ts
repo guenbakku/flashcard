@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
@@ -26,6 +25,16 @@ export default defineNuxtConfig({
       databaseSchemaVersion: 0,
       buildVersion: Date.now(),
     },
+  },
+
+  pages: {
+    pattern: [
+      '**/*.vue',
+      '!**/_components/**',
+      '!**/_utils/**',
+      '!**/_composables/**',
+      '!**/*.test.{js,ts,mts,mjs,vue}',
+    ],
   },
 
   routeRules: {
