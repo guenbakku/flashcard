@@ -207,7 +207,7 @@ watch(cards, (myCards) => {
                 <UIcon name="i-lucide-globe-off" class="text-error size-10" />
               </div>
               <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
-              <UButton to="/" icon="i-lucide-house">
+              <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                 Về trang chủ
               </UButton>
             </div>
@@ -234,7 +234,7 @@ watch(cards, (myCards) => {
                 >
                   Ôn lại tất cả
                 </UButton>
-                <UButton to="/" icon="i-lucide-house">
+                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                   Về trang chủ
                 </UButton>
               </div>
@@ -263,7 +263,7 @@ watch(cards, (myCards) => {
                 >
                   Học lại
                 </UButton>
-                <UButton to="/" icon="i-lucide-house">
+                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                   Về trang chủ
                 </UButton>
               </div>
