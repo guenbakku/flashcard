@@ -40,20 +40,6 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
     },
   ];
 }
-
-function formatDate(dateStr: string | undefined): string {
-  if (!dateStr) {
-    return 'Chưa học';
-  }
-
-  return new Date(dateStr).toLocaleDateString('vi-VN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 </script>
 
 <template>
@@ -161,7 +147,7 @@ function formatDate(dateStr: string | undefined): string {
                 />
 
                 <p class="text-muted text-xs">
-                  Học lần cuối: {{ formatDate(deck.lastStudied) }}
+                  Học lần cuối: {{ formatDatetime(deck.lastStudied) ?? 'Chưa học' }}
                 </p>
               </div>
 
