@@ -30,6 +30,11 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
       },
     },
     {
+      label: 'Quản lý thẻ',
+      icon: 'i-lucide-wallet-cards',
+      onSelect: () => navigateTo({ name: 'decks-deckId-cards', params: { deckId: id } }),
+    },
+    {
       label: 'Xóa',
       icon: 'i-lucide-trash',
       color: 'error',
