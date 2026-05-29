@@ -7,14 +7,16 @@ type CardDocument = DocTypes['card'];
 const route = useRoute();
 const id = String(route.params.deckId);
 
-const { getDeck, getAllCardsOfDeck, updateProgress, pending } = useMyDecks();
+const { getDeck, getAllCardsOfDeck, updateProgress } = useMyDecks();
 
 const deck = ref<DeckDocument | null>(null);
 const cards = ref<CardDocument[]>([]);
+const pending = ref(true);
 
 onMounted(async () => {
   deck.value = await getDeck(id);
   cards.value = await getAllCardsOfDeck(id);
+  pending.value = false;
 });
 
 const capturedMasteredCards = ref<Record<string, boolean>>({});
