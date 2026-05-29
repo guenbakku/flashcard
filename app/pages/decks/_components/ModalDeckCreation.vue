@@ -27,7 +27,7 @@ async function handleCreateDeck() {
       description: state.description,
     });
     modalOpen.value = false;
-    toast.add({ title: 'Đã tạo bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
+    toast.add({ title: 'Đã tạo bộ thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
   } catch {
     toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }

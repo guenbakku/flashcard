@@ -2,12 +2,11 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
-import type { Card, DeckProgress, PartialExcept } from '~/types';
-import { deckDetailSchema, deckProgressStorageSchema } from '~/types';
-import type { DocTypes } from '~/utils/get-indexed-db';
-import getIndexedDb from '~/utils/get-indexed-db';
+import { type Card, deckDetailSchema, type DeckProgress, deckProgressStorageSchema, type PartialExcept } from '~/types';
+import getIndexedDb, { type DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDocument = DocTypes['deck'] & { readonly progress: number };
+type CardDocument = DocTypes['card'];
 type MarketDeckMeta = Pick<DeckDocument, 'id' | 'name' | 'description'>;
 
 const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
@@ -74,6 +73,85 @@ const useMyDecks = () => {
     const db = await getIndexedDb();
     return await db.card.find().where('deckId').eq(deckId).sort({ order: 'asc' }).exec();
   };
+
+  const createCard = clientOnly(async (payload: Card & { deckId: string }) => {
+    const db = await getIndexedDb();
+    const deckDoc = await db.deck.findOne(payload.deckId).exec();
+
+    if (!deckDoc) {
+      throw new Error(`Provided deckId not found: ${payload.deckId}`);
+    }
+
+    const totalExistingCards = await db.card.count().where('deckId').eq(deckDoc.id).exec();
+    const highestOrder = await db.card.findOne().where('deckId').eq(deckDoc.id).sort({ order: 'desc' }).exec();
+    const nextCard = await db.card.insert({
+      id: generateUid(),
+      deckId: deckDoc.id,
+      front: payload.front.trim(),
+      back: payload.back.trim(),
+      backSub: payload.backSub?.trim() ?? '',
+      order: (highestOrder?.order ?? -1) + 1,
+    });
+
+    await deckDoc.update({
+      $set: {
+        cardCount: totalExistingCards + 1,
+      },
+    });
+
+    return nextCard;
+  });
+
+  const updateCard = clientOnly(async (cardId: string, payload: Card) => {
+    const db = await getIndexedDb();
+    const cardDoc = await db.card.findOne(cardId).exec();
+
+    if (!cardDoc) {
+      throw new Error(`Provided cardId not found: ${cardId}`);
+    }
+
+    await cardDoc.update({
+      $set: {
+        front: payload.front.trim(),
+        back: payload.back.trim(),
+        backSub: payload.backSub?.trim() ?? '',
+      },
+    });
+  });
+
+  const deleteCard = clientOnly(async (cardId: string) => {
+    const db = await getIndexedDb();
+    const cardDoc = await db.card.findOne(cardId).exec();
+    if (!cardDoc) {
+      throw new Error(`Provided cardId not found: ${cardId}`);
+    }
+
+    const deckDoc = await db.deck.findOne(cardDoc.deckId).exec();
+
+    if (!deckDoc) {
+      throw new Error(`Provided cardId not found: ${cardId}`);
+    }
+
+    const totalRemainingCards = await db.card.count().where('deckId').eq(deckDoc.id).exec();
+
+    await cardDoc.remove();
+    await deckDoc.update({
+      $set: {
+        cardCount: totalRemainingCards,
+      },
+    });
+  });
+
+  const reorderCards = clientOnly(async (deckId: string, cards: CardDocument[]) => {
+    const db = await getIndexedDb();
+    const nextCards = cards.map((card, index) => ({
+      ...card,
+      deckId,
+      order: index,
+    }));
+
+    await db.card.bulkUpsert(nextCards);
+  });
 
   const writeDeckCards = async (deckId: string, cards: Card[]) => {
     if (cards.length === 0) {
@@ -167,7 +245,7 @@ const useMyDecks = () => {
     const db = await getIndexedDb();
     const id = generateUid();
 
-    await db.deck.insert({
+    const nextDeck = await db.deck.insert({
       id,
       name: payload.name,
       description: payload.description,
@@ -176,7 +254,7 @@ const useMyDecks = () => {
       createdAt: new Date().toISOString(),
     });
 
-    return id;
+    return nextDeck;
   });
 
   const updateDeck = clientOnly(async (payload: { id: string; name: string; description?: string }) => {
@@ -204,16 +282,16 @@ const useMyDecks = () => {
     const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
-    const id = await createDeck({
+    const nextDeck = await createDeck({
       name: meta.name,
       description: meta.description,
     });
 
-    if (id) {
-      await writeDeckCards(id, deckDetail.cards);
+    if (nextDeck) {
+      await writeDeckCards(nextDeck.id, deckDetail.cards);
     }
 
-    return id;
+    return nextDeck;
   });
 
   return {
@@ -222,6 +300,10 @@ const useMyDecks = () => {
     filterDecks,
     getDeck,
     getAllCardsOfDeck,
+    createCard,
+    updateCard,
+    deleteCard,
+    reorderCards,
     createDeck,
     updateDeck,
     deleteDeck,

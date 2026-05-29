@@ -8,9 +8,10 @@ import ModalDeckUpdation from './_components/ModalDeckUpdation.vue';
 const { deckDocs, pending, filterDecks } = useMyDecks();
 
 const keyword = useState(() => '');
-watchDebounced(keyword, (newVal) => {
+const keywordDebounced = refDebounced(keyword, 300);
+watch(keywordDebounced, (newVal) => {
   filterDecks(newVal);
-}, { debounce: 300 });
+}, { immediate: true });
 
 const creationModalOpen = ref(false);
 const updationModalOpen = ref(false);
