@@ -9,25 +9,24 @@ import ModalCardDeletion from './_components/ModalCardDeletion.vue';
 import ModalCardUpdation from './_components/ModalCardUpdation.vue';
 
 type DeckDocument = DocTypes['deck'];
-type CardDocument = DocTypes['card'];
 
 const route = useRoute();
-const id = String(route.params.deckId);
+const deckId = String(route.params.deckId);
 
-const { getDeck, getAllCardsOfDeck, reorderCards } = useMyDecks();
+const { getDeck } = useMyDecks();
+const { cardDocs, reorderCards } = useCards(deckId);
 
 const deck = ref<RxDocument<DeckDocument> | null>(null);
-const cards = shallowRef<RxDocument<CardDocument>[]>([]);
 const pending = ref(true);
 
 const creationModalOpen = ref(false);
 const updationModalOpen = ref(false);
 const deletionModalOpen = ref(false);
 const editingCardId = ref<string | null>(null);
-const selectingCard = computed(() => cards.value.find(card => card.id === editingCardId.value) ?? { id: '', front: '', back: '' });
+const selectingCard = computed(() => cardDocs.value.find(card => card.id === editingCardId.value) ?? { id: '', front: '', back: '' });
 
 const sortableRoot = useTemplateRef('sortableRoot');
-useSortable(sortableRoot, cards, {
+useSortable(sortableRoot, cardDocs, {
   handle: '.card-drag-handle',
   animation: 120,
   ghostClass: ['border-primary/60', 'bg-primary/5'],
@@ -40,7 +39,7 @@ useSortable(sortableRoot, cards, {
   onUpdate: async (event: { oldIndex?: number; newIndex?: number }) => {
     const oldIndex = event.oldIndex ?? 0;
     const nextIndex = event.newIndex ?? 0;
-    const nextCards = [...cards.value];
+    const nextCards = [...cardDocs.value];
     const [movedCard] = nextCards.splice(oldIndex, 1);
 
     if (!movedCard) {
@@ -48,14 +47,12 @@ useSortable(sortableRoot, cards, {
     }
 
     nextCards.splice(nextIndex, 0, movedCard);
-    cards.value = nextCards;
-    await reorderCards(id, nextCards.map(card => card.toJSON()));
+    await reorderCards(nextCards.map(card => card.toJSON()));
   },
 } as UseSortableOptions);
 
 onMounted(async () => {
-  deck.value = await getDeck(id);
-  cards.value = await getAllCardsOfDeck(id);
+  deck.value = await getDeck(deckId);
   pending.value = false;
 });
 </script>
@@ -104,7 +101,7 @@ onMounted(async () => {
                   <h3 class="text-base font-semibold text-highlighted">Danh sách thẻ</h3>
                   <p class="text-xs text-muted">Kéo thả vào vùng danh sách để thay đổi thứ tự học.</p>
                 </div>
-                <UBadge :label="`${cards.length} thẻ`" color="neutral" variant="soft" />
+                <UBadge :label="`${cardDocs.length} thẻ`" color="neutral" variant="soft" />
               </div>
             </template>
 
@@ -114,7 +111,7 @@ onMounted(async () => {
               <USkeleton class="h-20 w-full rounded-xl" />
             </div>
 
-            <div v-else-if="cards.length === 0" class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-default/70 py-10 text-center">
+            <div v-else-if="cardDocs.length === 0" class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-default/70 py-10 text-center">
               <UIcon name="i-lucide-wallet-cards" class="text-primary size-10" />
               <p class="text-sm text-muted">Chưa có thẻ nào trong bộ này.</p>
               <UButton color="primary" variant="soft" @click="creationModalOpen = true">Thêm thẻ đầu tiên</UButton>
@@ -122,7 +119,7 @@ onMounted(async () => {
 
             <ul v-else ref="sortableRoot" class="space-y-3">
               <li
-                v-for="(card, index) in cards"
+                v-for="(card, index) in cardDocs"
                 :key="card.id"
                 class="rounded-2xl border border-default/70 bg-default/60 p-4 hover:border-primary/40 hover:bg-primary/5"
               >
@@ -175,7 +172,7 @@ onMounted(async () => {
     </template>
   </UDashboardPanel>
 
-  <ModalCardCreation v-model:open="creationModalOpen" :deck-id="id" />
-  <ModalCardUpdation v-model:open="updationModalOpen" :card="selectingCard" />
-  <ModalCardDeletion v-model:open="deletionModalOpen" :card="selectingCard" />
+  <ModalCardCreation v-model:open="creationModalOpen" :deck-id="deckId" />
+  <ModalCardUpdation v-model:open="updationModalOpen" :deck-id="deckId" :card="selectingCard" />
+  <ModalCardDeletion v-model:open="deletionModalOpen" :deck-id="deckId" :card="selectingCard" />
 </template>

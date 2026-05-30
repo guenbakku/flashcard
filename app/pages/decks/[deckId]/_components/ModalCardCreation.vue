@@ -8,7 +8,7 @@ const props = defineProps<Props>();
 const modalOpen = defineModel<boolean>('open');
 
 const toast = useToast();
-const { createCard } = useMyDecks();
+const { createCard } = useCards(props.deckId);
 
 const initialState: Card = {
   front: '',
@@ -28,7 +28,7 @@ watch(modalOpen, (value) => {
 
 async function handleCreateCard() {
   try {
-    await createCard({ ...state, deckId: props.deckId });
+    await createCard({ ...state });
     modalOpen.value = false;
     toast.add({ title: 'Đã thêm thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
   } catch {

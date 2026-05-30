@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { Card } from './types';
-const toast = useToast();
-const { deleteCard } = useMyDecks();
 
 type Props = {
+  deckId: string;
   card: Card & { id: string };
 };
 const props = defineProps<Props>();
 const modalOpen = defineModel<boolean>('open');
+
+const toast = useToast();
+const { deleteCard } = useCards(props.deckId);
 
 async function handleDeleteCard() {
   try {

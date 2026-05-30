@@ -2,20 +2,19 @@
 import type { DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDocument = DocTypes['deck'];
-type CardDocument = DocTypes['card'];
 
 const route = useRoute();
-const id = String(route.params.deckId);
+const deckId = String(route.params.deckId);
 
-const { getDeck, getAllCardsOfDeck, updateProgress } = useMyDecks();
+const { getDeck, updateProgress } = useMyDecks();
+const { cardDocs } = useCards(deckId);
 
 const deck = ref<DeckDocument | null>(null);
-const cards = ref<CardDocument[]>([]);
 const pending = ref(true);
 
 onMounted(async () => {
-  deck.value = await getDeck(id);
-  cards.value = await getAllCardsOfDeck(id);
+  deck.value = await getDeck(deckId);
+  capturedMasteredCards.value = { ...(deck.value?.masteredCards ?? {}) };
   pending.value = false;
 });
 
@@ -31,13 +30,13 @@ const currentIndex = ref(0);
 const results = ref<Record<string, boolean>>({});
 
 const displayCards = computed(() => {
-  if (!cards.value) {
+  if (!cardDocs.value) {
     return [];
   };
 
   const filtered = isFilterCorrect.value
-    ? cards.value.filter(c => !capturedMasteredCards.value[c.front])
-    : cards.value;
+    ? cardDocs.value.filter(c => !capturedMasteredCards.value[c.front])
+    : cardDocs.value;
 
   if (!isShuffle.value) {
     return filtered;
@@ -46,7 +45,7 @@ const displayCards = computed(() => {
 });
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
-const totalDeckCards = computed(() => cards.value.length);
+const totalDeckCards = computed(() => cardDocs.value.length);
 const totalDisplayCards = computed(() => displayCards.value.length);
 const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v => v).length);
 const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
@@ -67,7 +66,7 @@ function answer(result: boolean) {
   // If answered correctly, add the card to the mastered list
   // If answered incorrectly, remove the card from the mastered list (if exists)
   updateProgress({
-    id,
+    id: deckId,
     lastStudied: new Date().toISOString(),
     masteredCards: { [currentCard.value.front]: result },
   });
@@ -105,12 +104,6 @@ watch(browseIndex, (val) => {
 watch(currentIndex, () => {
   isFlipped.value = false;
 });
-
-watch(cards, (myCards) => {
-  if (myCards.length) {
-    capturedMasteredCards.value = { ...(deck.value?.masteredCards ?? {}) };
-  }
-}, { immediate: true });
 </script>
 
 <template>
@@ -191,7 +184,7 @@ watch(cards, (myCards) => {
           </template>
 
           <!-- STATE: deck data empty -->
-          <template v-else-if="!cards?.length">
+          <template v-else-if="!cardDocs?.length">
             <div class="flex flex-col items-center gap-4 text-center">
               <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
                 <UIcon name="i-lucide-globe-off" class="text-error size-10" />

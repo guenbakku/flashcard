@@ -14,23 +14,12 @@ export const deckMetaSchema = z.object({
   cardCount: z.number(),
 });
 
-export const deckProgressSchema = z.object({
-  id: z.string(),
-  lastStudied: z.iso.datetime().nullish(),
-  masteredCards: z.record(z.string(), z.boolean()),
-});
-
-export const deckProgressStorageSchema = z.array(deckProgressSchema);
-
 export const deckDetailSchema = z.object({
   cards: z.array(cardSchema),
 });
 
-export type Card = z.infer<typeof cardSchema>;
-
 export type DeckMeta = z.infer<typeof deckMetaSchema>;
 export type DeckDetail = z.infer<typeof deckDetailSchema>;
-export type DeckProgress = z.infer<typeof deckProgressSchema>;
 
 /**
  * ----------------------------------------------------------------------------

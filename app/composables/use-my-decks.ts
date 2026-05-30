@@ -1,15 +1,16 @@
+import type { RxDocument } from 'rxdb';
 import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
-import { type Card, deckDetailSchema, type DeckProgress, deckProgressStorageSchema, type PartialExcept } from '~/types';
+import { deckDetailSchema, type PartialExcept } from '~/types';
 import getIndexedDb, { type DocTypes } from '~/utils/get-indexed-db';
 
-type DeckDocument = DocTypes['deck'] & { readonly progress: number };
-type CardDocument = DocTypes['card'];
-type MarketDeckMeta = Pick<DeckDocument, 'id' | 'name' | 'description'>;
+type DeckDoc = DocTypes['deck'] & { readonly progress: number };
+type DeckProgress = Pick<DeckDoc, 'id' | 'lastStudied' | 'masteredCards'>;
+type MarketDeckMeta = Pick<DeckDoc, 'id' | 'name' | 'description'>;
 
-const getDecksState = () => useState<DeckDocument[]>('myDeckDocs', () => []);
+const getDecksState = () => useState<RxDocument<DeckDoc>[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 
 const useMyDecks = () => {
@@ -20,7 +21,7 @@ const useMyDecks = () => {
     return deckDocs.value.reduce((acc, doc) => {
       acc[doc.id] = {
         id: doc.id,
-        lastStudied: doc.lastStudied ?? null,
+        lastStudied: doc.lastStudied,
         masteredCards: doc.masteredCards ?? {},
       };
       return acc;
@@ -51,7 +52,7 @@ const useMyDecks = () => {
   let dbSubscription: Subscription | null = null;
   onMounted(async () => {
     dbSubscription = filteredDecks$.subscribe((newDocs) => {
-      deckDocs.value = newDocs as unknown as DeckDocument[];
+      deckDocs.value = newDocs as unknown as RxDocument<DeckDoc>[];
       loaded.value = true;
     });
   });
@@ -67,119 +68,6 @@ const useMyDecks = () => {
   const getDeck = async (id: string) => {
     const db = await getIndexedDb();
     return await db.deck.findOne(id).exec();
-  };
-
-  const getAllCardsOfDeck = async (deckId: string) => {
-    const db = await getIndexedDb();
-    return await db.card.find().where('deckId').eq(deckId).sort({ order: 'asc' }).exec();
-  };
-
-  const createCard = clientOnly(async (payload: Card & { deckId: string }) => {
-    const db = await getIndexedDb();
-    const deckDoc = await db.deck.findOne(payload.deckId).exec();
-
-    if (!deckDoc) {
-      throw new Error(`Provided deckId not found: ${payload.deckId}`);
-    }
-
-    const totalExistingCards = await db.card.count().where('deckId').eq(deckDoc.id).exec();
-    const highestOrder = await db.card.findOne().where('deckId').eq(deckDoc.id).sort({ order: 'desc' }).exec();
-    const nextCard = await db.card.insert({
-      id: generateUid(),
-      deckId: deckDoc.id,
-      front: payload.front.trim(),
-      back: payload.back.trim(),
-      backSub: payload.backSub?.trim() ?? '',
-      order: (highestOrder?.order ?? -1) + 1,
-    });
-
-    await deckDoc.update({
-      $set: {
-        cardCount: totalExistingCards + 1,
-      },
-    });
-
-    return nextCard;
-  });
-
-  const updateCard = clientOnly(async (cardId: string, payload: Card) => {
-    const db = await getIndexedDb();
-    const cardDoc = await db.card.findOne(cardId).exec();
-
-    if (!cardDoc) {
-      throw new Error(`Provided cardId not found: ${cardId}`);
-    }
-
-    await cardDoc.update({
-      $set: {
-        front: payload.front.trim(),
-        back: payload.back.trim(),
-        backSub: payload.backSub?.trim() ?? '',
-      },
-    });
-  });
-
-  const deleteCard = clientOnly(async (cardId: string) => {
-    const db = await getIndexedDb();
-    const cardDoc = await db.card.findOne(cardId).exec();
-    if (!cardDoc) {
-      throw new Error(`Provided cardId not found: ${cardId}`);
-    }
-
-    const deckDoc = await db.deck.findOne(cardDoc.deckId).exec();
-
-    if (!deckDoc) {
-      throw new Error(`Provided cardId not found: ${cardId}`);
-    }
-
-    const totalRemainingCards = await db.card.count().where('deckId').eq(deckDoc.id).exec();
-
-    await cardDoc.remove();
-    await deckDoc.update({
-      $set: {
-        cardCount: totalRemainingCards,
-      },
-    });
-  });
-
-  const reorderCards = clientOnly(async (deckId: string, cards: CardDocument[]) => {
-    const db = await getIndexedDb();
-    const nextCards = cards.map((card, index) => ({
-      ...card,
-      deckId,
-      order: index,
-    }));
-
-    await db.card.bulkUpsert(nextCards);
-  });
-
-  const writeDeckCards = async (deckId: string, cards: Card[]) => {
-    if (cards.length === 0) {
-      return;
-    }
-
-    const db = await getIndexedDb();
-    const deckDoc = await db.deck.findOne(deckId).exec();
-
-    if (!deckDoc) {
-      throw new Error(`Provided deckId not found: ${deckId}`);
-    }
-
-    await db.card.find().where('deckId').eq(deckId).remove();
-    await db.card.bulkInsert(cards.map((card, index) => ({
-      id: generateUid(),
-      deckId,
-      front: card.front,
-      back: card.back,
-      backSub: card.backSub,
-      order: index,
-    })));
-
-    await deckDoc.update({
-      $set: {
-        cardCount: cards.length,
-      },
-    });
   };
 
   const updateProgress = clientOnly(async (data: PartialExcept<DeckProgress, 'id'>) => {
@@ -223,10 +111,8 @@ const useMyDecks = () => {
   };
 
   const importProgress = clientOnly(async (data: DeckProgress[]) => {
-    const validatedProgress = deckProgressStorageSchema.parse(data);
-
     const db = await getIndexedDb();
-    await Promise.all(validatedProgress.map(async (deckProgress) => {
+    await Promise.all(data.map(async (deckProgress) => {
       const deckDoc = await db.deck.findOne(deckProgress.id).exec();
       if (!deckDoc) {
         return;
@@ -288,7 +174,8 @@ const useMyDecks = () => {
     });
 
     if (nextDeck) {
-      await writeDeckCards(nextDeck.id, deckDetail.cards);
+      const { writeCards } = useCards(nextDeck.id);
+      await writeCards(deckDetail.cards);
     }
 
     return nextDeck;
@@ -299,11 +186,6 @@ const useMyDecks = () => {
     pending: computed(() => !getLoadedState().value),
     filterDecks,
     getDeck,
-    getAllCardsOfDeck,
-    createCard,
-    updateCard,
-    deleteCard,
-    reorderCards,
     createDeck,
     updateDeck,
     deleteDeck,

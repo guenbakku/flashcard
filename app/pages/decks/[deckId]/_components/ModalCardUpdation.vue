@@ -2,13 +2,14 @@
 import { type Card, cardSchema } from './types';
 
 type Props = {
+  deckId: string;
   card: Card & { id: string };
 };
 const props = defineProps<Props>();
 const modalOpen = defineModel<boolean>('open');
 
 const toast = useToast();
-const { updateCard } = useMyDecks();
+const { updateCard } = useCards(props.deckId);
 
 const state = reactive<Card>({
   front: props.card.front,
