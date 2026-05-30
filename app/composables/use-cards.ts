@@ -1,6 +1,7 @@
 import type { RxDocument } from 'rxdb';
 import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { _decode } from 'zod/v4/core';
 
 import getIndexedDb, { type DocTypes } from '~/utils/get-indexed-db';
 
@@ -106,11 +107,13 @@ const useCards = (deckId: string) => {
     }
 
     await cardDoc.remove();
-    const totalRemainingCards = await db.card.count().where('deckId').eq(deckId).exec();
 
+    const totalRemainingCards = await db.card.count().where('deckId').eq(deckId).exec();
+    const { [cardDoc.front]: _deleted, ...remainingMasteredCards } = deckDoc.masteredCards;
     await deckDoc.update({
       $set: {
         cardCount: totalRemainingCards,
+        masteredCards: remainingMasteredCards,
       },
     });
   });
