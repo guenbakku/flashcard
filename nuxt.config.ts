@@ -51,6 +51,7 @@ export default defineNuxtConfig({
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        '@vueuse/integrations/useSortable',
         'rxdb',
         'rxdb/plugins/cleanup',
         'rxdb/plugins/leader-election',
