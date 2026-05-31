@@ -6,6 +6,11 @@ type Collections = Record<string, RxCollectionCreator<any>>;
 
 let _dbInstance: Promise<RxDatabase> | null = null;
 
+/**
+ * Initializes the RxDB database instance with the provided collections.
+ *
+ * This function implements a singleton pattern to ensure only one database instance is created.
+ */
 export const initDb = async <DatabaseType>(collections: Collections): Promise<DatabaseType> => {
   if (!import.meta.client) {
     throw new Error('Database instance is only available in the browser.');
@@ -42,10 +47,25 @@ export const initDb = async <DatabaseType>(collections: Collections): Promise<Da
   return _dbInstance as DatabaseType;
 };
 
+/**
+ * Closes the active database instance to release resources and connections.
+ *
+ * Once closed, the internal singleton reference is reset to `null`.
+ */
 export const closeDb = async () => {
   if (_dbInstance) {
     _dbInstance.then(
       db => db.close().then(_dbInstance = null),
     );
+  }
+};
+
+/**
+ * Completely empty all collections.
+ */
+export const emptyDb = async () => {
+  if (_dbInstance) {
+    const db = await (_dbInstance);
+    await Promise.all(Object.values(db.collections).map(collection => collection.find().remove()));
   }
 };

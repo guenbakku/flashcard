@@ -3,7 +3,7 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { _decode } from 'zod/v4/core';
 
-import getIndexedDb, { type DocTypes } from '~/utils/get-indexed-db';
+import type { DocTypes } from '~/utils/get-indexed-db';
 
 type CardDocument = DocTypes['card'];
 type CardPayload = Pick<CardDocument, 'front' | 'back' | 'backSub'>;

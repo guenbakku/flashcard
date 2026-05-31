@@ -1,5 +1,6 @@
 import { addRxPlugin, type RxDatabase } from 'rxdb';
 import { RxDBCleanupPlugin } from 'rxdb/plugins/cleanup';
+import { RxDBJsonDumpPlugin } from 'rxdb/plugins/json-dump';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
@@ -12,6 +13,7 @@ import deckProgressCollectionFactory from './collections/deck-progress';
 import { initDb } from './helpers';
 
 addRxPlugin(RxDBCleanupPlugin);
+addRxPlugin(RxDBJsonDumpPlugin);
 addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBUpdatePlugin);
@@ -37,4 +39,3 @@ if (import.meta.client) {
 }
 
 export default getIndexedDb;
-export { registerGracefulDbClosing } from './helpers';

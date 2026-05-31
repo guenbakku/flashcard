@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 import { deckDetailSchema, type PartialExcept } from '~/types';
-import getIndexedDb, { type DocTypes } from '~/utils/get-indexed-db';
+import type { DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDoc = DocTypes['deck'] & { readonly progress: number };
 type DeckProgress = Pick<DeckDoc, 'id' | 'lastStudied' | 'masteredCards'>;

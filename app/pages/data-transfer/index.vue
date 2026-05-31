@@ -1,11 +1,13 @@
 <script setup lang="ts">
-const toast = useToast();
+import { emptyDb } from '~/utils/get-indexed-db/helpers';
 
-const { exportProgress, importProgress } = useMyDecks();
+const toast = useToast();
 const fileInput = useTemplateRef<{ inputRef: HTMLInputElement }>('fileInputRef');
 
 const importError = ref('');
 const fileValue = ref(null);
+const isExporting = ref(false);
+const isImporting = ref(false);
 
 const canUpload = computed(() => !!fileValue.value);
 
@@ -13,19 +15,43 @@ watch(fileValue, () => {
   importError.value = '';
 });
 
-function handleExport() {
-  const json = JSON.stringify(exportProgress(), null);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `flashcard-progress-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast.add({ title: 'Đã xuất dữ liệu thành công', color: 'success', icon: 'i-lucide-check-circle' });
+async function handleExport() {
+  try {
+    isExporting.value = true;
+    const db = await getIndexedDb();
+
+    // Dump entire database to JSON
+    const jsonData = await db.exportJSON();
+
+    // Create blob and download
+    const json = JSON.stringify(jsonData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `flashcard-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast.add({
+      title: 'Đã xuất dữ liệu thành công',
+      color: 'success',
+      icon: 'i-lucide-check-circle',
+    });
+  } catch (error) {
+    console.error('Export failed:', error);
+    toast.add({
+      title: 'Xuất dữ liệu thất bại',
+      description: error instanceof Error ? error.message : 'Lỗi không xác định',
+      color: 'error',
+      icon: 'i-lucide-alert-circle',
+    });
+  } finally {
+    isExporting.value = false;
+  }
 }
 
-function handleImport() {
+async function handleImport() {
   const file = fileInput.value?.inputRef?.files?.[0];
   if (!file) {
     return;
@@ -34,20 +60,43 @@ function handleImport() {
   const reader = new FileReader();
   reader.onload = async (e) => {
     try {
-      const parsed = JSON.parse(e.target?.result as string);
-      if (typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error();
+      isImporting.value = true;
+      const fileContent = e.target?.result as string;
+      const parsed = JSON.parse(fileContent);
+
+      // Validate basic structure
+      if (!parsed || typeof parsed !== 'object') {
+        importError.value = 'File không hợp lệ. Vui lòng chọn file JSON đúng định dạng.';
+        return;
       }
 
-      await importProgress(parsed.data);
+      // Clear existing data before importing
+      const db = await getIndexedDb();
+      await emptyDb();
+
+      // Import JSON data - this will replace all existing data
+      await db.importJSON(parsed);
+
       importError.value = '';
-      toast.add({ title: 'Đã khôi phục dữ liệu thành công', color: 'success', icon: 'i-lucide-check-circle' });
-    } catch {
-      importError.value = 'File không hợp lệ. Vui lòng chọn file JSON đúng định dạng.';
+      fileValue.value = null;
+      toast.add({
+        title: 'Đã khôi phục dữ liệu thành công',
+        description: 'Dữ liệu hiện tại đã được thay thế hoàn toàn bằng dữ liệu từ file',
+        color: 'success',
+        icon: 'i-lucide-check-circle',
+      });
+    } catch (error) {
+      console.error(error);
+      toast.add({
+        title: 'Khôi phục dữ liệu thất bại',
+        color: 'error',
+        icon: 'i-lucide-alert-circle',
+      });
+    } finally {
+      isImporting.value = false;
     }
   };
 
-  fileValue.value = null;
   reader.readAsText(file);
 }
 </script>
@@ -74,12 +123,14 @@ function handleImport() {
               </p>
             </div>
             <p class="text-sm text-muted">
-              Tải xuống toàn bộ tiến độ học của bạn dưới dạng file JSON.
+              Tải xuống toàn bộ dữ liệu của bạn (bộ thẻ, thẻ, tiến độ học) dưới dạng file JSON.
             </p>
             <UButton
               icon="i-lucide-download"
               label="Tải xuống"
               variant="subtle"
+              :loading="isExporting"
+              :disabled="isExporting"
               @click="handleExport"
             />
           </div>
@@ -95,8 +146,8 @@ function handleImport() {
               </p>
             </div>
             <p class="text-sm text-muted">
-              Nhập tiến độ từ file JSON. Dữ liệu sẽ được
-              <span class="text-warning font-medium">gộp</span> vào tiến độ hiện tại.
+              Nhập toàn bộ dữ liệu từ file JSON. Dữ liệu hiện tại sẽ được
+              <span class="text-warning font-medium">thay thế hoàn toàn</span> bằng dữ liệu từ file.
             </p>
             <div class="flex flex-col items-start gap-2">
               <UInput
@@ -108,7 +159,8 @@ function handleImport() {
                 icon="i-lucide-upload"
                 label="Khôi phục"
                 variant="subtle"
-                :disabled="!canUpload"
+                :disabled="!canUpload || isImporting"
+                :loading="isImporting"
                 @click="handleImport"
               />
               <p v-if="importError" class="text-sm text-error">
