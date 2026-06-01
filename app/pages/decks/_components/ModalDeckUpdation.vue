@@ -32,7 +32,8 @@ async function handleUpdateDeck() {
     });
     modalOpen.value = false;
     toast.add({ title: 'Đã lưu bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
+  } catch (e) {
+    console.error(e);
     toast.add({ title: 'Chỉnh sửa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }

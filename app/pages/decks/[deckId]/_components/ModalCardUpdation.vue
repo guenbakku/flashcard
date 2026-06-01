@@ -31,7 +31,8 @@ async function handleUpdateCard() {
     await updateCard(props.card.id, { ...state });
     modalOpen.value = false;
     toast.add({ title: 'Đã thêm thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
+  } catch (e) {
+    console.error(e);
     toast.add({ title: 'Thêm thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }

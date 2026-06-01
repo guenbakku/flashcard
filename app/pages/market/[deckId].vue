@@ -60,8 +60,14 @@ async function handleCopyDeck() {
   try {
     await copyMarketDeck(deckMeta);
     modalOpen.value = false;
-    toast.add({ title: 'Đã sao chép vào Bộ thẻ của tôi', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
+    toast.add({
+      title: `Sao chép bộ thẻ "${deckMeta.name}" thành công`,
+      description: 'Bạn có thể đến trang Bộ thẻ của tôi để sử dụng và chỉnh sửa bộ thẻ vừa sao chép.',
+      color: 'success',
+      icon: 'i-lucide-check-circle',
+    });
+  } catch (e) {
+    console.error(e);
     toast.add({ title: 'Sao chép bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }

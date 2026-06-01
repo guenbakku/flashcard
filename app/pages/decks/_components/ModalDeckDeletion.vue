@@ -14,7 +14,8 @@ async function handleDeleteDeck() {
     await deleteDeck(props.deck.id);
     modalOpen.value = false;
     toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
-  } catch {
+  } catch (e) {
+    console.error(e);
     toast.add({ title: 'Xóa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }
