@@ -9,7 +9,6 @@ import type { ExtractDocTypes, InferRxCollection } from '~/types';
 
 import cardCollectionFactory from './collections/card';
 import deckCollectionFactory, { hook as deckCollectionHook } from './collections/deck';
-import deckProgressCollectionFactory from './collections/deck-progress';
 import { initDb } from './helpers';
 
 addRxPlugin(RxDBCleanupPlugin);
@@ -20,7 +19,6 @@ addRxPlugin(RxDBUpdatePlugin);
 
 export type MyDatabase
   = RxDatabase<
-    InferRxCollection<ReturnType<typeof deckProgressCollectionFactory>>
     & InferRxCollection<ReturnType<typeof cardCollectionFactory>>
     & InferRxCollection<ReturnType<typeof deckCollectionFactory>>
   >;
@@ -30,7 +28,6 @@ export type DocTypes = ExtractDocTypes<MyDatabase>;
 const getIndexedDb = () => initDb<MyDatabase>({
   ...deckCollectionFactory(),
   ...cardCollectionFactory(),
-  ...deckProgressCollectionFactory(),
 });
 
 if (import.meta.client) {
