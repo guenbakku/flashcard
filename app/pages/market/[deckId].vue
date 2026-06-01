@@ -61,8 +61,12 @@ async function handleCopyDeck() {
     await copyMarketDeck(deckMeta);
     modalOpen.value = false;
     toast.add({
-      title: `Sao chép bộ thẻ "${deckMeta.name}" thành công`,
-      description: 'Bạn có thể đến trang Bộ thẻ của tôi để sử dụng và chỉnh sửa bộ thẻ vừa sao chép.',
+      title: `Sao chép bộ thẻ thành công`,
+      description: h('span', {}, [
+        'Hãy vào ',
+        h('strong', { class: 'text-warning font-medium' }, 'Bộ thẻ của tôi'),
+        ' để bắt đầu sử dụng và chỉnh sửa bộ thẻ vừa sao chép.',
+      ]),
       color: 'success',
       icon: 'i-lucide-check-circle',
     });

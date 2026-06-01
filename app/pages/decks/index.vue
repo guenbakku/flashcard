@@ -23,17 +23,17 @@ const selectingDeck = computed(() => deckDocs.value.find(deck => deck.id === sel
 function generateDropdownItems(id: string): DropdownMenuItem[] {
   return [
     {
+      label: 'Quản lý thẻ',
+      icon: 'i-lucide-wallet-cards',
+      onSelect: () => navigateTo({ name: 'decks-deckId-cards', params: { deckId: id } }),
+    },
+    {
       label: 'Chỉnh sửa',
       icon: 'i-lucide-edit',
       onSelect: () => {
         selectingDeckId.value = id;
         updationModalOpen.value = true;
       },
-    },
-    {
-      label: 'Quản lý thẻ',
-      icon: 'i-lucide-wallet-cards',
-      onSelect: () => navigateTo({ name: 'decks-deckId-cards', params: { deckId: id } }),
     },
     {
       label: 'Xóa',

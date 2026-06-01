@@ -27,7 +27,16 @@ async function handleCreateDeck() {
       description: state.description,
     });
     modalOpen.value = false;
-    toast.add({ title: 'Đã tạo bộ thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
+    toast.add({
+      title: 'Đã tạo bộ thẻ mới',
+      description: h('span', {}, [
+        'Bạn có thể vào mục ',
+        h('strong', { class: 'text-warning font-medium' }, 'Quản lý thẻ'),
+        ' để thêm thẻ mới cho bộ thẻ này.',
+      ]),
+      color: 'success',
+      icon: 'i-lucide-check-circle',
+    });
   } catch (e) {
     console.error(e);
     toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
