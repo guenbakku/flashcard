@@ -14,7 +14,13 @@ const route = useRoute();
 const deckId = String(route.params.deckId);
 
 const { getDeck } = useMyDecks();
-const { cardDocs, reorderCards } = useCards(deckId);
+const { cardDocs, reorderCards, filterCards } = useCards(deckId);
+
+const keyword = useState(() => '');
+const keywordDebounced = refDebounced(keyword, 300);
+watch(keywordDebounced, (newVal) => {
+  filterCards(newVal);
+}, { immediate: true });
 
 const deck = ref<RxDocument<DeckDocument> | null>(null);
 const pending = ref(true);
@@ -76,7 +82,7 @@ onMounted(async () => {
 
     <template #body>
       <div class="flex h-full flex-col gap-6 p-4 sm:p-6">
-        <div class="flex flex-col items-start gap-2 rounded-2xl border border-default/70 bg-default/40 p-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex flex-col items-start gap-2 rounded-xl border border-default/70 bg-default/40 p-4 sm:flex-row sm:items-start sm:justify-between">
           <div class="space-y-1">
             <p class="text-xs uppercase text-primary">Bộ thẻ hiện tại</p>
             <div class="flex items-center gap-2">
@@ -84,24 +90,44 @@ onMounted(async () => {
               <h2 class="text-lg font-semibold text-highlighted">{{ deck?.name ?? 'Đang tải...' }}</h2>
             </div>
           </div>
-          <UButton
-            icon="i-lucide-plus"
-            color="primary"
-            variant="solid"
-            @click="creationModalOpen = true">
-            Thêm thẻ mới
-          </UButton>
         </div>
 
         <div class="grid">
           <UCard class="border-default/70 bg-default/40">
             <template #header>
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <h3 class="text-base font-semibold text-highlighted">Danh sách thẻ</h3>
-                  <p class="text-xs text-muted">Kéo thả vào vùng danh sách để thay đổi thứ tự học.</p>
+              <div class="flex flex-col sm:flex-row items-start justify-between gap-3 w-full">
+                <div class="flex flex-col">
+                  <h3 class="text-base font-semibold text-highlighted">Danh sách thẻ <UBadge :label="`${cardDocs.length} thẻ`" color="neutral" variant="soft" /></h3>
+                  <p class="text-xs text-muted">Kéo thả thẻ để thay đổi thứ tự học.</p>
                 </div>
-                <UBadge :label="`${cardDocs.length} thẻ`" color="neutral" variant="soft" />
+
+                <div class="flex items-center gap-3">
+                  <UInput
+                    v-model="keyword"
+                    icon="i-lucide-search"
+                    placeholder="Tìm thẻ..."
+                    class="w-64 sm:w-80"
+                  >
+                    <template v-if="keyword" #trailing>
+                      <UButton
+                        icon="i-lucide-x"
+                        color="neutral"
+                        variant="ghost"
+                        size="sm"
+                        @click="keyword = ''"
+                      />
+                    </template>
+                  </UInput>
+
+                  <UButton
+                    icon="i-lucide-plus"
+                    color="primary"
+                    variant="solid"
+                    class="rounded-full"
+                    size="sm"
+                    @click="creationModalOpen = true"
+                  />
+                </div>
               </div>
             </template>
 
@@ -112,9 +138,30 @@ onMounted(async () => {
             </div>
 
             <div v-else-if="cardDocs.length === 0" class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-default/70 py-10 text-center">
-              <UIcon name="i-lucide-wallet-cards" class="text-primary size-10" />
-              <p class="text-sm text-muted">Chưa có thẻ nào trong bộ này.</p>
-              <UButton color="primary" variant="soft" @click="creationModalOpen = true">Thêm thẻ đầu tiên</UButton>
+              <template v-if="keywordDebounced">
+                <UEmpty
+                  icon="i-lucide-meh"
+                  title="Không tìm thấy thẻ nào"
+                  description="Hãy thử lại với từ khóa khác."
+                  class="max-w-xl text-center"
+                />
+              </template>
+              <template v-else>
+                <UEmpty
+                  icon="i-lucide-wallet-cards"
+                  title="Chưa có thẻ nào trong bộ này"
+                  class="max-w-xl text-center"
+                  :actions="[
+                    {
+                      icon: 'i-lucide-plus',
+                      label: 'Thêm thẻ đầu tiên',
+                      color: 'primary',
+                      variant: 'soft',
+                      onClick: () => { creationModalOpen = true },
+                    }
+                  ]"
+                />
+              </template>
             </div>
 
             <ul v-else ref="sortableRoot" class="space-y-3">
