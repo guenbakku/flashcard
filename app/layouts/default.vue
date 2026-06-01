@@ -32,62 +32,60 @@ const links = [
 
 <template>
   <UDashboardGroup unit="rem">
-    <ClientOnly>
-      <UDashboardSidebar
-        id="default"
-        v-model:open="open"
-        collapsible
-        resizable
-        class="bg-elevated/25"
-        :ui="{ footer: 'lg:border-t lg:border-default' }"
-      >
-        <template #header="{ collapsed }">
-          <div class="flex items-center gap-2 px-1">
-            <div class="bg-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
-              <img
-                src="/brand.svg"
-                width="20"
-                height="20"
-                alt="Brand logo"
-              >
-            </div>
-            <span v-if="!collapsed" class="text-highlighted truncate font-semibold">
-              Flashcard
-              <span class="text-muted text-xs font-normal align-baseline">v{{ version }}</span>
-            </span>
+    <UDashboardSidebar
+      id="default"
+      v-model:open="open"
+      collapsible
+      resizable
+      class="bg-elevated/25"
+      :ui="{ footer: 'lg:border-t lg:border-default' }"
+    >
+      <template #header="{ collapsed }">
+        <div class="flex items-center gap-2 px-1">
+          <div class="bg-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
+            <img
+              src="/brand.svg"
+              width="20"
+              height="20"
+              alt="Brand logo"
+            >
           </div>
-        </template>
+          <span v-if="!collapsed" class="text-highlighted truncate font-semibold">
+            Flashcard
+            <span class="text-muted text-xs font-normal align-baseline">v{{ version }}</span>
+          </span>
+        </div>
+      </template>
 
-        <template #default="{ collapsed }">
-          <UNavigationMenu
-            :collapsed="collapsed"
-            :items="links[0]"
-            orientation="vertical"
-            tooltip
-            popover
-          />
-          <UNavigationMenu
-            :collapsed="collapsed"
-            :items="links[1]"
-            orientation="vertical"
-            tooltip
-            popover
-            class="mt-auto"
-          />
-        </template>
+      <template #default="{ collapsed }">
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="links[0]"
+          orientation="vertical"
+          tooltip
+          popover
+        />
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="links[1]"
+          orientation="vertical"
+          tooltip
+          popover
+          class="mt-auto"
+        />
+      </template>
 
-        <template #footer="{ collapsed }">
-          <UTooltip text="Giao diện Sáng / Tối">
-            <UColorModeButton
-              :label="collapsed ? undefined : 'Sáng / Tối'"
-              variant="ghost"
-              color="neutral"
-              block
-            />
-          </UTooltip>
-        </template>
-      </UDashboardSidebar>
-    </ClientOnly>
+      <template #footer="{ collapsed }">
+        <UTooltip text="Giao diện Sáng / Tối">
+          <UColorModeButton
+            :label="collapsed ? undefined : 'Sáng / Tối'"
+            variant="ghost"
+            color="neutral"
+            block
+          />
+        </UTooltip>
+      </template>
+    </UDashboardSidebar>
     <slot />
   </UDashboardGroup>
 </template>
