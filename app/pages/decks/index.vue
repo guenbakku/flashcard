@@ -106,11 +106,35 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
             </div>
           </UPageGrid>
 
-          <div v-else-if="deckDocs.length === 0" class="flex flex-col items-center justify-center gap-4 py-16">
-            <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-              <UIcon name="i-lucide-frown" class="text-error/80 size-10" />
-            </div>
-            <p>Không tìm thấy bộ thẻ nào</p>
+          <div v-else-if="deckDocs.length === 0" class="flex justify-center py-20 px-4 sm:px-0">
+            <UEmpty
+              icon="i-lucide-book-open"
+              title="Chưa có bộ thẻ nào"
+              description="Bắt đầu bằng cách tạo bộ thẻ đầu tiên. Sau đó, bạn có thể ôn tập nhanh, tổ chức nội dung và theo dõi tiến trình học tập dễ dàng."
+              class="max-w-xl text-center"
+            >
+              <template #actions>
+                <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                  <UButton
+                    color="primary"
+                    variant="solid"
+                    icon="i-lucide-plus"
+                    @click="creationModalOpen = true"
+                  >
+                    Tạo bộ thẻ mới
+                  </UButton>
+                  <UButton
+                    color="neutral"
+                    variant="outline"
+                    size="sm"
+                    icon="i-lucide-store"
+                    :to="{ name: 'market' }"
+                  >
+                    Khám phá bộ thẻ có sẵn
+                  </UButton>
+                </div>
+              </template>
+            </UEmpty>
           </div>
 
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
