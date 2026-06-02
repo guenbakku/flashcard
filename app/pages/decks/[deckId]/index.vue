@@ -1,13 +1,22 @@
 <script setup lang="ts">
+import type { DocTypes } from '~/utils/get-indexed-db';
+
+type DeckDocument = DocTypes['deck'];
+
 const route = useRoute();
-const identifier = String(route.params.identifier);
+const deckId = String(route.params.deckId);
 
-const { getDeck } = useDecks();
-const { updateProgress } = useDeckProgress();
-const deck = computed(() => getDeck(identifier));
+const { getDeck, updateProgress } = useMyDecks();
+const { cardDocs } = useCards(deckId);
 
-const { data, pending } = useDeck(identifier);
-const cards = computed(() => data.value?.cards ?? []);
+const deck = ref<DeckDocument | null>(null);
+const pending = ref(true);
+
+onMounted(async () => {
+  deck.value = await getDeck(deckId);
+  capturedMasteredCards.value = { ...(deck.value?.masteredCards ?? {}) };
+  pending.value = false;
+});
 
 const capturedMasteredCards = ref<Record<string, boolean>>({});
 
@@ -21,13 +30,13 @@ const currentIndex = ref(0);
 const results = ref<Record<string, boolean>>({});
 
 const displayCards = computed(() => {
-  if (!cards.value) {
+  if (!cardDocs.value) {
     return [];
   };
 
   const filtered = isFilterCorrect.value
-    ? cards.value.filter(c => !capturedMasteredCards.value[c.front])
-    : cards.value;
+    ? cardDocs.value.filter(c => !capturedMasteredCards.value[c.front])
+    : cardDocs.value;
 
   if (!isShuffle.value) {
     return filtered;
@@ -36,7 +45,7 @@ const displayCards = computed(() => {
 });
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
-const totalDeckCards = computed(() => cards.value.length);
+const totalDeckCards = computed(() => cardDocs.value.length);
 const totalDisplayCards = computed(() => displayCards.value.length);
 const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v => v).length);
 const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
@@ -56,23 +65,11 @@ function answer(result: boolean) {
   // Update the learning status of the card in the deck
   // If answered correctly, add the card to the mastered list
   // If answered incorrectly, remove the card from the mastered list (if exists)
-  if (result) {
-    updateProgress({
-      identifier,
-      masteredCards: {
-        ...deck.value?.masteredCards,
-        ...{ [currentCard.value.front]: true },
-      },
-    });
-  } else {
-    if (deck.value) {
-      const { [currentCard.value.front]: _delete, ...rest } = deck.value.masteredCards;
-      updateProgress({
-        identifier,
-        masteredCards: rest,
-      });
-    }
-  }
+  updateProgress({
+    id: deckId,
+    lastStudied: new Date().toISOString(),
+    masteredCards: { [currentCard.value.front]: result },
+  });
 
   setTimeout(
     () => {
@@ -107,25 +104,6 @@ watch(browseIndex, (val) => {
 watch(currentIndex, () => {
   isFlipped.value = false;
 });
-
-watch(cards, (myCards) => {
-  if (myCards.length) {
-    // Remove stale card IDs from masteredCards that no longer exist in the fetched deck JSON.
-    // This can happen when the deck data is updated (cards renamed or removed).
-    const validFronts = new Set(myCards.map(c => c.front));
-    const cleanedMasteredCards = Object.fromEntries(
-      Object.entries(deck.value?.masteredCards ?? {}).filter(([key]) => validFronts.has(key)),
-    );
-
-    capturedMasteredCards.value = cleanedMasteredCards;
-
-    updateProgress({
-      identifier,
-      lastStudied: new Date().toISOString(),
-      masteredCards: cleanedMasteredCards, // persist cleaned data back to localStorage
-    });
-  }
-}, { immediate: true });
 </script>
 
 <template>
@@ -135,7 +113,7 @@ watch(cards, (myCards) => {
         <template #leading>
           <UDashboardSidebarCollapse />
           <UButton
-            to="/"
+            :to="{ name: 'decks' }"
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"
@@ -206,13 +184,16 @@ watch(cards, (myCards) => {
           </template>
 
           <!-- STATE: deck data empty -->
-          <template v-else-if="!cards?.length">
+          <template v-else-if="!cardDocs?.length">
             <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
+              <div class="bg-elevated flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-meh" class="text-muted size-10" />
               </div>
-              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
-              <UButton to="/" icon="i-lucide-house">
+              <h2 class="text-default text-2xl font-bold">
+                Chưa có thẻ nào để học!
+              </h2>
+              <p class="text-muted">Hãy vào mục <strong>Quản lý thẻ</strong> để thêm thẻ mới.</p>
+              <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                 Về trang chủ
               </UButton>
             </div>
@@ -239,7 +220,7 @@ watch(cards, (myCards) => {
                 >
                   Ôn lại tất cả
                 </UButton>
-                <UButton to="/" icon="i-lucide-house">
+                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                   Về trang chủ
                 </UButton>
               </div>
@@ -268,7 +249,7 @@ watch(cards, (myCards) => {
                 >
                   Học lại
                 </UButton>
-                <UButton to="/" icon="i-lucide-house">
+                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                   Về trang chủ
                 </UButton>
               </div>

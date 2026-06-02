@@ -9,17 +9,17 @@ vi.mock('~/composables/use-client-fetch', () => ({
   default: mockUseClientFetch,
 }));
 
-const { default: useDeck } = await import('~/composables/use-deck');
+const { default: useMarketDeck } = await import('~/composables/use-market-deck');
 
-describe('useDeck', () => {
+describe('useMarketDeck', () => {
   beforeEach(() => {
     mockUseClientFetch.mockReset();
   });
 
-  it('fetches from the correct URL based on identifier', () => {
+  it('fetches from the correct URL based on id', () => {
     mockUseClientFetch.mockReturnValue({ data: ref(null), pending: ref(false) });
 
-    useDeck('my-deck');
+    useMarketDeck('my-deck');
 
     expect(mockUseClientFetch).toHaveBeenCalledWith(
       '/data/decks/my-deck.json',
@@ -32,7 +32,7 @@ describe('useDeck', () => {
     const pending = ref(true);
     mockUseClientFetch.mockReturnValue({ data, pending });
 
-    const result = useDeck('my-deck');
+    const result = useMarketDeck('my-deck');
 
     expect(result.data).toBe(data);
     expect(result.pending).toBe(pending);

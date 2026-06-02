@@ -1,6 +1,9 @@
 <script setup lang="ts">
-const colorMode = useColorMode();
+import { registerGracefulDbClosing } from '~/utils/get-indexed-db/helpers';
 
+registerGracefulDbClosing();
+
+const colorMode = useColorMode();
 const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white');
 
 useHead({
