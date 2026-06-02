@@ -102,74 +102,67 @@ async function handleImport() {
 </script>
 
 <template>
-  <UDashboardPanel id="data-transfer">
-    <template #header>
-      <UDashboardNavbar title="Sao lưu dữ liệu">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
-    </template>
-
-    <template #body>
-      <div class="p-4 sm:p-6 max-w-xl space-y-6">
-        <!-- Export -->
-        <UCard>
-          <div class="space-y-3">
-            <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-download" class="text-primary size-5" />
-              <p class="font-semibold text-highlighted">
-                Sao lưu dữ liệu
-              </p>
-            </div>
-            <p class="text-sm text-muted">
-              Tải xuống toàn bộ dữ liệu của bạn (bộ thẻ, thẻ, tiến độ học) dưới dạng file JSON.
-            </p>
-            <UButton
-              icon="i-lucide-download"
-              label="Tải xuống"
-              variant="subtle"
-              :loading="isExporting"
-              :disabled="isExporting"
-              @click="handleExport"
-            />
-          </div>
-        </UCard>
-
-        <!-- Import -->
-        <UCard>
-          <div class="space-y-3">
-            <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-upload" class="text-primary size-5" />
-              <p class="font-semibold text-highlighted">
-                Khôi phục dữ liệu
-              </p>
-            </div>
-            <p class="text-sm text-muted">
-              Nhập toàn bộ dữ liệu từ file JSON. Dữ liệu hiện tại sẽ được
-              <span class="text-warning font-medium">thay thế hoàn toàn</span> bằng dữ liệu từ file.
-            </p>
-            <div class="flex flex-col items-start gap-2">
-              <UInput
-                ref="fileInputRef"
-                v-model="fileValue"
-                type="file"
-              />
-              <UButton
-                icon="i-lucide-upload"
-                label="Khôi phục"
-                variant="subtle"
-                :disabled="!canUpload || isImporting"
-                :loading="isImporting"
-                @click="handleImport"
-              />
-              <p v-if="importError" class="text-sm text-error">
-                {{ importError }}
-              </p>
-            </div>
-          </div>
-        </UCard>
+  <div class="grid gap-5">
+    <!-- Export -->
+    <UCard class="bg-elevated/50">
+      <template #header>
+        <div class="flex items-center gap-2">
+          <UIcon name="i-lucide-download" class="text-primary size-5" />
+          <p class="font-semibold text-highlighted">
+            Sao lưu dữ liệu
+          </p>
+        </div>
+      </template>
+      <div class="space-y-3">
+        <p class="text-sm text-muted">
+          Tải xuống toàn bộ dữ liệu của bạn (bộ thẻ, thẻ, tiến độ học) dưới dạng file JSON.
+        </p>
+        <UButton
+          icon="i-lucide-download"
+          label="Tải xuống"
+          variant="subtle"
+          :loading="isExporting"
+          :disabled="isExporting"
+          @click="handleExport"
+        />
       </div>
-    </template>
-  </UDashboardPanel>
+    </UCard>
+
+    <!-- Import -->
+    <UCard class="bg-elevated/50">
+      <template #header>
+        <div class="flex items-center gap-2">
+          <UIcon name="i-lucide-upload" class="text-primary size-5" />
+          <p class="font-semibold text-highlighted">
+            Khôi phục dữ liệu
+          </p>
+        </div>
+      </template>
+
+      <div class="space-y-3">
+        <p class="text-sm text-muted">
+          Nhập toàn bộ dữ liệu từ file JSON. Dữ liệu hiện tại sẽ được
+          <span class="text-warning font-medium">thay thế hoàn toàn</span> bằng dữ liệu từ file.
+        </p>
+        <div class="flex flex-col items-start gap-4">
+          <UInput
+            ref="fileInputRef"
+            v-model="fileValue"
+            type="file"
+          />
+          <UButton
+            icon="i-lucide-upload"
+            label="Khôi phục"
+            variant="subtle"
+            :disabled="!canUpload || isImporting"
+            :loading="isImporting"
+            @click="handleImport"
+          />
+          <p v-if="importError" class="text-sm text-error">
+            {{ importError }}
+          </p>
+        </div>
+      </div>
+    </UCard>
+  </div>
 </template>
