@@ -4,7 +4,7 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 const open = ref(false);
 const { public: { version } } = useRuntimeConfig();
 
-const links = [
+const menus = [
   [
     {
       label: 'Bộ thẻ của tôi',
@@ -60,14 +60,14 @@ const links = [
       <template #default="{ collapsed }">
         <UNavigationMenu
           :collapsed="collapsed"
-          :items="links[0]"
+          :items="menus[0]"
           orientation="vertical"
           tooltip
           popover
         />
         <UNavigationMenu
           :collapsed="collapsed"
-          :items="links[1]"
+          :items="menus[1]"
           orientation="vertical"
           tooltip
           popover
