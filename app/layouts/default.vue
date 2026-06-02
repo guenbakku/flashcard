@@ -21,9 +21,9 @@ const menus = [
   ],
   [
     {
-      label: 'Sao lưu dữ liệu',
-      icon: 'i-lucide-arrow-left-right',
-      to: '/data-transfer',
+      label: 'Cài đặt',
+      icon: 'i-lucide-settings',
+      to: '/settings',
       onSelect: () => open.value = false,
     },
   ],
@@ -33,12 +33,11 @@ const menus = [
 <template>
   <UDashboardGroup unit="rem">
     <UDashboardSidebar
-      id="default"
+      id="sidebar"
       v-model:open="open"
       collapsible
       resizable
       class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
         <div class="flex items-center gap-2 px-1">
@@ -65,25 +64,14 @@ const menus = [
           tooltip
           popover
         />
+        <USeparator />
         <UNavigationMenu
           :collapsed="collapsed"
           :items="menus[1]"
           orientation="vertical"
           tooltip
           popover
-          class="mt-auto"
         />
-      </template>
-
-      <template #footer="{ collapsed }">
-        <UTooltip text="Giao diện Sáng / Tối">
-          <UColorModeButton
-            :label="collapsed ? undefined : 'Sáng / Tối'"
-            variant="ghost"
-            color="neutral"
-            block
-          />
-        </UTooltip>
       </template>
     </UDashboardSidebar>
     <slot />
