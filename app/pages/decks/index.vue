@@ -82,129 +82,127 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
     </template>
 
     <template #body>
-      <div class="p-4 sm:p-6">
-        <ClientOnly>
-          <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div v-for="i in 2" :key="i" class="border border-default rounded-xl p-4 space-y-3">
-              <USkeleton class="h-5 w-3/4 rounded" />
-              <USkeleton class="h-4 w-full rounded" />
-              <USkeleton class="h-4 w-2/3 rounded" />
-              <div class="pt-2 space-y-2">
-                <div class="flex justify-between">
-                  <USkeleton class="h-4 w-16 rounded" />
-                  <USkeleton class="h-4 w-10 rounded" />
-                </div>
-                <USkeleton class="h-2 w-full rounded" />
-                <USkeleton class="h-3 w-32 rounded" />
+      <div class="py-3">
+        <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div v-for="i in 2" :key="i" class="border border-default rounded-xl p-4 space-y-3">
+            <USkeleton class="h-5 w-3/4 rounded" />
+            <USkeleton class="h-4 w-full rounded" />
+            <USkeleton class="h-4 w-2/3 rounded" />
+            <div class="pt-2 space-y-2">
+              <div class="flex justify-between">
+                <USkeleton class="h-4 w-16 rounded" />
+                <USkeleton class="h-4 w-10 rounded" />
               </div>
-              <USkeleton class="h-8 w-full rounded-lg mt-2" />
+              <USkeleton class="h-2 w-full rounded" />
+              <USkeleton class="h-3 w-32 rounded" />
             </div>
-          </UPageGrid>
-
-          <div v-else-if="deckDocs.length === 0" class="flex justify-center">
-            <template v-if="keywordDebounced">
-              <UEmpty
-                icon="i-lucide-meh"
-                title="Không tìm thấy bộ thẻ nào"
-                description="Hãy thử lại với từ khóa khác."
-              />
-            </template>
-            <template v-else>
-              <UEmpty
-                icon="i-lucide-package-open"
-                title="Chưa có bộ thẻ nào"
-                description="Bắt đầu bằng cách tạo bộ thẻ mới hoặc lưu các bộ thẻ có sẵn từ Thư viện vào danh sách của bạn để ôn tập ngay."
-                :actions="[
-                  {
-                    icon: 'i-lucide-plus',
-                    label: 'Tạo bộ thẻ mới',
-                    color: 'primary',
-                    variant: 'soft',
-                    onClick: () => { creationModalOpen = true },
-                  },
-                  {
-                    icon: 'i-lucide-store',
-                    label: 'Khám phá bộ thẻ có sẵn',
-                    color: 'neutral',
-                    variant: 'outline',
-                    to: { name: 'market' },
-                  }
-                ]"
-              />
-            </template>
+            <USkeleton class="h-8 w-full rounded-lg mt-2" />
           </div>
+        </UPageGrid>
 
-          <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <UPageCard
-              v-for="deck in deckDocs"
-              :key="deck.id"
-              :title="deck.name"
-              variant="subtle"
-            >
-              <template #description>
-                <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
-                  {{ deck.description }}
-                </p>
-              </template>
+        <div v-else-if="deckDocs.length === 0" class="flex justify-center">
+          <template v-if="keywordDebounced">
+            <UEmpty
+              icon="i-lucide-meh"
+              title="Không tìm thấy bộ thẻ nào"
+              description="Hãy thử lại với từ khóa khác."
+            />
+          </template>
+          <template v-else>
+            <UEmpty
+              icon="i-lucide-package-open"
+              title="Chưa có bộ thẻ nào"
+              description="Bắt đầu bằng cách tạo bộ thẻ mới hoặc lưu các bộ thẻ có sẵn từ Thư viện vào danh sách của bạn để ôn tập ngay."
+              :actions="[
+                {
+                  icon: 'i-lucide-plus',
+                  label: 'Tạo bộ thẻ mới',
+                  color: 'primary',
+                  variant: 'soft',
+                  onClick: () => { creationModalOpen = true },
+                },
+                {
+                  icon: 'i-lucide-store',
+                  label: 'Khám phá bộ thẻ có sẵn',
+                  color: 'neutral',
+                  variant: 'outline',
+                  to: { name: 'market' },
+                }
+              ]"
+            />
+          </template>
+        </div>
 
-              <template #footer>
-                <div class="flex gap-3">
+        <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <UPageCard
+            v-for="deck in deckDocs"
+            :key="deck.id"
+            :title="deck.name"
+            variant="subtle"
+          >
+            <template #description>
+              <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
+                {{ deck.description }}
+              </p>
+            </template>
+
+            <template #footer>
+              <div class="flex gap-3">
+                <UButton
+                  :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
+                  size="sm"
+                  variant="subtle"
+                  icon="i-lucide-play"
+                >
+                  Học ngay
+                </UButton>
+                <UButton
+                  :to="{ name: 'decks-deckId-cards', params: { deckId: deck.id } }"
+                  size="sm"
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-wallet-cards"
+                >
+                  Quản lý thẻ
+                </UButton>
+                <UDropdownMenu :items="generateDropdownItems(deck.id)">
                   <UButton
-                    :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
-                    size="sm"
-                    variant="subtle"
-                    icon="i-lucide-play"
-                  >
-                    Học ngay
-                  </UButton>
-                  <UButton
-                    :to="{ name: 'decks-deckId-cards', params: { deckId: deck.id } }"
                     size="sm"
                     color="neutral"
                     variant="subtle"
-                    icon="i-lucide-wallet-cards"
-                  >
-                    Quản lý thẻ
-                  </UButton>
-                  <UDropdownMenu :items="generateDropdownItems(deck.id)">
-                    <UButton
-                      size="sm"
-                      color="neutral"
-                      variant="subtle"
-                      icon="i-lucide-ellipsis"
-                    />
-                  </UDropdownMenu>
-                </div>
-              </template>
-
-              <div class="mt-auto space-y-2">
-                <div class="flex items-center justify-between text-sm">
-                  <div class="flex items-center gap-2">
-                    <UIcon name="i-lucide-layers" class="text-primary size-4" />
-                    <span class="text-muted">{{ deck.cardCount }} thẻ</span>
-                  </div>
-                  <UBadge
-                    :color="deck.progress > 0 ? 'success' : 'neutral'"
-                    variant="subtle"
-                    size="sm"
-                  >
-                    {{ deck.progress }}%
-                  </UBadge>
-                </div>
-
-                <UProgress
-                  :model-value="deck.progress"
-                  size="sm"
-                  color="primary"
-                />
-
-                <p class="text-muted text-xs">
-                  Học lần cuối: {{ formatDatetime(deck.lastStudied) ?? 'Chưa học' }}
-                </p>
+                    icon="i-lucide-ellipsis"
+                  />
+                </UDropdownMenu>
               </div>
-            </UPageCard>
-          </UPageGrid>
-        </ClientOnly>
+            </template>
+
+            <div class="mt-auto space-y-2">
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-layers" class="text-primary size-4" />
+                  <span class="text-muted">{{ deck.cardCount }} thẻ</span>
+                </div>
+                <UBadge
+                  :color="deck.progress > 0 ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="sm"
+                >
+                  {{ deck.progress }}%
+                </UBadge>
+              </div>
+
+              <UProgress
+                :model-value="deck.progress"
+                size="sm"
+                color="primary"
+              />
+
+              <p class="text-muted text-xs">
+                Học lần cuối: {{ formatDatetime(deck.lastStudied) ?? 'Chưa học' }}
+              </p>
+            </div>
+          </UPageCard>
+        </UPageGrid>
       </div>
     </template>
   </UDashboardPanel>

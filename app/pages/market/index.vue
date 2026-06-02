@@ -42,7 +42,7 @@ const filteredDecks = computed(() =>
     </template>
 
     <template #body>
-      <div class="p-4 sm:p-6">
+      <div class="py-3">
         <ClientOnly>
           <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div v-for="i in 2" :key="i" class="border-default bg-default/50 rounded-xl border p-4 space-y-3">
