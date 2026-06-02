@@ -23,7 +23,7 @@ const menus = [
     {
       label: 'Cài đặt',
       icon: 'i-lucide-settings',
-      to: '/settings',
+      to: { name: 'settings' },
       onSelect: () => open.value = false,
     },
   ],
