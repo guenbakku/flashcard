@@ -23,11 +23,6 @@ const selectingDeck = computed(() => deckDocs.value.find(deck => deck.id === sel
 function generateDropdownItems(id: string): DropdownMenuItem[] {
   return [
     {
-      label: 'Quản lý thẻ',
-      icon: 'i-lucide-wallet-cards',
-      onSelect: () => navigateTo({ name: 'decks-deckId-cards', params: { deckId: id } }),
-    },
-    {
       label: 'Chỉnh sửa',
       icon: 'i-lucide-edit',
       onSelect: () => {
@@ -90,7 +85,7 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
       <div class="p-4 sm:p-6">
         <ClientOnly>
           <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div v-for="i in 2" :key="i" class="border-default bg-default/50 rounded-xl border p-4 space-y-3">
+            <div v-for="i in 2" :key="i" class="border border-default rounded-xl p-4 space-y-3">
               <USkeleton class="h-5 w-3/4 rounded" />
               <USkeleton class="h-4 w-full rounded" />
               <USkeleton class="h-4 w-2/3 rounded" />
@@ -106,21 +101,19 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
             </div>
           </UPageGrid>
 
-          <div v-else-if="deckDocs.length === 0" class="flex justify-center py-20 px-4 sm:px-0">
+          <div v-else-if="deckDocs.length === 0" class="flex justify-center">
             <template v-if="keywordDebounced">
               <UEmpty
                 icon="i-lucide-meh"
                 title="Không tìm thấy bộ thẻ nào"
                 description="Hãy thử lại với từ khóa khác."
-                class="max-w-xl text-center"
               />
             </template>
             <template v-else>
               <UEmpty
-                icon="i-lucide-book-open"
+                icon="i-lucide-package-open"
                 title="Chưa có bộ thẻ nào"
-                description="Bắt đầu bằng cách tạo bộ thẻ đầu tiên. Sau đó, bạn có thể ôn tập nhanh, tổ chức nội dung và theo dõi tiến trình học tập dễ dàng."
-                class="max-w-xl text-center"
+                description="Bắt đầu bằng cách tạo bộ thẻ mới hoặc lưu các bộ thẻ có sẵn từ Thư viện vào danh sách của bạn để ôn tập ngay."
                 :actions="[
                   {
                     icon: 'i-lucide-plus',
@@ -147,18 +140,43 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
               :key="deck.id"
               :title="deck.name"
               variant="subtle"
-              class="hover:z-1"
             >
-              <template #title>
-                <p class="text-base text-pretty font-semibold text-highlighted line-clamp-2">
-                  {{ deck.name }}
-                </p>
-              </template>
               <template #description>
                 <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
                   {{ deck.description }}
                 </p>
               </template>
+
+              <template #footer>
+                <div class="flex gap-3">
+                  <UButton
+                    :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
+                    size="sm"
+                    variant="subtle"
+                    icon="i-lucide-play"
+                  >
+                    Học ngay
+                  </UButton>
+                  <UButton
+                    :to="{ name: 'decks-deckId-cards', params: { deckId: deck.id } }"
+                    size="sm"
+                    color="neutral"
+                    variant="subtle"
+                    icon="i-lucide-wallet-cards"
+                  >
+                    Quản lý thẻ
+                  </UButton>
+                  <UDropdownMenu :items="generateDropdownItems(deck.id)">
+                    <UButton
+                      size="sm"
+                      color="neutral"
+                      variant="subtle"
+                      icon="i-lucide-ellipsis"
+                    />
+                  </UDropdownMenu>
+                </div>
+              </template>
+
               <div class="mt-auto space-y-2">
                 <div class="flex items-center justify-between text-sm">
                   <div class="flex items-center gap-2">
@@ -184,27 +202,6 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
                   Học lần cuối: {{ formatDatetime(deck.lastStudied) ?? 'Chưa học' }}
                 </p>
               </div>
-
-              <template #footer>
-                <div class="flex gap-3">
-                  <UButton
-                    :to="{ name: 'decks-deckId', params: { deckId: deck.id }}"
-                    size="sm"
-                    variant="subtle"
-                    icon="i-lucide-play"
-                  >
-                    Học ngay
-                  </UButton>
-                  <UDropdownMenu :items="generateDropdownItems(deck.id)">
-                    <UButton
-                      size="sm"
-                      color="neutral"
-                      variant="subtle"
-                      icon="i-lucide-ellipsis"
-                    />
-                  </UDropdownMenu>
-                </div>
-              </template>
             </UPageCard>
           </UPageGrid>
         </ClientOnly>

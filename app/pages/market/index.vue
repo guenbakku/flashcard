@@ -61,11 +61,12 @@ const filteredDecks = computed(() =>
             </div>
           </UPageGrid>
 
-          <div v-else-if="filteredDecks.length === 0" class="flex flex-col items-center justify-center gap-4 py-16">
-            <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-              <UIcon name="i-lucide-frown" class="text-error/80 size-10" />
-            </div>
-            <p>Không tìm thấy bộ thẻ nào</p>
+          <div v-else-if="filteredDecks.length === 0" class="flex justify-center">
+            <UEmpty
+              icon="i-lucide-meh"
+              title="Không tìm thấy bộ thẻ nào"
+              description="Hãy thử lại với từ khóa khác."
+            />
           </div>
 
           <UPageGrid v-else class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -76,11 +77,6 @@ const filteredDecks = computed(() =>
               variant="subtle"
               class="hover:z-1"
             >
-              <template #title>
-                <p class="text-base text-pretty font-semibold text-highlighted line-clamp-2">
-                  {{ deck.name }}
-                </p>
-              </template>
               <template #description>
                 <div class="mt-auto space-y-2">
                   <p class="text-sm text-muted whitespace-pre-line line-clamp-3">
@@ -101,7 +97,7 @@ const filteredDecks = computed(() =>
                     :to="{ name: 'market-deckId', params: { deckId: deck.id } }"
                     size="sm"
                     variant="subtle"
-                    icon="i-lucide-book-open"
+                    icon="i-lucide-book-a"
                     class="flex-1"
                   >
                     Xem bộ thẻ

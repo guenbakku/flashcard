@@ -186,10 +186,13 @@ watch(currentIndex, () => {
           <!-- STATE: deck data empty -->
           <template v-else-if="!cardDocs?.length">
             <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
+              <div class="bg-elevated flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-meh" class="text-muted size-10" />
               </div>
-              <p class="text-muted text-sm">Không tìm thấy thẻ nào để học</p>
+              <h2 class="text-default text-2xl font-bold">
+                Chưa có thẻ nào để học!
+              </h2>
+              <p class="text-muted">Hãy vào mục <strong>Quản lý thẻ</strong> để thêm thẻ mới.</p>
               <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
                 Về trang chủ
               </UButton>

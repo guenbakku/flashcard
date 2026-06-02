@@ -47,7 +47,7 @@ function flip() {
 
 async function handleCopyDeck() {
   if (!deck.value) {
-    toast.add({ title: 'Không có dữ liệu để sao chép', color: 'error', icon: 'i-lucide-alert-circle' });
+    toast.add({ title: 'Không có dữ liệu để lưu', color: 'error', icon: 'i-lucide-alert-circle' });
     return;
   }
 
@@ -61,18 +61,18 @@ async function handleCopyDeck() {
     await copyMarketDeck(deckMeta);
     modalOpen.value = false;
     toast.add({
-      title: `Sao chép bộ thẻ thành công`,
+      title: `Lưu bộ thẻ thành công`,
       description: h('span', {}, [
         'Hãy vào ',
         h('strong', { class: 'text-warning font-medium' }, 'Bộ thẻ của tôi'),
-        ' để bắt đầu sử dụng và chỉnh sửa bộ thẻ vừa sao chép.',
+        ' để bắt đầu sử dụng bộ thẻ vừa lưu.',
       ]),
       color: 'success',
       icon: 'i-lucide-check-circle',
     });
   } catch (e) {
     console.error(e);
-    toast.add({ title: 'Sao chép bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    toast.add({ title: 'Lưu bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
   }
 }
 
@@ -107,16 +107,16 @@ watch(currentIndex, () => {
       <UDashboardToolbar class="justify-start gap-2">
         <UModal
           v-model:open="modalOpen"
-          title="Sao chép bộ thẻ"
-          description="Bộ thẻ sẽ xuất hiện trong trang Bộ thẻ của tôi. Bạn có thể chỉnh sửa lại sau khi sao chép."
+          title="Lưu bộ thẻ"
+          description='Bộ thẻ sẽ xuất hiện trong trang "Bộ thẻ của tôi". Bạn có thể sử dụng để học hoặc tự do chỉnh sửa sau khi lưu.'
         >
           <UButton
             color="primary"
-            icon="i-lucide-copy"
+            icon="i-lucide-download-cloud"
             variant="subtle"
             size="sm"
           >
-            Sao chép bộ thẻ
+            Lưu bộ thẻ
           </UButton>
 
           <template #body>

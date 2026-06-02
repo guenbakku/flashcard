@@ -28,7 +28,7 @@ async function handleCreateDeck() {
     });
     modalOpen.value = false;
     toast.add({
-      title: 'Đã tạo bộ thẻ mới',
+      title: `Đã tạo bộ thẻ mới "${state.name}"`,
       description: h('span', {}, [
         'Bạn có thể vào mục ',
         h('strong', { class: 'text-warning font-medium' }, 'Quản lý thẻ'),
