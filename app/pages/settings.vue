@@ -22,20 +22,19 @@ const menuItems = [
           <UDashboardSidebarCollapse />
         </template>
       </UDashboardNavbar>
+
+      <UDashboardToolbar class="justify-start gap-2">
+        <UNavigationMenu
+          :items="menuItems"
+          orientation="horizontal"
+          highlight
+          highlight-color="primary"
+        />
+      </UDashboardToolbar>
     </template>
+
     <template #body>
-      <div class="max-w-6xl space-y-6">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div class="flex flex-wrap items-center gap-2 w-full">
-            <UNavigationMenu
-              :items="menuItems"
-              orientation="horizontal"
-              highlight
-              highlight-color="primary"
-              class="data-[orientation=horizontal]:border-b border-default data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-48"
-            />
-          </div>
-        </div>
+      <div class="max-w-4xl">
         <NuxtPage />
       </div>
     </template>
