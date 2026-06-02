@@ -142,7 +142,7 @@ async function handleImport() {
       <div class="space-y-3">
         <p class="text-sm text-muted">
           Nhập toàn bộ dữ liệu từ file JSON. Dữ liệu hiện tại sẽ được
-          <span class="text-warning font-medium">thay thế hoàn toàn</span> bằng dữ liệu từ file.
+          <strong class="text-warning">thay thế hoàn toàn</strong> bằng dữ liệu từ file.
         </p>
         <div class="flex flex-col items-start gap-4">
           <UInput

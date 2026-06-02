@@ -41,7 +41,7 @@ async function handleCopyDeck() {
       title: `Lưu bộ thẻ thành công`,
       description: h('span', {}, [
         'Hãy vào ',
-        h('strong', { class: 'text-warning font-medium' }, 'Bộ thẻ của tôi'),
+        h('strong', { class: 'text-warning' }, 'Bộ thẻ của tôi'),
         ' để bắt đầu sử dụng bộ thẻ vừa lưu.',
       ]),
       color: 'success',

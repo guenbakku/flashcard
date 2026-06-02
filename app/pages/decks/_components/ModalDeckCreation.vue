@@ -34,7 +34,7 @@ async function handleCreateDeck() {
       title: `Đã tạo bộ thẻ mới "${state.name}"`,
       description: h('span', {}, [
         'Bạn có thể vào mục ',
-        h('strong', { class: 'text-warning font-medium' }, 'Quản lý thẻ'),
+        h('strong', { class: 'text-warning' }, 'Quản lý thẻ'),
         ' để thêm thẻ mới cho bộ thẻ này.',
       ]),
       color: 'success',
