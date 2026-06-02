@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type { DeckMeta } from './types';
-const toast = useToast();
-const { deleteDeck } = useMyDecks();
 
 type Props = {
   deck: DeckMeta & { id: string };
@@ -9,14 +7,27 @@ type Props = {
 const props = defineProps<Props>();
 const modalOpen = defineModel<boolean>('open');
 
+const toast = useToast();
+const { deleteDeck } = useMyDecks();
+
+const loading = ref(false);
+
+watch(modalOpen, (value) => {
+  if (value) {
+    loading.value = false;
+  }
+});
+
 async function handleDeleteDeck() {
   try {
+    loading.value = true;
     await deleteDeck(props.deck.id);
     modalOpen.value = false;
     toast.add({ title: 'Đã xóa bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
   } catch (e) {
     console.error(e);
     toast.add({ title: 'Xóa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    loading.value = false;
   }
 }
 </script>
@@ -36,6 +47,7 @@ async function handleDeleteDeck() {
         label="Xác nhận"
         color="error"
         variant="solid"
+        :loading="loading"
         @click="handleDeleteDeck"
       />
     </template>

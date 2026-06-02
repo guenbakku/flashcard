@@ -8,12 +8,13 @@ const props = defineProps<Props>();
 const modalOpen = defineModel<boolean>('open');
 
 const toast = useToast();
-const { updateDeck } = useMyDecks();
+const { copyMarketDeck } = useMyDecks();
 
-const state = reactive<DeckMeta>({
-  name: props.deck.name,
-  description: props.deck.description,
-});
+const initialState: DeckMeta = {
+  name: '',
+  description: undefined,
+};
+const state = reactive<DeckMeta>({ ...initialState });
 const formRef = useTemplateRef('formRef');
 const loading = ref(false);
 
@@ -25,19 +26,30 @@ watch(modalOpen, (value) => {
   }
 });
 
-async function handleUpdateDeck() {
+async function handleCopyDeck() {
+  const deckMeta = {
+    id: props.deck.id,
+    name: state.name,
+    description: state.description,
+  };
+
   try {
     loading.value = true;
-    await updateDeck({
-      id: props.deck.id,
-      name: state.name,
-      description: state.description,
-    });
+    await copyMarketDeck(deckMeta);
     modalOpen.value = false;
-    toast.add({ title: 'Đã lưu bộ thẻ', color: 'success', icon: 'i-lucide-check-circle' });
+    toast.add({
+      title: `Lưu bộ thẻ thành công`,
+      description: h('span', {}, [
+        'Hãy vào ',
+        h('strong', { class: 'text-warning font-medium' }, 'Bộ thẻ của tôi'),
+        ' để bắt đầu sử dụng bộ thẻ vừa lưu.',
+      ]),
+      color: 'success',
+      icon: 'i-lucide-check-circle',
+    });
   } catch (e) {
     console.error(e);
-    toast.add({ title: 'Chỉnh sửa bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    toast.add({ title: 'Lưu bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
     loading.value = false;
   }
 }
@@ -46,7 +58,8 @@ async function handleUpdateDeck() {
 <template>
   <UModal
     v-model:open="modalOpen"
-    title="Chỉnh sửa bộ thẻ"
+    title="Lưu bộ thẻ"
+    description='Bộ thẻ sẽ xuất hiện trong trang "Bộ thẻ của tôi". Bạn có thể sử dụng để học hoặc tự do chỉnh sửa sau khi lưu.'
   >
     <template #body>
       <UForm
@@ -54,7 +67,7 @@ async function handleUpdateDeck() {
         :schema="deckMetaSchema"
         :state="state"
         class="space-y-4 w-full"
-        @submit.prevent="handleUpdateDeck"
+        @submit.prevent="handleCopyDeck"
       >
         <UFormField label="Tên bộ thẻ" name="name" required>
           <UInput v-model="state.name" class="w-full" />

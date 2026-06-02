@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import * as z from 'zod';
-
-const toast = useToast();
+import ModalDeckCopy from './_components/ModalDeckCopy.vue';
 
 const route = useRoute();
 const id = String(route.params.deckId);
-
-const { copyMarketDeck } = useMyDecks();
 
 const { getDeck, pending: decksListPending } = useMarketDecks();
 const deck = computed(() => getDeck(id));
@@ -21,67 +17,11 @@ const currentCard = computed(() => cards.value?.[currentIndex.value]);
 const totalDeckCards = computed(() => cards.value.length);
 
 const modalOpen = ref(false);
-
-const formRef = useTemplateRef('formRef');
-
-const formSchema = z.object({
-  name: z.string()
-    .trim()
-    .min(1, 'Đây là trường bắt buộc')
-    .max(128, 'Nội dung không được vượt quá 128 ký tự'),
-  description: z.string()
-    .trim()
-    .max(128, 'Nội dung không được vượt quá 128 ký tự')
-    .optional(),
-});
-
-type Schema = z.output<typeof formSchema>;
-const formState = reactive<Schema>({
-  name: '',
-  description: '',
-});
+const isCopyable = computed(() => !!deck.value && cards.value.length > 0);
 
 function flip() {
   isFlipped.value = !isFlipped.value;
 }
-
-async function handleCopyDeck() {
-  if (!deck.value) {
-    toast.add({ title: 'Không có dữ liệu để lưu', color: 'error', icon: 'i-lucide-alert-circle' });
-    return;
-  }
-
-  const deckMeta = {
-    id: deck.value.id,
-    name: formState.name,
-    description: formState.description,
-  };
-
-  try {
-    await copyMarketDeck(deckMeta);
-    modalOpen.value = false;
-    toast.add({
-      title: `Lưu bộ thẻ thành công`,
-      description: h('span', {}, [
-        'Hãy vào ',
-        h('strong', { class: 'text-warning font-medium' }, 'Bộ thẻ của tôi'),
-        ' để bắt đầu sử dụng bộ thẻ vừa lưu.',
-      ]),
-      color: 'success',
-      icon: 'i-lucide-check-circle',
-    });
-  } catch (e) {
-    console.error(e);
-    toast.add({ title: 'Lưu bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
-  }
-}
-
-watch(modalOpen, (value) => {
-  if (value) {
-    formState.name = deck.value?.name ?? '';
-    formState.description = deck.value?.description ?? '';
-  }
-});
 
 watch(currentIndex, () => {
   isFlipped.value = false;
@@ -105,51 +45,18 @@ watch(currentIndex, () => {
       </UDashboardNavbar>
 
       <UDashboardToolbar class="justify-start gap-2">
-        <UModal
-          v-model:open="modalOpen"
-          title="Lưu bộ thẻ"
-          description='Bộ thẻ sẽ xuất hiện trong trang "Bộ thẻ của tôi". Bạn có thể sử dụng để học hoặc tự do chỉnh sửa sau khi lưu.'
-        >
+        <UTooltip text="Lưu bộ thẻ này để sử dụng">
           <UButton
             color="primary"
             icon="i-lucide-download-cloud"
             variant="subtle"
             size="sm"
+            :disabled="!isCopyable"
+            @click="modalOpen = true"
           >
             Lưu bộ thẻ
           </UButton>
-
-          <template #body>
-            <UForm
-              ref="formRef"
-              :schema="formSchema"
-              :state="formState"
-              class="space-y-4 w-full"
-              @submit.prevent="handleCopyDeck"
-            >
-              <UFormField label="Tên bộ thẻ" name="name" required>
-                <UInput v-model="formState.name" class="w-full" />
-              </UFormField>
-
-              <UFormField label="Mô tả" name="description">
-                <UTextarea v-model="formState.description" class="w-full" />
-              </UFormField>
-
-              <!-- Hidden submit button to trigger form submission on "Enter" key press -->
-              <button type="submit" class="hidden" />
-            </UForm>
-          </template>
-
-          <template #footer>
-            <UButton
-              label="Xác nhận"
-              color="primary"
-              variant="solid"
-              :disabled="!!formRef?.errors.length"
-              @click="formRef?.submit()"
-            />
-          </template>
-        </UModal>
+        </UTooltip>
       </UDashboardToolbar>
     </template>
 
@@ -179,11 +86,14 @@ watch(currentIndex, () => {
           <!-- STATE: deck data empty -->
           <template v-else-if="!cards?.length">
             <div class="flex flex-col items-center gap-4 text-center">
-              <div class="bg-error/10 flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-globe-off" class="text-error size-10" />
+              <div class="bg-elevated flex size-20 items-center justify-center rounded-full">
+                <UIcon name="i-lucide-meh" class="text-muted size-10" />
               </div>
-              <p class="text-muted text-sm">Không tìm thấy thẻ nào</p>
-              <UButton to="/" icon="i-lucide-house">
+              <h2 class="text-default text-2xl font-bold">
+                Không tìm thấy thẻ nào
+              </h2>
+              <p class="text-muted">Đã có lỗi xảy ra trong quá trình lấy dữ liệu. Hãy thử lại sau.</p>
+              <UButton :to="{ name: 'market' }" icon="i-lucide-house">
                 Về trang chủ
               </UButton>
             </div>
@@ -291,4 +201,6 @@ watch(currentIndex, () => {
       </div>
     </template>
   </UDashboardPanel>
+
+  <ModalDeckCopy v-if="isCopyable" v-model:open="modalOpen" :deck="deck!" />
 </template>

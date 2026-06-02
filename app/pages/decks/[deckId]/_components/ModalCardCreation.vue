@@ -17,23 +17,27 @@ const initialState: Card = {
 };
 const state = reactive<Card>({ ...initialState });
 const formRef = useTemplateRef('formRef');
+const loading = ref(false);
 
 watch(modalOpen, (value) => {
   if (value) {
     state.front = initialState.front;
     state.back = initialState.back;
     state.backSub = initialState.backSub;
+    loading.value = false;
   }
 });
 
 async function handleCreateCard() {
   try {
+    loading.value = true;
     await createCard({ ...state });
     modalOpen.value = false;
     toast.add({ title: 'Đã thêm thẻ mới', color: 'success', icon: 'i-lucide-check-circle' });
   } catch (e) {
     console.error(e);
     toast.add({ title: 'Thêm thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    loading.value = false;
   }
 }
 </script>
@@ -74,6 +78,7 @@ async function handleCreateCard() {
         color="primary"
         variant="solid"
         :disabled="!!formRef?.errors.length"
+        :loading="loading"
         @click="formRef?.submit()"
       />
     </template>

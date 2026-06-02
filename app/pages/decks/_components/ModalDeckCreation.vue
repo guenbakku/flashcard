@@ -12,16 +12,19 @@ const initialState: DeckMeta = {
 };
 const state = reactive<DeckMeta>({ ...initialState });
 const formRef = useTemplateRef('formRef');
+const loading = ref(false);
 
 watch(modalOpen, (value) => {
   if (value) {
     state.name = initialState.name;
     state.description = initialState.description;
+    loading.value = false;
   }
 });
 
 async function handleCreateDeck() {
   try {
+    loading.value = true;
     await createDeck({
       name: state.name,
       description: state.description,
@@ -40,6 +43,7 @@ async function handleCreateDeck() {
   } catch (e) {
     console.error(e);
     toast.add({ title: 'Tạo bộ thẻ thất bại', color: 'error', icon: 'i-lucide-alert-circle' });
+    loading.value = false;
   }
 }
 </script>
@@ -76,6 +80,7 @@ async function handleCreateDeck() {
         color="primary"
         variant="solid"
         :disabled="!!formRef?.errors.length"
+        :loading="loading"
         @click="formRef?.submit()"
       />
     </template>
