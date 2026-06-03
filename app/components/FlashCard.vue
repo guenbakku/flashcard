@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
           </p>
           <template v-if="props.backSub.trim()">
             <USeparator class="my-4" :ui="{ border: 'border-primary/20' }"/>
-            <p class="text-default text-lg font-bold text-center">
+            <p class="text-default text-lg text-center">
               {{ props.backSub }}
             </p>
           </template>
