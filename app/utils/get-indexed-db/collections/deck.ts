@@ -6,7 +6,7 @@ import { collectionFactory } from '../helpers';
 
 const schema = {
   title: 'deck schema',
-  version: 0,
+  version: 1,
   description: 'Deck info stored in indexedDB',
   type: 'object',
   primaryKey: 'id',
@@ -27,22 +27,20 @@ const schema = {
       type: 'number',
       minimum: 0,
     },
+    masteredCount: {
+      type: 'number',
+      minimum: 0,
+    },
     lastStudied: {
       type: 'string',
       format: 'date-time',
-    },
-    masteredCards: {
-      type: 'object',
-      additionalProperties: {
-        type: 'boolean',
-      },
     },
     createdAt: {
       type: 'string',
       format: 'date-time',
     },
   },
-  required: ['id', 'name', 'cardCount', 'masteredCards', 'createdAt'],
+  required: ['id', 'name', 'cardCount', 'masteredCount', 'createdAt'],
   indexes: ['createdAt'],
 } as const;
 
@@ -50,13 +48,22 @@ const typedSchema = toTypedRxJsonSchema(schema);
 
 const factory = collectionFactory('deck', {
   schema: typedSchema,
+  migrationStrategies: {
+    1: (doc) => {
+      const { masteredCards: _delete, ...rest } = doc;
+      return {
+        ...rest,
+        masteredCount: 0,
+      };
+    },
+  },
 });
 
 export const hook = (db: InferRxCollection<ReturnType<typeof factory>>) => {
   db.deck.postCreate(function (plainData, rxDocument) {
     Object.defineProperty(rxDocument, 'progress', {
       get: function () {
-        return plainData.cardCount ? Math.round((Object.keys(plainData.masteredCards).length / plainData.cardCount) * 100) : 0;
+        return plainData.cardCount ? Math.round(plainData.masteredCount / plainData.cardCount * 100) : 0;
       },
     });
   });

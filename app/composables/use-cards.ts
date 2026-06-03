@@ -70,6 +70,7 @@ const useCards = (deckId: string) => {
       back: payload.back.trim(),
       backSub: payload.backSub?.trim() ?? '',
       order: (highestOrder?.order ?? -1) + 1,
+      isMastered: false,
     });
 
     await deckDoc.update({
@@ -109,11 +110,11 @@ const useCards = (deckId: string) => {
     await cardDoc.remove();
 
     const totalRemainingCards = await db.card.count().where('deckId').eq(deckId).exec();
-    const { [cardDoc.front]: _deleted, ...remainingMasteredCards } = deckDoc.masteredCards;
+    const totalRemainingMasteredCards = await db.card.count().where({ deckId, isMastered: true }).exec();
     await deckDoc.update({
       $set: {
         cardCount: totalRemainingCards,
-        masteredCards: remainingMasteredCards,
+        masteredCount: totalRemainingMasteredCards,
       },
     });
   });
@@ -138,6 +139,7 @@ const useCards = (deckId: string) => {
       back: card.back,
       backSub: card.backSub,
       order: index,
+      isMastered: false,
     })));
 
     await deckDoc.update({

@@ -4,7 +4,7 @@ import { collectionFactory } from '../helpers';
 
 const schema = {
   title: 'card schema',
-  version: 0,
+  version: 1,
   description: 'Card info stored in indexedDB',
   type: 'object',
   primaryKey: 'id',
@@ -32,15 +32,28 @@ const schema = {
     order: {
       type: 'number',
     },
+    isMastered: {
+      type: 'boolean',
+      default: false,
+    },
   },
-  required: ['id', 'deckId', 'front', 'back', 'order'],
-  indexes: ['order', 'deckId'],
+  required: ['id', 'deckId', 'front', 'back', 'order', 'isMastered'],
+  indexes: [
+    ['deckId', 'order'],
+    ['deckId', 'isMastered'],
+  ],
 } as const;
 
 const typedSchema = toTypedRxJsonSchema(schema);
 
 const factory = collectionFactory('card', {
   schema: typedSchema,
+  migrationStrategies: {
+    1: (doc) => {
+      doc.isMastered = false;
+      return doc;
+    },
+  },
 });
 
 export default factory;
