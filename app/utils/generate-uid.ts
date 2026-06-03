@@ -1,9 +1,5 @@
-const generateUid = () => {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
+import { customAlphabet } from 'nanoid';
 
-  return `uid-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-};
+const generateUid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 12);
 
 export default generateUid;
