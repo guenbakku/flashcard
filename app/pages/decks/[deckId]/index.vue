@@ -191,9 +191,24 @@ watch(currentIndex, () => {
                 Chưa có thẻ nào để học!
               </h2>
               <p class="text-muted">Hãy vào mục <strong>Quản lý thẻ</strong> để thêm thẻ mới.</p>
-              <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
-                Về trang chủ
-              </UButton>
+              <div class="flex gap-3">
+                <UButton
+                  color="primary"
+                  variant="soft"
+                  icon="i-lucide-wallet-cards"
+                  :to="{ name: 'decks-deckId-cards', params: { deckId } }"
+                >
+                  Quản lý thẻ
+                </UButton>
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-lucide-house"
+                  :to="{ name: 'decks' }"
+                >
+                  Về trang chủ
+                </UButton>
+              </div>
             </div>
           </template>
 
@@ -211,14 +226,19 @@ watch(currentIndex, () => {
               </p>
               <div class="flex gap-3">
                 <UButton
-                  color="neutral"
-                  variant="subtle"
+                  color="primary"
+                  variant="soft"
                   icon="i-lucide-rotate-ccw"
                   @click="reStudy"
                 >
                   Ôn lại tất cả
                 </UButton>
-                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-lucide-house"
+                  :to="{ name: 'decks' }"
+                >
                   Về trang chủ
                 </UButton>
               </div>
@@ -240,14 +260,19 @@ watch(currentIndex, () => {
               </p>
               <div class="flex gap-3">
                 <UButton
-                  color="neutral"
-                  variant="subtle"
+                  color="primary"
+                  variant="soft"
                   icon="i-lucide-rotate-ccw"
                   @click="reStudy"
                 >
                   Học lại
                 </UButton>
-                <UButton :to="{ name: 'decks' }" icon="i-lucide-house">
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-lucide-house"
+                  :to="{ name: 'decks' }"
+                >
                   Về trang chủ
                 </UButton>
               </div>
