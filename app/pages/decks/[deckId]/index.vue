@@ -6,19 +6,19 @@ type DeckDocument = DocTypes['deck'];
 const route = useRoute();
 const deckId = String(route.params.deckId);
 
-const { getDeck, updateProgress } = useMyDecks();
+const { getDeck, answer } = useMyDecks();
 const { cardDocs } = useCards(deckId);
 
 const deck = ref<DeckDocument | null>(null);
 const pending = ref(true);
+const isAnswering = ref(false);
+const capturedMasteredCards = ref<Set<string>>(new Set());
 
 onMounted(async () => {
   deck.value = await getDeck(deckId);
-  capturedMasteredCards.value = { ...(deck.value?.masteredCards ?? {}) };
+  capturedMasteredCards.value = new Set(cardDocs.value.filter(c => c.isMastered).map(c => c.id));
   pending.value = false;
 });
-
-const capturedMasteredCards = ref<Record<string, boolean>>({});
 
 const isShuffle = ref(false);
 const isFilterCorrect = ref(false);
@@ -27,7 +27,7 @@ const isFlipped = ref(false);
 
 const browseIndex = ref(0);
 const currentIndex = ref(0);
-const results = ref<Record<string, boolean>>({});
+const results = ref<{ [cardId: string]: boolean }>({});
 
 const displayCards = computed(() => {
   if (!cardDocs.value) {
@@ -35,7 +35,7 @@ const displayCards = computed(() => {
   };
 
   const filtered = isFilterCorrect.value
-    ? cardDocs.value.filter(c => !capturedMasteredCards.value[c.front])
+    ? cardDocs.value.filter(c => !capturedMasteredCards.value.has(c.id))
     : cardDocs.value;
 
   if (!isShuffle.value) {
@@ -55,20 +55,17 @@ function flip() {
   isFlipped.value = !isFlipped.value;
 }
 
-function answer(result: boolean) {
+async function handleAnswer(result: boolean) {
   if (!currentCard.value) {
     return;
   }
 
-  results.value[currentCard.value.front] = result;
+  isAnswering.value = true;
+  results.value[currentCard.value.id] = result;
 
-  // Update the learning status of the card in the deck
-  // If answered correctly, add the card to the mastered list
-  // If answered incorrectly, remove the card from the mastered list (if exists)
-  updateProgress({
-    id: deckId,
-    lastStudied: new Date().toISOString(),
-    masteredCards: { [currentCard.value.front]: result },
+  await answer({
+    id: currentCard.value.id,
+    isMastered: result,
   });
 
   setTimeout(
@@ -82,6 +79,7 @@ function answer(result: boolean) {
   );
 
   isFlipped.value = false;
+  isAnswering.value = false;
 }
 
 function restart() {
@@ -93,7 +91,7 @@ function restart() {
 
 function reStudy() {
   isFilterCorrect.value = false;
-  capturedMasteredCards.value = deck.value?.masteredCards ?? {};
+  capturedMasteredCards.value = new Set(cardDocs.value.filter(c => c.isMastered).map(c => c.id));
   restart();
 }
 
@@ -271,7 +269,7 @@ watch(currentIndex, () => {
               >
                 <!-- Front -->
                 <UBadge
-                  v-if="isBrowseMode && capturedMasteredCards[currentCard.front]"
+                  v-if="isBrowseMode && capturedMasteredCards.has(currentCard.id)"
                   color="primary"
                   variant="subtle"
                   size="md"
@@ -381,7 +379,8 @@ watch(currentIndex, () => {
                   icon="i-lucide-x"
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  @click="answer(false)"
+                  :loading="isAnswering"
+                  @click="handleAnswer(false)"
                 >
                   Chưa thuộc
                 </UButton>
@@ -391,7 +390,8 @@ watch(currentIndex, () => {
                   icon="i-lucide-check"
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  @click="answer(true)"
+                  :loading="isAnswering"
+                  @click="handleAnswer(true)"
                 >
                   Đã thuộc
                 </UButton>

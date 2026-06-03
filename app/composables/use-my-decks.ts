@@ -3,12 +3,13 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
-import { deckDetailSchema, type PartialExcept } from '~/types';
+import { deckDetailSchema } from '~/types';
 import type { DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDoc = DocTypes['deck'] & { readonly progress: number };
-type DeckProgress = Pick<DeckDoc, 'id' | 'lastStudied' | 'masteredCards'>;
-type MarketDeckMeta = Pick<DeckDoc, 'id' | 'name' | 'description'>;
+type CardDoc = DocTypes['card'];
+type AnswerPayload = Pick<CardDoc, 'id' | 'isMastered'>;
+type DeckMeta = Pick<DeckDoc, 'id' | 'name' | 'description'>;
 
 const getDecksState = () => useState<RxDocument<DeckDoc>[]>('myDeckDocs', () => []);
 const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
@@ -16,17 +17,6 @@ const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 const useMyDecks = () => {
   const deckDocs = getDecksState();
   const loaded = getLoadedState();
-
-  const progress = computed(() => {
-    return deckDocs.value.reduce((acc, doc) => {
-      acc[doc.id] = {
-        id: doc.id,
-        lastStudied: doc.lastStudied,
-        masteredCards: doc.masteredCards ?? {},
-      };
-      return acc;
-    }, {} as Record<string, DeckProgress>);
-  });
 
   const keywordFilter$ = new BehaviorSubject<string>('');
   const filteredDecks$ = keywordFilter$.pipe(
@@ -70,61 +60,32 @@ const useMyDecks = () => {
     return await db.deck.findOne(id).exec();
   };
 
-  const updateProgress = clientOnly(async (data: PartialExcept<DeckProgress, 'id'>) => {
+  const answer = clientOnly(async (data: AnswerPayload) => {
     const db = await getIndexedDb();
-    const deckDoc = await db.deck.findOne(data.id).exec();
+
+    const cardDoc = await db.card.findOne(data.id).exec();
+    if (!cardDoc) {
+      throw new Error(`Provided card id not found: ${data.id}`);
+    }
+
+    const deckDoc = await db.deck.findOne(cardDoc.deckId).exec();
     if (!deckDoc) {
-      return;
+      throw new Error(`Deck not found: ${cardDoc.deckId}`);
     }
 
-    const nextProgress = {
-      lastStudied: data.lastStudied ?? deckDoc.lastStudied ?? null,
-      masteredCards: {
-        ...(deckDoc.masteredCards ?? {}),
-      },
-    };
-
-    for (const key in data.masteredCards) {
-      if (data.masteredCards[key]) {
-        nextProgress.masteredCards[key] = data.masteredCards[key];
-      } else {
-        const { [key]: _, ...rest } = nextProgress.masteredCards;
-        nextProgress.masteredCards = rest;
-      }
-    }
-
-    await deckDoc.update({
+    await cardDoc.update({
       $set: {
-        lastStudied: data.lastStudied ?? deckDoc.lastStudied ?? null,
-        masteredCards: nextProgress.masteredCards,
+        isMastered: data.isMastered,
       },
     });
-  });
 
-  const exportProgress = () => {
-    const runtimeConfig = useRuntimeConfig();
-
-    return {
-      version: runtimeConfig.public.databaseSchemaVersion,
-      data: Object.values(progress.value),
-    };
-  };
-
-  const importProgress = clientOnly(async (data: DeckProgress[]) => {
-    const db = await getIndexedDb();
-    await Promise.all(data.map(async (deckProgress) => {
-      const deckDoc = await db.deck.findOne(deckProgress.id).exec();
-      if (!deckDoc) {
-        return;
-      }
-
-      await deckDoc.update({
-        $set: {
-          lastStudied: deckProgress.lastStudied,
-          masteredCards: deckProgress.masteredCards,
-        },
-      });
-    }));
+    const masteredCount = await db.card.count().where({ deckId: deckDoc.id, isMastered: true }).exec();
+    await deckDoc.update({
+      $set: {
+        lastStudied: new Date().toISOString(),
+        masteredCount: masteredCount,
+      },
+    });
   });
 
   const createDeck = clientOnly(async (payload: { name: string; description?: string }) => {
@@ -136,7 +97,7 @@ const useMyDecks = () => {
       name: payload.name,
       description: payload.description,
       cardCount: 0,
-      masteredCards: {},
+      masteredCount: 0,
       createdAt: new Date().toISOString(),
     });
 
@@ -164,7 +125,7 @@ const useMyDecks = () => {
     await db.deck.findOne(id).remove();
   });
 
-  const copyMarketDeck = clientOnly(async (meta: MarketDeckMeta) => {
+  const copyMarketDeck = clientOnly(async (meta: DeckMeta) => {
     const raw = await $fetch(`/data/decks/${meta.id}.json`);
     const deckDetail = deckDetailSchema.parse(raw);
 
@@ -189,9 +150,7 @@ const useMyDecks = () => {
     createDeck,
     updateDeck,
     deleteDeck,
-    updateProgress,
-    exportProgress,
-    importProgress,
+    answer,
     copyMarketDeck,
   };
 };
