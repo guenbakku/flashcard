@@ -29,20 +29,23 @@ const browseIndex = ref(0);
 const currentIndex = ref(0);
 const results = ref<{ [cardId: string]: boolean }>({});
 
-const displayCards = computed(() => {
-  if (!cardDocs.value) {
-    return [];
-  };
+const displayCards = computedWithControl(
+  // Exclude 'cardDocs' from the watch source to prevent 'displayCards' from recalculating
+  // when a user clicks answer button. Otherwise, the order of 'displayCards' will change
+  // unexpectedly when 'isShuffle' is enabled.
+  () => [isShuffle.value, isFilterCorrect.value, capturedMasteredCards.value],
+  () => {
+    const filtered = isFilterCorrect.value
+      ? cardDocs.value.filter(c => !capturedMasteredCards.value.has(c.id))
+      : cardDocs.value;
 
-  const filtered = isFilterCorrect.value
-    ? cardDocs.value.filter(c => !capturedMasteredCards.value.has(c.id))
-    : cardDocs.value;
+    if (!isShuffle.value) {
+      return filtered;
+    };
 
-  if (!isShuffle.value) {
-    return filtered;
-  };
-  return [...filtered].sort(() => Math.random() - 0.5);
-});
+    return [...filtered].sort(() => Math.random() - 0.5);
+  },
+);
 
 const currentCard = computed(() => displayCards.value?.[currentIndex.value]);
 const totalDeckCards = computed(() => cardDocs.value.length);
