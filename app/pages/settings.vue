@@ -10,6 +10,11 @@ const menuItems = [
     icon: 'i-lucide-arrow-left-right',
     to: { name: 'settings-data-transfer' },
   },
+  {
+    label: 'Phiên bản ứng dụng',
+    icon: 'i-lucide-info',
+    to: { name: 'settings-version' },
+  },
 ];
 
 </script>
