@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -64,6 +67,21 @@ export default defineNuxtConfig({
         'zod',
         'zod/v4/core',
       ],
+    },
+  },
+
+  hooks: {
+    // Generate the static JSON file containing the buildId in the public directory
+    'nitro:init': (nitro) => {
+      const buildId = nitro.options.runtimeConfig.app.buildId;
+      const timestamp = Date.now();
+
+      const rootPublicDir = path.resolve('public');
+
+      fs.writeFileSync(
+        path.join(rootPublicDir, 'version.json'),
+        JSON.stringify({ buildId, timestamp }, null),
+      );
     },
   },
 });
