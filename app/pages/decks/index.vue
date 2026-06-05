@@ -5,6 +5,10 @@ import ModalDeckCreation from './_components/ModalDeckCreation.vue';
 import ModalDeckDeletion from './_components/ModalDeckDeletion.vue';
 import ModalDeckUpdation from './_components/ModalDeckUpdation.vue';
 
+definePageMeta({
+  alias: '/',
+});
+
 const { deckDocs, pending, filterDecks } = useMyDecks();
 
 const keyword = useState(() => '');

@@ -110,7 +110,7 @@ watch(currentIndex, () => {
         <template #leading>
           <UDashboardSidebarCollapse />
           <UButton
-            :to="{ name: 'decks' }"
+            to="/"
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"

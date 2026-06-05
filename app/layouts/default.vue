@@ -8,7 +8,7 @@ const menus = [
     {
       label: 'Bộ thẻ của tôi',
       icon: 'i-lucide-layers',
-      to: { name: 'decks' },
+      to: '/',
       onSelect: () => open.value = false,
     },
     {
