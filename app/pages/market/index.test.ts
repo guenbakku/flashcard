@@ -7,6 +7,7 @@ import IndexPage from './index.vue';
 const { mockUseMarketDecks } = vi.hoisted(() => ({ mockUseMarketDecks: vi.fn() }));
 
 vi.mock('~/composables/use-market-decks', () => ({ default: mockUseMarketDecks }));
+vi.mock('~/composables/use-indexed-db', () => ({ default: () => ({ emptyDb: vi.fn(), getDb: vi.fn(), registerGracefulDbClosing: vi.fn() }) }));
 
 const mockDecks = [
   { id: 'deck-a', name: 'JavaScript Basics', description: 'Learn JS', cardCount: 10 },
