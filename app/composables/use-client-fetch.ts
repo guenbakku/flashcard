@@ -9,8 +9,8 @@ const useClientFetch = <T>(url: string | (() => string), options: UseFetchOption
   // Add buildVersion as query parameter to JSON files to prevent caching issues of browser.
   // This ensure user always get the latest version of JSON files after each build.
   if (urlValue.endsWith('.json')) {
-    const { public: { buildVersion } } = useRuntimeConfig();
-    urlValue = `${urlValue}?${buildVersion}`;
+    const config = useRuntimeConfig();
+    urlValue = `${urlValue}?${config.app.buildId}`;
   }
 
   const result = useFetch(urlValue, {
