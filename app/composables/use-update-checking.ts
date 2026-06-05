@@ -7,10 +7,22 @@ type Version = {
 const CONTINUOS_CHECKING_INTERVAL_SEC = 1800; // 30 minutes
 const NOTIFY_RETRY_DELAY_SEC = 21600; // 6 hours
 
+const getPendingState = () => useState(() => true);
+const getLatestVersionState = () => useState<Version | undefined>();
+
+const fetchData = useDebounceFn(async () => {
+  const pending = getPendingState();
+  const latestVersion = getLatestVersionState();
+
+  pending.value = true;
+  latestVersion.value = await $fetch(`/version.json?${Date.now()}`);
+  pending.value = false;
+}, 1000);
+
 const useUpdateChecking = () => {
-  const pending = ref(true);
-  const latestVersion = useState<Version | undefined>();
-  const isNotified = useLocalStorage<number | undefined>('new-version-notified-at', undefined);
+  const pending = getPendingState();
+  const latestVersion = getLatestVersionState();
+  const lastNotifiedAt = useLocalStorage<number | undefined>('new-version-notified-at', undefined);
 
   const config = useRuntimeConfig();
   const currentVersion = shallowRef({
@@ -19,13 +31,7 @@ const useUpdateChecking = () => {
     buildId: String(config.app.buildId),
   });
 
-  onMounted(() => fetchData());
-
-  const fetchData = async () => {
-    pending.value = true;
-    latestVersion.value = await $fetch('/version.json');
-    pending.value = false;
-  };
+  onMounted(fetchData);
 
   const hasUpdate = computed(
     () => latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
@@ -44,7 +50,7 @@ const useUpdateChecking = () => {
         return false;
       }
 
-      if (isNotified.value && (Date.now() - isNotified.value) <= NOTIFY_RETRY_DELAY_SEC * 1000) {
+      if (lastNotifiedAt.value && (Date.now() - lastNotifiedAt.value) <= NOTIFY_RETRY_DELAY_SEC * 1000) {
         return false;
       }
 
@@ -52,7 +58,7 @@ const useUpdateChecking = () => {
     };
 
     const notify = () => {
-      isNotified.value = Date.now();
+      lastNotifiedAt.value = Date.now();
 
       const toast = useToast();
       toast.add({
@@ -72,7 +78,7 @@ const useUpdateChecking = () => {
       });
     };
 
-    const watchHandle = watch(
+    watch(
       latestVersion,
       () => shouldNotify() && notify(),
     );
@@ -89,7 +95,6 @@ const useUpdateChecking = () => {
 
     onUnmounted(() => {
       intervalHandle.pause();
-      watchHandle.stop();
     });
   };
 
