@@ -120,7 +120,6 @@ async function handleImport() {
         <UButton
           icon="i-lucide-download"
           label="Tải xuống"
-          variant="subtle"
           :loading="isExporting"
           :disabled="isExporting"
           @click="handleExport"
@@ -153,7 +152,6 @@ async function handleImport() {
           <UButton
             icon="i-lucide-upload"
             label="Khôi phục"
-            variant="subtle"
             :disabled="!canUpload || isImporting"
             :loading="isImporting"
             @click="handleImport"
