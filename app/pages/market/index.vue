@@ -45,19 +45,11 @@ const filteredDecks = computed(() =>
       <div class="py-3">
         <ClientOnly>
           <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div v-for="i in 2" :key="i" class="border-default bg-default/50 rounded-xl border p-4 space-y-3">
-              <USkeleton class="h-5 w-3/4 rounded" />
-              <USkeleton class="h-4 w-full rounded" />
-              <USkeleton class="h-4 w-2/3 rounded" />
-              <div class="pt-2 space-y-2">
-                <div class="flex justify-between">
-                  <USkeleton class="h-4 w-16 rounded" />
-                  <USkeleton class="h-4 w-10 rounded" />
-                </div>
-                <USkeleton class="h-2 w-full rounded" />
-                <USkeleton class="h-3 w-32 rounded" />
-              </div>
-              <USkeleton class="h-8 w-full rounded-lg mt-2" />
+            <div v-for="i in 2" :key="i" class="border border-default bg-elevated rounded-lg p-4 space-y-3">
+              <USkeleton class="h-5 w-3/4 rounded bg-default/70" />
+              <USkeleton class="h-4 w-full rounded bg-default/70" />
+              <USkeleton class="h-4 w-12 rounded bg-default/70" />
+              <USkeleton class="h-7 w-24 rounded-lg bg-default/70 mt-2" />
             </div>
           </UPageGrid>
 
@@ -75,7 +67,6 @@ const filteredDecks = computed(() =>
               :key="deck.id"
               :title="deck.name"
               variant="subtle"
-              class="hover:z-1"
             >
               <template #description>
                 <div class="mt-auto space-y-2">

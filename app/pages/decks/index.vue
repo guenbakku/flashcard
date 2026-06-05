@@ -84,19 +84,18 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
     <template #body>
       <div class="py-3">
         <UPageGrid v-if="pending" class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div v-for="i in 2" :key="i" class="border border-default rounded-xl p-4 space-y-3">
-            <USkeleton class="h-5 w-3/4 rounded" />
-            <USkeleton class="h-4 w-full rounded" />
-            <USkeleton class="h-4 w-2/3 rounded" />
+          <div v-for="i in 2" :key="i" class="border border-default bg-elevated rounded-lg p-4 space-y-3">
+            <USkeleton class="h-5 w-3/4 rounded bg-default/70" />
+            <USkeleton class="h-4 w-full rounded bg-default/70" />
+            <USkeleton class="h-8 w-full rounded-lg bg-default/70 mt-2" />
             <div class="pt-2 space-y-2">
               <div class="flex justify-between">
-                <USkeleton class="h-4 w-16 rounded" />
-                <USkeleton class="h-4 w-10 rounded" />
+                <USkeleton class="h-4 w-16 bg-default/70 rounded" />
+                <USkeleton class="h-4 w-10 bg-default/70 rounded" />
               </div>
-              <USkeleton class="h-2 w-full rounded" />
-              <USkeleton class="h-3 w-32 rounded" />
+              <USkeleton class="h-1 w-full bg-default/70 rounded" />
+              <USkeleton class="h-3 w-40 bg-default/70 rounded" />
             </div>
-            <USkeleton class="h-8 w-full rounded-lg mt-2" />
           </div>
         </UPageGrid>
 
