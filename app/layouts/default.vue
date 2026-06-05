@@ -2,7 +2,6 @@
 import type { NavigationMenuItem } from '@nuxt/ui';
 
 const open = ref(false);
-const { public: { version } } = useRuntimeConfig();
 
 const menus = [
   [
@@ -51,7 +50,6 @@ const menus = [
           </div>
           <span v-if="!collapsed" class="text-highlighted truncate font-semibold">
             Flashcard
-            <span class="text-muted text-xs font-normal align-baseline">v{{ version }}</span>
           </span>
         </div>
       </template>

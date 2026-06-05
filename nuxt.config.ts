@@ -1,3 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const VERSION = '1.0.0';
+const BUILD_TIMESTAMP = Date.now();
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -21,9 +27,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: '',
-      version: '1.0.0',
-      databaseSchemaVersion: 0,
-      buildVersion: Date.now(),
+      version: VERSION,
+      buildTimestamp: BUILD_TIMESTAMP,
     },
   },
 
@@ -64,6 +69,24 @@ export default defineNuxtConfig({
         'zod',
         'zod/v4/core',
       ],
+    },
+  },
+
+  hooks: {
+    // Generate the static JSON file containing the buildId in the public directory
+    'nitro:init': (nitro) => {
+      const data = {
+        version: VERSION,
+        buildId: nitro.options.runtimeConfig.app.buildId,
+        timestamp: BUILD_TIMESTAMP,
+      };
+
+      const rootPublicDir = path.resolve('public');
+
+      fs.writeFileSync(
+        path.join(rootPublicDir, 'version.json'),
+        JSON.stringify(data, null),
+      );
     },
   },
 });

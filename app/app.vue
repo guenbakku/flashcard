@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { registerGracefulDbClosing } from '~/utils/get-indexed-db/helpers';
 
+const { registerContinuousChecking } = useUpdateChecking();
+
 registerGracefulDbClosing();
+registerContinuousChecking();
 
 const colorMode = useColorMode();
 const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white');
