@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { emptyDb } from '~/utils/get-indexed-db/helpers';
-
 const toast = useToast();
 const fileInput = useTemplateRef<{ inputRef: HTMLInputElement }>('fileInputRef');
+
+const { emptyDb, getDb } = useIndexedDb();
 
 const importError = ref('');
 const fileValue = ref(null);
@@ -18,7 +18,7 @@ watch(fileValue, () => {
 async function handleExport() {
   try {
     isExporting.value = true;
-    const db = await getIndexedDb();
+    const db = await getDb();
 
     // Dump entire database to JSON
     const jsonData = await db.exportJSON();
@@ -71,7 +71,7 @@ async function handleImport() {
       }
 
       // Clear existing data before importing
-      const db = await getIndexedDb();
+      const db = await getDb();
       await emptyDb();
 
       // Import JSON data - this will replace all existing data

@@ -3,8 +3,8 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { computed, onMounted, onUnmounted } from 'vue';
 
+import type { DocTypes } from '~/composables/use-indexed-db';
 import { deckDetailSchema } from '~/types';
-import type { DocTypes } from '~/utils/get-indexed-db';
 
 type DeckDoc = DocTypes['deck'] & { readonly progress: number };
 type CardDoc = DocTypes['card'];
@@ -17,10 +17,11 @@ const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
 const useMyDecks = () => {
   const deckDocs = getDecksState();
   const loaded = getLoadedState();
+  const { getDb } = useIndexedDb();
 
   const keywordFilter$ = new BehaviorSubject<string>('');
   const filteredDecks$ = keywordFilter$.pipe(
-    switchMap(keyword => (from(getIndexedDb()).pipe(
+    switchMap(keyword => (from(getDb()).pipe(
       switchMap((db) => {
         let selector: object = {};
         if (keyword) {
@@ -56,12 +57,12 @@ const useMyDecks = () => {
   };
 
   const getDeck = async (id: string) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     return await db.deck.findOne(id).exec();
   };
 
   const answer = clientOnly(async (data: AnswerPayload) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
 
     const cardDoc = await db.card.findOne(data.id).exec();
     if (!cardDoc) {
@@ -89,7 +90,7 @@ const useMyDecks = () => {
   });
 
   const createDeck = clientOnly(async (payload: { name: string; description?: string }) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     const id = generateUid();
 
     const nextDeck = await db.deck.insert({
@@ -105,7 +106,7 @@ const useMyDecks = () => {
   });
 
   const updateDeck = clientOnly(async (payload: { id: string; name: string; description?: string }) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     const deckDoc = await db.deck.findOne(payload.id).exec();
     if (!deckDoc) {
       throw new Error(`Provided id not found: ${payload.id}`);
@@ -120,7 +121,7 @@ const useMyDecks = () => {
   });
 
   const deleteDeck = clientOnly(async (id: string) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     await db.card.find().where('deckId').eq(id).remove();
     await db.deck.findOne(id).remove();
   });

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { registerGracefulDbClosing } from '~/utils/get-indexed-db/helpers';
-
+const { registerGracefulDbClosing } = useIndexedDb();
 const { registerContinuousChecking } = useUpdateChecking();
 
 registerGracefulDbClosing();

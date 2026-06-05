@@ -2,7 +2,7 @@
 import { useSortable, type UseSortableOptions } from '@vueuse/integrations/useSortable';
 import type { RxDocument } from 'rxdb';
 
-import type { DocTypes } from '~/utils/get-indexed-db';
+import type { DocTypes } from '~/composables/use-indexed-db';
 
 import ModalCardCreation from './_components/ModalCardCreation.vue';
 import ModalCardDeletion from './_components/ModalCardDeletion.vue';

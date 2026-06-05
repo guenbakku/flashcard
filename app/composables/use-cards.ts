@@ -3,7 +3,7 @@ import { BehaviorSubject, from, type Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { _decode } from 'zod/v4/core';
 
-import type { DocTypes } from '~/utils/get-indexed-db';
+import type { DocTypes } from '~/composables/use-indexed-db';
 
 type CardDocument = DocTypes['card'];
 type CardPayload = Pick<CardDocument, 'front' | 'back' | 'backSub'>;
@@ -14,10 +14,11 @@ const getLoadedState = () => useState<boolean>('cardsLoaded', () => false);
 const useCards = (deckId: string) => {
   const cardDocs = getCardsState();
   const loaded = getLoadedState();
+  const { getDb } = useIndexedDb();
 
   const keywordFilter$ = new BehaviorSubject<string>('');
   const filteredDecks$ = keywordFilter$.pipe(
-    switchMap(keyword => (from(getIndexedDb()).pipe(
+    switchMap(keyword => (from(getDb()).pipe(
       switchMap((db) => {
         const selector: Record<string, unknown> = {
           deckId,
@@ -54,7 +55,7 @@ const useCards = (deckId: string) => {
   };
 
   const createCard = clientOnly(async (payload: CardPayload) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     const deckDoc = await db.deck.findOne(deckId).exec();
 
     if (!deckDoc) {
@@ -83,7 +84,7 @@ const useCards = (deckId: string) => {
   });
 
   const updateCard = clientOnly(async (cardId: string, payload: CardPayload) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     const cardDoc = await db.card.findOne().where({ id: cardId, deckId: deckId }).exec();
 
     if (!cardDoc) {
@@ -100,7 +101,7 @@ const useCards = (deckId: string) => {
   });
 
   const deleteCard = clientOnly(async (cardId: string) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
     const cardDoc = await db.card.findOne().where({ id: cardId, deckId: deckId }).exec();
     const deckDoc = await db.deck.findOne(deckId).exec();
     if (!deckDoc || !cardDoc) {
@@ -124,7 +125,7 @@ const useCards = (deckId: string) => {
       return;
     }
 
-    const db = await getIndexedDb();
+    const db = await getDb();
     const deckDoc = await db.deck.findOne(deckId).exec();
 
     if (!deckDoc) {
@@ -150,7 +151,7 @@ const useCards = (deckId: string) => {
   });
 
   const reorderCards = clientOnly(async (cards: CardDocument[]) => {
-    const db = await getIndexedDb();
+    const db = await getDb();
 
     const invalidCards = cards.filter(card => card.deckId !== deckId);
     if (invalidCards.length > 0) {
