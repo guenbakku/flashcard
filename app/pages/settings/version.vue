@@ -1,12 +1,5 @@
 <script setup lang="ts">
-const config = useRuntimeConfig();
-const { data: latestVersion } = useClientFetch<{ buildId: string; timestamp: number }>(
-  '/version.json',
-);
-
-const hasUpdate = computed(
-  () => latestVersion.value?.buildId && latestVersion.value.buildId !== config.app.buildId,
-);
+const { hasUpdate, pending, currentVersion, latestVersion } = useUpdateChecking();
 
 const reloadApp = () => {
   window.location.reload();
@@ -25,23 +18,35 @@ const reloadApp = () => {
         </div>
       </template>
       <div class="space-y-3">
-        <ul class="text-sm text-muted">
-          <li>
-            Version: {{ config.public.version }}
-          </li>
-          <li>
-            Build Id: {{ config.app.buildId }}
-          </li>
+        <ul class="text-sm text-muted pl-5 list-disc">
+          <li>Version: {{ currentVersion.version }}</li>
+          <li>Build Id: {{ currentVersion.buildId }}</li>
+          <li>Date: {{ new Date(currentVersion.timestamp).toLocaleString() }}</li>
         </ul>
 
-        <div v-if="hasUpdate" class="space-y-2">
+        <div class="space-y-2">
           <USeparator />
-          <p class="text-sm text-muted">
-            Đã có bản cập nhật mới. Vui lòng nâng cấp để sử dụng các tính năng và dữ liệu mới nhất.
-          </p>
-          <UButton color="primary" @click="reloadApp">
-            Cập nhật ngay
-          </UButton>
+          <div v-if="pending" class="flex items-center space-x-1">
+            <UIcon name="i-lucide-loader-circle" class="animate-spin text-primary size-5" />
+            <p class="text-sm text-muted">
+              Đang kiểm tra...
+            </p>
+          </div>
+          <div v-else-if="hasUpdate" class="space-y-2">
+            <p class="text-sm text-muted">
+              Có bản cập nhật mới. Vui lòng nâng cấp để sử dụng các tính năng và dữ liệu mới nhất.<br>
+              Phiên bản mới: {{ latestVersion?.version }}
+            </p>
+            <UButton color="primary" @click="reloadApp">
+              Cập nhật ngay
+            </UButton>
+          </div>
+          <UBadge v-else class="flex-1 items-center" variant="subtle">
+            <UIcon name="i-lucide-check" class="text-primary size-5" />
+            <p class="text-sm">
+              Đang sử dụng phiên bản mới nhất
+            </p>
+          </UBadge>
         </div>
       </div>
     </UCard>
