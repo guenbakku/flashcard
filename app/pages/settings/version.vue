@@ -1,9 +1,11 @@
 <script setup lang="ts">
-const { hasUpdate, pending, currentVersion, latestVersion } = useUpdateChecking();
-
-const reloadApp = () => {
-  window.location.reload();
-};
+const {
+  hasUpdate,
+  pending,
+  currentVersion,
+  latestVersion,
+  update,
+} = useUpdateChecking();
 </script>
 
 <template>
@@ -37,7 +39,7 @@ const reloadApp = () => {
               Có bản cập nhật mới. Vui lòng nâng cấp để sử dụng các tính năng và dữ liệu mới nhất.<br>
               Phiên bản mới: {{ latestVersion?.version }}
             </p>
-            <UButton color="primary" @click="reloadApp">
+            <UButton color="primary" icon="i-lucide-refresh-cw" @click="update">
               Cập nhật ngay
             </UButton>
           </div>
