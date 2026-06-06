@@ -1,4 +1,4 @@
-function formatDatetime(dateStr: string | Date | undefined) {
+function formatDatetime(dateStr: number | string | Date | undefined) {
   if (!dateStr) {
     return null;
   }
