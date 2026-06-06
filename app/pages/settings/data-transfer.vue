@@ -22,7 +22,7 @@ async function handleExport() {
 
     // Dump entire database to JSON
     const jsonData = await db.exportJSON();
-    const datetime = new Date().toISOString().slice(0, 19).replace(/[^0-9]/g, '');
+    const localDatetime = new Date().toLocaleString('sv').slice(0, 19).replace(/[^0-9]/g, '');
 
     // Create blob and download
     const json = JSON.stringify(jsonData, null, 2);
@@ -30,7 +30,7 @@ async function handleExport() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `flashcard-backup-${datetime}.json`;
+    a.download = `flashcard-backup-${localDatetime}.json`;
     a.click();
     URL.revokeObjectURL(url);
 
