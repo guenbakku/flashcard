@@ -6,7 +6,7 @@ import { collectionFactory } from '../helpers';
 
 const schema = {
   title: 'deck schema',
-  version: 1,
+  version: 2,
   description: 'Deck info stored in indexedDB',
   type: 'object',
   primaryKey: 'id',
@@ -32,12 +32,12 @@ const schema = {
       minimum: 0,
     },
     lastStudied: {
-      type: 'string',
-      format: 'date-time',
+      type: 'integer',
+      minimum: 0,
     },
     createdAt: {
-      type: 'string',
-      format: 'date-time',
+      type: 'integer',
+      minimum: 0,
     },
   },
   required: ['id', 'name', 'cardCount', 'masteredCount', 'createdAt'],
@@ -54,6 +54,13 @@ const factory = collectionFactory('deck', {
       return {
         ...rest,
         masteredCount: 0,
+      };
+    },
+    2: (doc) => {
+      return {
+        ...doc,
+        lastStudied: new Date(doc.lastStudied).getTime(),
+        createdAt: new Date(doc.createdAt).getTime(),
       };
     },
   },

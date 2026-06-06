@@ -83,7 +83,7 @@ const useMyDecks = () => {
     const masteredCount = await db.card.count().where({ deckId: deckDoc.id, isMastered: true }).exec();
     await deckDoc.update({
       $set: {
-        lastStudied: new Date().toISOString(),
+        lastStudied: new Date().getTime(),
         masteredCount: masteredCount,
       },
     });
@@ -99,7 +99,7 @@ const useMyDecks = () => {
       description: payload.description,
       cardCount: 0,
       masteredCount: 0,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().getTime(),
     });
 
     return nextDeck;
