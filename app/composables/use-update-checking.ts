@@ -4,7 +4,6 @@ type Version = {
   timestamp: number;
 };
 
-const CONTINUOS_CHECKING_INTERVAL_SEC = 1800; // 30 minutes
 const NOTIFY_RETRY_DELAY_SEC = 21600; // 6 hours
 
 const getPendingState = () => useState(() => true);
@@ -31,7 +30,7 @@ const useUpdateChecking = () => {
     buildId: String(config.app.buildId),
   });
 
-  onMounted(fetchData);
+  tryOnMounted(fetchData);
 
   const hasUpdate = computed(
     () => latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
@@ -39,7 +38,7 @@ const useUpdateChecking = () => {
 
   const update = () => window.location.reload();
 
-  const registerContinuousChecking = () => {
+  const checkUpdate = async () => {
     const shouldNotify = () => {
       const excludeRouteNames = ['settings-version'];
       if (excludeRouteNames.includes(String(useRoute().name))) {
@@ -78,24 +77,11 @@ const useUpdateChecking = () => {
       });
     };
 
-    watch(
-      latestVersion,
-      () => shouldNotify() && notify(),
-    );
+    await fetchData();
 
-    const intervalHandle = useIntervalFn(
-      fetchData,
-      CONTINUOS_CHECKING_INTERVAL_SEC * 1000,
-      { immediate: false },
-    );
-
-    onMounted(() => {
-      intervalHandle.resume();
-    });
-
-    onUnmounted(() => {
-      intervalHandle.pause();
-    });
+    if (shouldNotify()) {
+      notify();
+    }
   };
 
   return {
@@ -104,7 +90,7 @@ const useUpdateChecking = () => {
     latestVersion,
     currentVersion,
     update,
-    registerContinuousChecking,
+    checkUpdate,
   };
 };
 

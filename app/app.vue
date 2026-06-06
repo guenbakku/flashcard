@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const { registerGracefulDbClosing } = useIndexedDb();
-const { registerContinuousChecking } = useUpdateChecking();
 
 registerGracefulDbClosing();
-registerContinuousChecking();
 
 const colorMode = useColorMode();
 const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white');

@@ -6,6 +6,14 @@ const {
   latestVersion,
   update,
 } = useUpdateChecking();
+
+const handleUpdate = () => {
+  isUpdating.value = true;
+  // Delay reloading to allow the user to notice the loading state/UI change
+  setTimeout(update, 1000);
+};
+
+const isUpdating = ref(false);
 </script>
 
 <template>
@@ -39,7 +47,12 @@ const {
               Có bản cập nhật mới. Vui lòng nâng cấp để sử dụng các tính năng và dữ liệu mới nhất.<br>
               Phiên bản mới: {{ latestVersion?.version }}
             </p>
-            <UButton color="primary" icon="i-lucide-refresh-cw" @click="update">
+            <UButton
+              color="primary"
+              icon="i-lucide-refresh-cw"
+              :loading="isUpdating"
+              @click="handleUpdate"
+            >
               Cập nhật ngay
             </UButton>
           </div>
