@@ -19,9 +19,28 @@ const totalDeckCards = computed(() => cards.value.length);
 const modalOpen = ref(false);
 const isCopyable = computed(() => !!deck.value && cards.value.length > 0);
 
-watch(currentIndex, () => {
+const handleBrowse = (direction: 'next' | 'prev') => {
+  setTimeout(
+    () => {
+      switch (direction) {
+        case 'next':
+          if (currentIndex.value < totalDeckCards.value - 1) {
+            currentIndex.value++;
+          }
+          break;
+        case 'prev':
+          if (currentIndex.value > 0) {
+            currentIndex.value--;
+          }
+          break;
+      }
+    },
+    // Purpose of 200ms: delay loading new data until the card flipping back completely
+    isFlipped.value ? 200 : 0,
+  );
+
   isFlipped.value = false;
-});
+};
 </script>
 
 <template>
@@ -106,7 +125,7 @@ watch(currentIndex, () => {
 
             <!-- Progress -->
             <div class="w-full max-w-lg space-y-1">
-              <div class="flex justify-between text-xs">
+              <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-muted">{{ currentIndex + 1 }} / {{ totalDeckCards }}</span>
               </div>
               <USlider
@@ -125,7 +144,7 @@ watch(currentIndex, () => {
                 size="lg"
                 class="flex-1 justify-center touch-manipulation"
                 :disabled="currentIndex === 0"
-                @click="--currentIndex"
+                @click="handleBrowse('prev')"
               >
                 Quay lại
               </UButton>
@@ -137,7 +156,7 @@ watch(currentIndex, () => {
                 size="lg"
                 class="flex-1 justify-center touch-manipulation"
                 :disabled="currentIndex === totalDeckCards - 1"
-                @click="++currentIndex"
+                @click="handleBrowse('next')"
               >
                 Tiếp theo
               </UButton>

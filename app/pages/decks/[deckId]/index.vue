@@ -25,7 +25,6 @@ const isFilterCorrect = ref(false);
 const isBrowseMode = ref(false);
 const isFlipped = ref(false);
 
-const browseIndex = ref(0);
 const currentIndex = ref(0);
 const results = ref<{ [cardId: string]: boolean }>({});
 
@@ -54,6 +53,29 @@ const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v
 const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
 const isDone = computed(() => !isBrowseMode.value && totalDisplayCards.value && Object.values(results.value).length === totalDisplayCards.value);
 
+const handleBrowse = (direction: 'next' | 'prev') => {
+  setTimeout(
+    () => {
+      switch (direction) {
+        case 'next':
+          if (currentIndex.value < totalDeckCards.value - 1) {
+            currentIndex.value++;
+          }
+          break;
+        case 'prev':
+          if (currentIndex.value > 0) {
+            currentIndex.value--;
+          }
+          break;
+      }
+    },
+    // Purpose of 200ms: delay loading new data until the card flipping back completely
+    isFlipped.value ? 200 : 0,
+  );
+
+  isFlipped.value = false;
+};
+
 async function handleAnswer(result: boolean) {
   if (!currentCard.value) {
     return;
@@ -67,22 +89,13 @@ async function handleAnswer(result: boolean) {
     isMastered: result,
   });
 
-  setTimeout(
-    () => {
-      if (currentIndex.value < totalDisplayCards.value - 1) {
-        ++currentIndex.value;
-      };
-    },
-    // Purpose of 200ms: delay loading new data until the card flipping back completely
-    isFlipped.value ? 200 : 0,
-  );
+  handleBrowse('next');
 
-  isFlipped.value = false;
   isAnswering.value = false;
 }
 
 function restart() {
-  browseIndex.value = 0;
+  currentIndex.value = 0;
   currentIndex.value = 0;
   isFlipped.value = false;
   results.value = {};
@@ -93,14 +106,6 @@ function reStudy() {
   capturedMasteredCards.value = new Set(cardDocs.value.filter(c => c.isMastered).map(c => c.id));
   restart();
 }
-
-watch(browseIndex, (val) => {
-  currentIndex.value = val;
-});
-
-watch(currentIndex, () => {
-  isFlipped.value = false;
-});
 </script>
 
 <template>
@@ -290,7 +295,7 @@ watch(currentIndex, () => {
 
             <!-- Progress -->
             <div class="w-full max-w-lg space-y-1">
-              <div class="flex justify-between text-xs">
+              <div class="flex items-center justify-between text-xs mb-2">
                 <span class="text-muted">{{ currentIndex + 1 }} / {{ totalDisplayCards }}</span>
                 <UBadge
                   :color="progress > 0 ? 'success' : 'neutral'"
@@ -302,7 +307,7 @@ watch(currentIndex, () => {
               </div>
               <USlider
                 v-if="isBrowseMode"
-                v-model="browseIndex"
+                v-model="currentIndex"
                 :max="totalDisplayCards - 1"
                 size="md"
               />
@@ -322,8 +327,8 @@ watch(currentIndex, () => {
                   icon="i-lucide-arrow-left"
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  :disabled="browseIndex === 0"
-                  @click="--browseIndex"
+                  :disabled="currentIndex === 0"
+                  @click="handleBrowse('prev')"
                 >
                   Quay lại
                 </UButton>
@@ -334,8 +339,8 @@ watch(currentIndex, () => {
                   trailing
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
-                  :disabled="browseIndex === totalDisplayCards - 1"
-                  @click="++browseIndex"
+                  :disabled="currentIndex === totalDisplayCards - 1"
+                  @click="handleBrowse('next')"
                 >
                   Tiếp theo
                 </UButton>
