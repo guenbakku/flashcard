@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 7",
+    "description": "Kanji sơ cấp cho người mới bắt đầu"
+  },
+  "cards": [
+    {
+      "front": "破",
+      "back": "PHÁ",
+      "backSub": "rách"
+    },
+    {
+      "front": "営",
+      "back": "DOANH",
+      "backSub": "kinh doanh"
+    },
+    {
+      "front": "因",
+      "back": "NHÂN",
+      "backSub": "nguyên nhân"
+    },
+    {
+      "front": "回",
+      "back": "HỒI",
+      "backSub": "lần (1 lần, 2 lần)"
+    },
+    {
+      "front": "困",
+      "back": "KHỐN",
+      "backSub": "khó khăn"
+    },
+    {
+      "front": "国",
+      "back": "QUỐC",
+      "backSub": "tổ quốc"
+    },
+    {
+      "front": "園",
+      "back": "VIÊN",
+      "backSub": "công viên"
+    },
+    {
+      "front": "図",
+      "back": "ĐỒ",
+      "backSub": "bản đồ"
+    },
+    {
+      "front": "西",
+      "back": "TÂY",
+      "backSub": "hướng Tây"
+    },
+    {
+      "front": "母",
+      "back": "MẪU",
+      "backSub": "mẹ"
+    },
+    {
+      "front": "毎",
+      "back": "MỖI",
+      "backSub": "mỗi (ngày, tháng...)"
+    },
+    {
+      "front": "曲",
+      "back": "KHÚC",
+      "backSub": "ca khúc"
+    },
+    {
+      "front": "由",
+      "back": "DO",
+      "backSub": "lý do"
+    },
+    {
+      "front": "町",
+      "back": "ĐINH",
+      "backSub": "thành phố, khu phố"
+    },
+    {
+      "front": "界",
+      "back": "GIỚI",
+      "backSub": "thế giới"
+    },
+    {
+      "front": "留",
+      "back": "LƯU",
+      "backSub": "du học"
+    },
+    {
+      "front": "番",
+      "back": "PHIÊN",
+      "backSub": "phiên hiệu"
+    },
+    {
+      "front": "画",
+      "back": "HỌA",
+      "backSub": "ảnh họa (phim)"
+    },
+    {
+      "front": "重",
+      "back": "TRỌNG",
+      "backSub": "nặng"
+    },
+    {
+      "front": "野",
+      "back": "DÃ",
+      "backSub": "dã cầu"
+    },
+    {
+      "front": "量",
+      "back": "LƯỢNG",
+      "backSub": "chất lượng"
+    },
+    {
+      "front": "早",
+      "back": "TẢO",
+      "backSub": "sớm"
+    },
+    {
+      "front": "明",
+      "back": "MINH",
+      "backSub": "sáng"
+    },
+    {
+      "front": "易",
+      "back": "DỊCH",
+      "backSub": "dễ"
+    },
+    {
+      "front": "昔",
+      "back": "TÍCH",
+      "backSub": "cổ tích"
+    },
+    {
+      "front": "映",
+      "back": "ẢNH",
+      "backSub": "ảnh họa (phim)"
+    },
+    {
+      "front": "春",
+      "back": "XUÂN",
+      "backSub": "mùa xuân"
+    },
+    {
+      "front": "昨",
+      "back": "TẠC",
+      "backSub": "đã qua"
+    },
+    {
+      "front": "時",
+      "back": "THỜI",
+      "backSub": "thời gian"
+    },
+    {
+      "front": "晩",
+      "back": "VÃN",
+      "backSub": "buổi tối"
+    },
+    {
+      "front": "昼",
+      "back": "TRÚ",
+      "backSub": "buổi trưa"
+    },
+    {
+      "front": "普",
+      "back": "PHỔ",
+      "backSub": "phổ thông"
+    },
+    {
+      "front": "晴",
+      "back": "TÌNH",
+      "backSub": "trời đẹp"
+    },
+    {
+      "front": "暇",
+      "back": "HẠ",
+      "backSub": "nhàn hạ"
+    },
+    {
+      "front": "暑",
+      "back": "THỬ",
+      "backSub": "nóng (thời tiết)"
+    },
+    {
+      "front": "暖",
+      "back": "NOÃN",
+      "backSub": "ấm (thời tiết)"
+    },
+    {
+      "front": "暗",
+      "back": "ÁM",
+      "backSub": "tối, u ám"
+    },
+    {
+      "front": "曜",
+      "back": "DIỆU",
+      "backSub": "ngày trong tuần"
+    },
+    {
+      "front": "書",
+      "back": "THƯ",
+      "backSub": "viết"
+    },
+    {
+      "front": "最",
+      "back": "TỐI",
+      "backSub": "nhất (tối cao...)"
+    },
+    {
+      "front": "的",
+      "back": "ĐÍCH",
+      "backSub": "mục đích"
+    },
+    {
+      "front": "皆",
+      "back": "GIAI",
+      "backSub": "các bạn"
+    },
+    {
+      "front": "習",
+      "back": "TẬP",
+      "backSub": "học tập"
+    },
+    {
+      "front": "直",
+      "back": "TRỰC",
+      "backSub": "sửa chữa"
+    },
+    {
+      "front": "相",
+      "back": "TƯỚNG, TƯƠNG",
+      "backSub": "thủ tướng"
+    },
+    {
+      "front": "具",
+      "back": "CỤ",
+      "backSub": "công cụ, giáo cụ"
+    },
+    {
+      "front": "真",
+      "back": "CHÂN",
+      "backSub": "chân thật"
+    },
+    {
+      "front": "県",
+      "back": "HUYỆN",
+      "backSub": "tỉnh"
+    },
+    {
+      "front": "首",
+      "back": "THỦ",
+      "backSub": "thủ tướng"
+    },
+    {
+      "front": "有",
+      "back": "HỮU",
+      "backSub": "có"
+    }
+  ]
+}

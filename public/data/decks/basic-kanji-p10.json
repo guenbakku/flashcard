@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 10",
+    "description": "Kanji sơ cấp cho người mới bắt đầu"
+  },
+  "cards": [
+    {
+      "front": "弱",
+      "back": "NHƯỢC",
+      "backSub": "yếu"
+    },
+    {
+      "front": "強",
+      "back": "CƯỜNG",
+      "backSub": "mạnh"
+    },
+    {
+      "front": "字",
+      "back": "TỰ",
+      "backSub": "chữ"
+    },
+    {
+      "front": "季",
+      "back": "QUÝ",
+      "backSub": "quý tiết (mùa)"
+    },
+    {
+      "front": "学",
+      "back": "HỌC",
+      "backSub": "học sinh"
+    },
+    {
+      "front": "島",
+      "back": "ĐẢO",
+      "backSub": "hòn đảo"
+    },
+    {
+      "front": "計",
+      "back": "KẾ",
+      "backSub": "kế hoạch"
+    },
+    {
+      "front": "記",
+      "back": "KÝ",
+      "backSub": "nhật ký"
+    },
+    {
+      "front": "許",
+      "back": "HỨA",
+      "backSub": "cho phép"
+    },
+    {
+      "front": "試",
+      "back": "THÍ",
+      "backSub": "thí nghiệm"
+    },
+    {
+      "front": "話",
+      "back": "THOẠI",
+      "backSub": "đàm thoại, nói"
+    },
+    {
+      "front": "誌",
+      "back": "CHÍ",
+      "backSub": "tạp chí"
+    },
+    {
+      "front": "語",
+      "back": "NGỮ",
+      "backSub": "ngôn ngữ"
+    },
+    {
+      "front": "説",
+      "back": "THUYẾT",
+      "backSub": "thuyết minh"
+    },
+    {
+      "front": "調",
+      "back": "ĐIỀU",
+      "backSub": "điều tra"
+    },
+    {
+      "front": "講",
+      "back": "GIẢNG",
+      "backSub": "giảng giải"
+    },
+    {
+      "front": "訳",
+      "back": "DỊCH",
+      "backSub": "phiên dịch"
+    },
+    {
+      "front": "議",
+      "back": "NGHỊ",
+      "backSub": "hội nghị"
+    },
+    {
+      "front": "読",
+      "back": "ĐỘC",
+      "backSub": "đọc sách, báo..."
+    },
+    {
+      "front": "談",
+      "back": "ĐÀM",
+      "backSub": "tương đàm (thảo luận)"
+    },
+    {
+      "front": "軽",
+      "back": "KHINH",
+      "backSub": "nhẹ"
+    },
+    {
+      "front": "転",
+      "back": "CHUYỂN",
+      "backSub": "vận chuyển"
+    },
+    {
+      "front": "閉",
+      "back": "BẾ",
+      "backSub": "đóng"
+    },
+    {
+      "front": "開",
+      "back": "KHAI",
+      "backSub": "mở"
+    },
+    {
+      "front": "間",
+      "back": "GIAN",
+      "backSub": "thời gian"
+    },
+    {
+      "front": "関",
+      "back": "QUAN",
+      "backSub": "quan hệ"
+    },
+    {
+      "front": "集",
+      "back": "TẬP",
+      "backSub": "tập hợp"
+    },
+    {
+      "front": "雑",
+      "back": "TẠP",
+      "backSub": "tạp chí"
+    },
+    {
+      "front": "難",
+      "back": "NAN",
+      "backSub": "khó"
+    },
+    {
+      "front": "配",
+      "back": "PHỐI",
+      "backSub": "tâm phối (lo lắng)"
+    },
+    {
+      "front": "酒",
+      "back": "TỬU",
+      "backSub": "rượu"
+    },
+    {
+      "front": "雨",
+      "back": "VŨ",
+      "backSub": "mưa"
+    },
+    {
+      "front": "雪",
+      "back": "TUYẾT",
+      "backSub": "tuyết"
+    },
+    {
+      "front": "電",
+      "back": "ĐIỆN",
+      "backSub": "điện"
+    },
+    {
+      "front": "震",
+      "back": "CHẤN",
+      "backSub": "địa chấn"
+    },
+    {
+      "front": "預",
+      "back": "DỰ",
+      "backSub": "gửi"
+    },
+    {
+      "front": "頭",
+      "back": "ĐẦU",
+      "backSub": "cái đầu"
+    },
+    {
+      "front": "題",
+      "back": "ĐỀ",
+      "backSub": "vấn đề"
+    },
+    {
+      "front": "顔",
+      "back": "NHAN",
+      "backSub": "khuôn mặt"
+    },
+    {
+      "front": "願",
+      "back": "NGUYỆN",
+      "backSub": "nhờ"
+    },
+    {
+      "front": "類",
+      "back": "LOẠI",
+      "backSub": "chủng loại"
+    },
+    {
+      "front": "食",
+      "back": "THỰC",
+      "backSub": "ăn"
+    },
+    {
+      "front": "飲",
+      "back": "ẨM",
+      "backSub": "uống"
+    },
+    {
+      "front": "飯",
+      "back": "PHẠN",
+      "backSub": "cơm"
+    },
+    {
+      "front": "飾",
+      "back": "SỨC",
+      "backSub": "trang trí"
+    },
+    {
+      "front": "館",
+      "back": "QUÁN",
+      "backSub": "lãnh sự quán"
+    },
+    {
+      "front": "馬",
+      "back": "MÃ",
+      "backSub": "con ngựa"
+    },
+    {
+      "front": "駐",
+      "back": "TRÚ",
+      "backSub": "dừng"
+    },
+    {
+      "front": "験",
+      "back": "NGHIỆM",
+      "backSub": "thí nghiệm"
+    },
+    {
+      "front": "駅",
+      "back": "DỊCH",
+      "backSub": "nhà ga"
+    }
+  ]
+}

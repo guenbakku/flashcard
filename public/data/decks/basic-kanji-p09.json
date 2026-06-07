@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 9",
+    "description": "Kanji sơ cấp cho người mới bắt đầu"
+  },
+  "cards": [
+    {
+      "front": "油",
+      "back": "DU",
+      "backSub": "dầu"
+    },
+    {
+      "front": "治",
+      "back": "TRỊ",
+      "backSub": "chữa trị"
+    },
+    {
+      "front": "泊",
+      "back": "BẠC",
+      "backSub": "trọ lại"
+    },
+    {
+      "front": "法",
+      "back": "PHÁP",
+      "backSub": "phương pháp"
+    },
+    {
+      "front": "泣",
+      "back": "KHẤP",
+      "backSub": "khóc"
+    },
+    {
+      "front": "注",
+      "back": "CHÚ",
+      "backSub": "chú ý"
+    },
+    {
+      "front": "泳",
+      "back": "VỊNH",
+      "backSub": "bơi lội"
+    },
+    {
+      "front": "洋",
+      "back": "DƯƠNG",
+      "backSub": "dương phục"
+    },
+    {
+      "front": "洗",
+      "back": "TẨY",
+      "backSub": "rửa"
+    },
+    {
+      "front": "活",
+      "back": "HOẠT",
+      "backSub": "sinh hoạt"
+    },
+    {
+      "front": "流",
+      "back": "LƯU",
+      "backSub": "chảy"
+    },
+    {
+      "front": "浴",
+      "back": "DỤC",
+      "backSub": "tắm"
+    },
+    {
+      "front": "海",
+      "back": "HẢI",
+      "backSub": "biển"
+    },
+    {
+      "front": "消",
+      "back": "TIÊU",
+      "backSub": "tẩy, tắt"
+    },
+    {
+      "front": "涼",
+      "back": "LƯƠNG",
+      "backSub": "mát mẻ"
+    },
+    {
+      "front": "涙",
+      "back": "LỆ",
+      "backSub": "nước mắt"
+    },
+    {
+      "front": "減",
+      "back": "GIẢM",
+      "backSub": "tăng giảm"
+    },
+    {
+      "front": "港",
+      "back": "CẢNG",
+      "backSub": "bến cảng"
+    },
+    {
+      "front": "準",
+      "back": "CHUẨN",
+      "backSub": "chuẩn bị"
+    },
+    {
+      "front": "温",
+      "back": "ÔN",
+      "backSub": "ấm áp"
+    },
+    {
+      "front": "漢",
+      "back": "HÁN",
+      "backSub": "hán tự"
+    },
+    {
+      "front": "済",
+      "back": "TẾ",
+      "backSub": "kinh tế"
+    },
+    {
+      "front": "無",
+      "back": "VÔ",
+      "backSub": "vô lý (quá sức)"
+    },
+    {
+      "front": "然",
+      "back": "NHIÊN",
+      "backSub": "tự nhiên"
+    },
+    {
+      "front": "熱",
+      "back": "NHIỆT",
+      "backSub": "nóng"
+    },
+    {
+      "front": "黒",
+      "back": "HẮC",
+      "backSub": "màu đen"
+    },
+    {
+      "front": "点",
+      "back": "ĐIỂM",
+      "backSub": "điểm số"
+    },
+    {
+      "front": "鳥",
+      "back": "ĐIỂU",
+      "backSub": "con chim"
+    },
+    {
+      "front": "焼",
+      "back": "THIÊU",
+      "backSub": "nướng"
+    },
+    {
+      "front": "現",
+      "back": "HIỆN",
+      "backSub": "hiện tại"
+    },
+    {
+      "front": "球",
+      "back": "CẦU",
+      "backSub": "dã cầu, địa cầu"
+    },
+    {
+      "front": "理",
+      "back": "LÝ",
+      "backSub": "liệu lý (thức ăn)"
+    },
+    {
+      "front": "走",
+      "back": "TẨU",
+      "backSub": "chạy"
+    },
+    {
+      "front": "起",
+      "back": "KHỞI",
+      "backSub": "thức dậy"
+    },
+    {
+      "front": "足",
+      "back": "TÚC",
+      "backSub": "cái chân"
+    },
+    {
+      "front": "止",
+      "back": "CHỈ",
+      "backSub": "đình chỉ"
+    },
+    {
+      "front": "正",
+      "back": "CHÍNH",
+      "backSub": "chính xác"
+    },
+    {
+      "front": "步",
+      "back": "BỘ",
+      "backSub": "tản bộ"
+    },
+    {
+      "front": "届",
+      "back": "GIỚI",
+      "backSub": "gửi đến"
+    },
+    {
+      "front": "屋",
+      "back": "ỐC",
+      "backSub": "phòng ốc"
+    },
+    {
+      "front": "所",
+      "back": "SỞ",
+      "backSub": "nơi chốn"
+    },
+    {
+      "front": "戻",
+      "back": "LỆ",
+      "backSub": "quay trở lại"
+    },
+    {
+      "front": "市",
+      "back": "THỊ",
+      "backSub": "thành thị"
+    },
+    {
+      "front": "布",
+      "back": "BỐ",
+      "backSub": "tài bố (cái ví)"
+    },
+    {
+      "front": "師",
+      "back": "SƯ",
+      "backSub": "giáo sư"
+    },
+    {
+      "front": "席",
+      "back": "TỊCH",
+      "backSub": "chỗ ngồi"
+    },
+    {
+      "front": "帳",
+      "back": "TRƯỞNG",
+      "backSub": "thủ trưởng (sổ tay)"
+    },
+    {
+      "front": "常",
+      "back": "THƯỜNG",
+      "backSub": "thông thường"
+    },
+    {
+      "front": "引",
+      "back": "DẪN",
+      "backSub": "kéo"
+    },
+    {
+      "front": "弟",
+      "back": "ĐỆ",
+      "backSub": "em trai"
+    }
+  ]
+}

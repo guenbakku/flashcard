@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 6",
+    "description": "Kanji sơ cấp cho người mới bắt đầu"
+  },
+  "cards": [
+    {
+      "front": "緒",
+      "back": "TỰ",
+      "backSub": "cùng nhau"
+    },
+    {
+      "front": "線",
+      "back": "TUYẾN",
+      "backSub": "tuyến đường"
+    },
+    {
+      "front": "練",
+      "back": "LUYỆN",
+      "backSub": "luyện tập"
+    },
+    {
+      "front": "絵",
+      "back": "HỘI",
+      "backSub": "bức tranh"
+    },
+    {
+      "front": "続",
+      "back": "TỤC",
+      "backSub": "tiếp tục"
+    },
+    {
+      "front": "組",
+      "back": "TỔ",
+      "backSub": "tổ chức"
+    },
+    {
+      "front": "欲",
+      "back": "DỤC",
+      "backSub": "dục vọng, muốn"
+    },
+    {
+      "front": "歌",
+      "back": "CA",
+      "backSub": "ca hát"
+    },
+    {
+      "front": "好",
+      "back": "HẢO",
+      "backSub": "thích"
+    },
+    {
+      "front": "妹",
+      "back": "MUỘI",
+      "backSub": "em gái"
+    },
+    {
+      "front": "妻",
+      "back": "THÊ",
+      "backSub": "vợ"
+    },
+    {
+      "front": "姉",
+      "back": "TỶ",
+      "backSub": "chị gái"
+    },
+    {
+      "front": "始",
+      "back": "THỦY",
+      "backSub": "bắt đầu"
+    },
+    {
+      "front": "婚",
+      "back": "HÔN",
+      "backSub": "kết hôn"
+    },
+    {
+      "front": "要",
+      "back": "YẾU",
+      "backSub": "tất yếu"
+    },
+    {
+      "front": "犬",
+      "back": "KHUYỂN",
+      "backSub": "con chó"
+    },
+    {
+      "front": "狭",
+      "back": "HIỆP",
+      "backSub": "hẹp"
+    },
+    {
+      "front": "独",
+      "back": "ĐỘC",
+      "backSub": "độc thân"
+    },
+    {
+      "front": "店",
+      "back": "ĐIỂM",
+      "backSub": "cửa tiệm"
+    },
+    {
+      "front": "度",
+      "back": "ĐỘ",
+      "backSub": "lần (1 lần, 2 lần)"
+    },
+    {
+      "front": "座",
+      "back": "TỌA",
+      "backSub": "ngồi"
+    },
+    {
+      "front": "庭",
+      "back": "ĐÌNH",
+      "backSub": "cái sân"
+    },
+    {
+      "front": "康",
+      "back": "KHANG",
+      "backSub": "kiện khang"
+    },
+    {
+      "front": "広",
+      "back": "QUẢNG",
+      "backSub": "rộng"
+    },
+    {
+      "front": "疲",
+      "back": "BÌ",
+      "backSub": "mệt mỏi"
+    },
+    {
+      "front": "病",
+      "back": "BỆNH",
+      "backSub": "đau bệnh"
+    },
+    {
+      "front": "痛",
+      "back": "THỐNG",
+      "backSub": "đau ốm"
+    },
+    {
+      "front": "考",
+      "back": "KHẢO",
+      "backSub": "suy nghĩ"
+    },
+    {
+      "front": "者",
+      "back": "GIẢ",
+      "backSub": "người, tác giả"
+    },
+    {
+      "front": "着",
+      "back": "TRƯỚC",
+      "backSub": "mặc, đến"
+    },
+    {
+      "front": "古",
+      "back": "CỔ",
+      "backSub": "cũ"
+    },
+    {
+      "front": "右",
+      "back": "HỮU",
+      "backSub": "bên phải"
+    },
+    {
+      "front": "合",
+      "back": "HỢP",
+      "backSub": "hòa hợp"
+    },
+    {
+      "front": "同",
+      "back": "ĐỒNG",
+      "backSub": "giống nhau"
+    },
+    {
+      "front": "名",
+      "back": "DANH",
+      "backSub": "danh tiếng"
+    },
+    {
+      "front": "向",
+      "back": "HƯỚNG",
+      "backSub": "phương hướng"
+    },
+    {
+      "front": "品",
+      "back": "PHẨM",
+      "backSub": "phẩm chất"
+    },
+    {
+      "front": "吸",
+      "back": "HẤP",
+      "backSub": "hút smoke"
+    },
+    {
+      "front": "告",
+      "back": "CÁO",
+      "backSub": "báo cáo"
+    },
+    {
+      "front": "味",
+      "back": "VỊ",
+      "backSub": "mùi vị"
+    },
+    {
+      "front": "呼",
+      "back": "HÔ",
+      "backSub": "gọi"
+    },
+    {
+      "front": "命",
+      "back": "MỆNH",
+      "backSub": "mệnh lệnh"
+    },
+    {
+      "front": "員",
+      "back": "VIÊN",
+      "backSub": "nhân viên"
+    },
+    {
+      "front": "問",
+      "back": "VẤN",
+      "backSub": "hỏi"
+    },
+    {
+      "front": "喜",
+      "back": "HỈ",
+      "backSub": "vui mừng"
+    },
+    {
+      "front": "喫",
+      "back": "KHIẾT",
+      "backSub": "ăn uống"
+    },
+    {
+      "front": "台",
+      "back": "ĐÀI",
+      "backSub": "cái bục"
+    },
+    {
+      "front": "号",
+      "back": "HIỆU",
+      "backSub": "số hiệu"
+    },
+    {
+      "front": "石",
+      "back": "THẠCH",
+      "backSub": "đá"
+    },
+    {
+      "front": "研",
+      "back": "NGHIÊN",
+      "backSub": "nghiên cứu"
+    }
+  ]
+}

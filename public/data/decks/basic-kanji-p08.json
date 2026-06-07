@@ -1,0 +1,258 @@
+{
+  "desk": {
+    "name": "Kanji sơ cấp - Trang 8",
+    "description": "Kanji sơ cấp cho người mới bắt đầu"
+  },
+  "cards": [
+    {
+      "front": "服",
+      "back": "PHỤC",
+      "backSub": "y phục"
+    },
+    {
+      "front": "朝",
+      "back": "TRIỀU",
+      "backSub": "buổi sáng"
+    },
+    {
+      "front": "期",
+      "back": "KỲ",
+      "backSub": "kỳ hạn"
+    },
+    {
+      "front": "育",
+      "back": "DỤC",
+      "backSub": "giáo dục"
+    },
+    {
+      "front": "背",
+      "back": "BỐI",
+      "backSub": "cái lưng"
+    },
+    {
+      "front": "脱",
+      "back": "THOÁT",
+      "backSub": "cởi, thoát y"
+    },
+    {
+      "front": "青",
+      "back": "THANH",
+      "backSub": "màu xanh"
+    },
+    {
+      "front": "静",
+      "back": "TỊNH",
+      "backSub": "yên tịnh"
+    },
+    {
+      "front": "耳",
+      "back": "NHĨ",
+      "backSub": "lỗ tai"
+    },
+    {
+      "front": "聞",
+      "back": "VĂN",
+      "backSub": "nghe, hỏi"
+    },
+    {
+      "front": "見",
+      "back": "KIẾN",
+      "backSub": "xem"
+    },
+    {
+      "front": "規",
+      "back": "QUY",
+      "backSub": "quy tắc"
+    },
+    {
+      "front": "親",
+      "back": "THÂN",
+      "backSub": "thân thiết (tử tế)"
+    },
+    {
+      "front": "覚",
+      "back": "GIÁC",
+      "backSub": "nhớ"
+    },
+    {
+      "front": "負",
+      "back": "PHỤ",
+      "backSub": "thua"
+    },
+    {
+      "front": "財",
+      "back": "TÀI",
+      "backSub": "tài sản"
+    },
+    {
+      "front": "買",
+      "back": "MÃI",
+      "backSub": "mua"
+    },
+    {
+      "front": "貸",
+      "back": "THẢI",
+      "backSub": "cho vay"
+    },
+    {
+      "front": "貿",
+      "back": "MẬU",
+      "backSub": "mậu dịch"
+    },
+    {
+      "front": "質",
+      "back": "CHẤT",
+      "backSub": "chất vấn"
+    },
+    {
+      "front": "降",
+      "back": "GIÁNG",
+      "backSub": "xuống xe (tàu)"
+    },
+    {
+      "front": "院",
+      "back": "VIỆN",
+      "backSub": "bệnh viện"
+    },
+    {
+      "front": "障",
+      "back": "CHƯỚNG",
+      "backSub": "cổ chướng (bị hư)"
+    },
+    {
+      "front": "隣",
+      "back": "LÂN",
+      "backSub": "lân cận"
+    },
+    {
+      "front": "際",
+      "back": "TẾ",
+      "backSub": "quốc tế"
+    },
+    {
+      "front": "険",
+      "back": "HIỂM",
+      "backSub": "nguy hiểm"
+    },
+    {
+      "front": "部",
+      "back": "BỘ",
+      "backSub": "bộ ốc (căn phòng)"
+    },
+    {
+      "front": "都",
+      "back": "ĐÔ",
+      "backSub": "thủ đô"
+    },
+    {
+      "front": "込",
+      "back": "NHẬP",
+      "backSub": "đông đúc"
+    },
+    {
+      "front": "迎",
+      "back": "NGHÊNH",
+      "backSub": "đón, hoan nghênh"
+    },
+    {
+      "front": "近",
+      "back": "CẬN",
+      "backSub": "gần"
+    },
+    {
+      "front": "返",
+      "back": "PHẢN",
+      "backSub": "trả lại"
+    },
+    {
+      "front": "送",
+      "back": "TỐNG",
+      "backSub": "gửi"
+    },
+    {
+      "front": "途",
+      "back": "ĐỒ",
+      "backSub": "giữa đường"
+    },
+    {
+      "front": "通",
+      "back": "THÔNG",
+      "backSub": "băng qua"
+    },
+    {
+      "front": "速",
+      "back": "TỐC",
+      "backSub": "nhanh"
+    },
+    {
+      "front": "連",
+      "back": "LIÊN",
+      "backSub": "liên lạc"
+    },
+    {
+      "front": "週",
+      "back": "CHU",
+      "backSub": "tuần"
+    },
+    {
+      "front": "進",
+      "back": "TIẾN",
+      "backSub": "tiến bộ"
+    },
+    {
+      "front": "遊",
+      "back": "DU",
+      "backSub": "chơi"
+    },
+    {
+      "front": "運",
+      "back": "VẬN",
+      "backSub": "vận chuyển"
+    },
+    {
+      "front": "過",
+      "back": "QUÁ",
+      "backSub": "quá (nhiều...)"
+    },
+    {
+      "front": "道",
+      "back": "ĐẠO",
+      "backSub": "con đường"
+    },
+    {
+      "front": "達",
+      "back": "ĐẠT",
+      "backSub": "hữu đạt (bạn bè)"
+    },
+    {
+      "front": "違",
+      "back": "VI",
+      "backSub": "sai, khác"
+    },
+    {
+      "front": "遠",
+      "back": "VIỄN",
+      "backSub": "xa"
+    },
+    {
+      "front": "遅",
+      "back": "TRÌ",
+      "backSub": "trễ"
+    },
+    {
+      "front": "辺",
+      "back": "BIÊN",
+      "backSub": "vùng"
+    },
+    {
+      "front": "池",
+      "back": "TRÌ",
+      "backSub": "cái ao"
+    },
+    {
+      "front": "決",
+      "back": "QUYẾT",
+      "backSub": "quyết định"
+    }
+  ]
+}
