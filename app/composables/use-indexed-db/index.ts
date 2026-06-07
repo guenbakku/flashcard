@@ -10,7 +10,7 @@ import type { ExtractDocTypes, InferRxCollection } from '~/types';
 
 import cardCollectionFactory from './collections/card';
 import deckCollectionFactory, { hook as deckCollectionHook } from './collections/deck';
-import { emptyDb, initDb, registerGracefulDbClosing } from './helpers';
+import { initDb, registerGracefulDbClosing } from './helpers';
 
 addRxPlugin(RxDBCleanupPlugin);
 addRxPlugin(RxDBJsonDumpPlugin);
@@ -27,15 +27,21 @@ export type MyDatabase
 
 export type DocTypes = ExtractDocTypes<MyDatabase>;
 
-const getDb = () => initDb<MyDatabase>({
-  ...deckCollectionFactory(),
-  ...cardCollectionFactory(),
-});
+const getDb = () => initDb<MyDatabase>(
+  {
+    ...deckCollectionFactory(),
+    ...cardCollectionFactory(),
+  },
+  [deckCollectionHook],
+);
 
-if (import.meta.client) {
+/**
+ * Completely empty all collections.
+ */
+const emptyDb = async () => {
   const db = await getDb();
-  deckCollectionHook(db);
-}
+  await Promise.all(Object.values(db.collections).map(collection => collection.find().remove()));
+};
 
 const useIndexedDb = () => ({
   emptyDb,

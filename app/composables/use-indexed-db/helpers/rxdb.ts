@@ -4,23 +4,26 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 type Collections = Record<string, RxCollectionCreator<any>>;
 
-let _dbInstance: Promise<RxDatabase> | null = null;
+let _dbInstance: RxDatabase | null = null;
 
 /**
  * Initializes the RxDB database instance with the provided collections.
  *
  * This function implements a singleton pattern to ensure only one database instance is created.
  */
-export const initDb = async <DatabaseType>(collections: Collections): Promise<DatabaseType> => {
+export const initDb = async <DatabaseType = RxDatabase>(
+  collections: Collections,
+  hooks: Array<(db: DatabaseType) => void> = [],
+): Promise<DatabaseType> => {
   if (!import.meta.client) {
     throw new Error('Database instance is only available in the browser.');
   }
 
-  if (_dbInstance) {
+  if (_dbInstance && !_dbInstance.closed) {
     return _dbInstance as DatabaseType;
   }
 
-  _dbInstance = (async () => {
+  _dbInstance = await (async () => {
     const db = await createRxDatabase({
       name: 'flashcard_app',
       storage: getRxStorageDexie(),
@@ -40,6 +43,7 @@ export const initDb = async <DatabaseType>(collections: Collections): Promise<Da
     });
 
     await db.addCollections(collections as Collections);
+    hooks.forEach(hook => hook(db as DatabaseType));
 
     return db;
   })();
@@ -53,19 +57,7 @@ export const initDb = async <DatabaseType>(collections: Collections): Promise<Da
  * Once closed, the internal singleton reference is reset to `null`.
  */
 export const closeDb = async () => {
-  if (_dbInstance) {
-    _dbInstance.then(
-      db => db.close().then(_dbInstance = null),
-    );
-  }
-};
-
-/**
- * Completely empty all collections.
- */
-export const emptyDb = async () => {
-  if (_dbInstance) {
-    const db = await (_dbInstance);
-    await Promise.all(Object.values(db.collections).map(collection => collection.find().remove()));
+  if (_dbInstance && !_dbInstance.closed) {
+    _dbInstance.close().then(_dbInstance = null);
   }
 };
