@@ -23,7 +23,7 @@ useHead({
 const { public: { siteUrl } } = useRuntimeConfig();
 
 const title = 'Flashcard';
-const description = 'Ứng dụng học flashcard';
+const description = 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn';
 const ogImage = `${siteUrl}/apple-touch-icon.png`;
 
 useSeoMeta({
