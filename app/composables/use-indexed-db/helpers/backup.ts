@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { RxDatabase } from 'rxdb';
+import { isRxDatabase as basedIsRxDatabase, type RxDatabase } from 'rxdb';
 
 export const exportJson = async <MyDatabase = RxDatabase>(db: MyDatabase) => {
-  const jsonData = await (db as RxDatabase).exportJSON();
+  if (!isRxDatabase(db)) {
+    throw new Error('Not a RxDatabase instance');
+  }
 
-  const schemaVersions = Object.values((db as RxDatabase).collections).map(collection => ({
+  const jsonData = await db.exportJSON();
+
+  const schemaVersions = Object.values(db.collections).map(collection => ({
     name: collection.name,
     version: collection.schema.version,
   }));
@@ -16,8 +20,12 @@ export const exportJson = async <MyDatabase = RxDatabase>(db: MyDatabase) => {
 
 // TODO: re-consider the performance (memory usage...) when import large data set.
 export const importJson = async <MyDatabase = RxDatabase>(db: MyDatabase, jsonData: any) => {
+  if (!isRxDatabase(db)) {
+    throw new Error('Not a RxDatabase instance');
+  }
+
   // Completely empty all existing collections
-  await Promise.all(Object.values((db as RxDatabase).collections).map(collection => collection.find().remove()));
+  await Promise.all(Object.values(db.collections).map(collection => collection.find().remove()));
 
   try {
     await (db as RxDatabase).importJSON(jsonData);
@@ -30,7 +38,11 @@ export const importJson = async <MyDatabase = RxDatabase>(db: MyDatabase, jsonDa
   }
 };
 
-function isSchemaMismatchError(error: any) {
+function isRxDatabase(obj: unknown): obj is RxDatabase {
+  return basedIsRxDatabase(obj);
+};
+
+function isSchemaMismatchError(error: unknown) {
   if (error instanceof Error) {
     return error.name.trim() === 'RxError (JD2)';
   }
@@ -45,16 +57,15 @@ function isSchemaMismatchError(error: any) {
  * @param db - RxDatabase instance
  * @param jsonData - Exported JSON data containing schemaVersions and collection documents
  */
-export async function importWithMigration(db: any, jsonData: any) {
+async function importWithMigration(db: RxDatabase, jsonData: any) {
   if (!jsonData.schemaVersions || !Array.isArray(jsonData.schemaVersions)) {
     throw new Error('Invalid import data: missing schemaVersions');
   }
 
-  const database = db as RxDatabase;
   const incomingVersionMap = new Map<string, number>(jsonData.schemaVersions.map((v: any) => [v.name, v.version]));
 
   // For each collection in the database
-  for (const [collectionName, collection] of Object.entries(database.collections)) {
+  for (const [collectionName, collection] of Object.entries(db.collections)) {
     const currentVersion = collection.schema.version;
     const incomingVersion = incomingVersionMap.get(collectionName) ?? currentVersion;
 
