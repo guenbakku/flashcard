@@ -2,7 +2,7 @@
 const toast = useToast();
 const fileInput = useTemplateRef<{ inputRef: HTMLInputElement }>('fileInputRef');
 
-const { emptyDb, getDb } = useIndexedDb();
+const { getDb, exportJson, importJson } = useIndexedDb();
 
 const importError = ref('');
 const fileValue = ref(null);
@@ -18,14 +18,14 @@ watch(fileValue, () => {
 async function handleExport() {
   try {
     isExporting.value = true;
-    const db = await getDb();
 
     // Dump entire database to JSON
-    const jsonData = await db.exportJSON();
+    const db = await getDb();
+    const jsonData = await exportJson(db);
     const localDatetime = new Date().toLocaleString('sv').slice(0, 19).replace(/[^0-9]/g, '');
 
     // Create blob and download
-    const json = JSON.stringify(jsonData, null, 2);
+    const json = JSON.stringify(jsonData, null);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -63,20 +63,23 @@ async function handleImport() {
     try {
       isImporting.value = true;
       const fileContent = e.target?.result as string;
-      const parsed = JSON.parse(fileContent);
 
-      // Validate basic structure
-      if (!parsed || typeof parsed !== 'object') {
+      let parsed;
+      try {
+        parsed = JSON.parse(fileContent);
+
+        // Validate basic structure
+        if (!parsed || typeof parsed !== 'object') {
+          throw new Error('Invalid structure of JSON');
+        }
+      } catch {
         importError.value = 'File không hợp lệ. Vui lòng chọn file JSON đúng định dạng.';
         return;
       }
 
-      // Clear existing data before importing
-      const db = await getDb();
-      await emptyDb();
-
       // Import JSON data - this will replace all existing data
-      await db.importJSON(parsed);
+      const db = await getDb();
+      await importJson(db, parsed);
 
       importError.value = '';
       fileValue.value = null;
@@ -90,6 +93,7 @@ async function handleImport() {
       console.error(error);
       toast.add({
         title: 'Khôi phục dữ liệu thất bại',
+        description: error instanceof Error ? error.message : 'Lỗi không xác định',
         color: 'error',
         icon: 'i-lucide-alert-circle',
       });
