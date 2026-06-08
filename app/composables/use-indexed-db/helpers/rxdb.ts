@@ -4,7 +4,7 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 type Collections = Record<string, RxCollectionCreator<any>>;
 
-let _dbInstance: RxDatabase | null = null;
+let _dbInstance: Promise<RxDatabase> | null = null;
 
 /**
  * Initializes the RxDB database instance with the provided collections.
@@ -19,11 +19,11 @@ export const initDb = async <DatabaseType = RxDatabase>(
     throw new Error('Database instance is only available in the browser.');
   }
 
-  if (_dbInstance && !_dbInstance.closed) {
+  if (_dbInstance && !(await _dbInstance).closed) {
     return _dbInstance as DatabaseType;
   }
 
-  _dbInstance = await (async () => {
+  _dbInstance = (async () => {
     const db = await createRxDatabase({
       name: 'flashcard_app',
       storage: getRxStorageDexie(),
@@ -57,7 +57,10 @@ export const initDb = async <DatabaseType = RxDatabase>(
  * Once closed, the internal singleton reference is reset to `null`.
  */
 export const closeDb = async () => {
-  if (_dbInstance && !_dbInstance.closed) {
-    _dbInstance.close().then(_dbInstance = null);
+  if (_dbInstance) {
+    const db = await _dbInstance;
+    if (!db.closed) {
+      db.close().then(_dbInstance = null);
+    }
   }
 };
