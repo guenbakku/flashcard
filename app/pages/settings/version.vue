@@ -23,7 +23,7 @@ const isUpdating = ref(false);
         <div class="flex items-center gap-2">
           <UIcon name="i-lucide-info" class="text-primary size-5" />
           <p class="font-semibold text-highlighted">
-            Phiên bản ứng dụng
+            Phiên bản hiện tại
           </p>
         </div>
       </template>

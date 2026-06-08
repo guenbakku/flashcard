@@ -71,7 +71,7 @@ const useUpdateChecking = () => {
             icon: 'i-lucide-refresh-cw',
             label: 'Cập nhật ngay',
             color: 'primary',
-            onClick: update,
+            to: { name: 'settings-version' },
           },
         ],
       });
