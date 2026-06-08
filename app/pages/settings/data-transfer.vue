@@ -25,7 +25,7 @@ async function handleExport() {
     const localDatetime = new Date().toLocaleString('sv').slice(0, 19).replace(/[^0-9]/g, '');
 
     // Create blob and download
-    const json = JSON.stringify(jsonData, null, 2);
+    const json = JSON.stringify(jsonData, null);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
