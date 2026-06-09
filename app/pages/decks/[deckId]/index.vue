@@ -198,7 +198,7 @@ function reStudy() {
               <div class="flex gap-3">
                 <UButton
                   color="primary"
-                  variant="soft"
+                  variant="solid"
                   icon="i-lucide-wallet-cards"
                   :to="{ name: 'decks-deckId-cards', params: { deckId } }"
                 >
@@ -231,7 +231,7 @@ function reStudy() {
               <div class="flex gap-3">
                 <UButton
                   color="primary"
-                  variant="soft"
+                  variant="subtle"
                   icon="i-lucide-rotate-ccw"
                   @click="reStudy"
                 >
@@ -265,7 +265,7 @@ function reStudy() {
               <div class="flex gap-3">
                 <UButton
                   color="primary"
-                  variant="soft"
+                  variant="subtle"
                   icon="i-lucide-rotate-ccw"
                   @click="reStudy"
                 >

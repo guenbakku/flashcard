@@ -121,7 +121,7 @@ function generateDropdownItems(id: string): DropdownMenuItem[] {
                   icon: 'i-lucide-plus',
                   label: 'Tạo bộ thẻ mới',
                   color: 'primary',
-                  variant: 'soft',
+                  variant: 'solid',
                   onClick: () => { creationModalOpen = true },
                 },
                 {

@@ -153,7 +153,7 @@ onMounted(async () => {
                     icon: 'i-lucide-plus',
                     label: 'Thêm thẻ đầu tiên',
                     color: 'primary',
-                    variant: 'soft',
+                    variant: 'solid',
                     onClick: () => { creationModalOpen = true },
                   }
                 ]"
