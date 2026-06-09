@@ -36,7 +36,7 @@ const useUpdateChecking = () => {
     () => latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
   );
 
-  const update = () => window.location.reload();
+  const update = () => reloadNuxtApp();
 
   const checkUpdate = async () => {
     const shouldNotify = () => {
