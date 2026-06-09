@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+const SITE_TITLE = 'Flashcard';
+const SITE_DESCRIPTION = 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn';
 const VERSION = '1.0.0';
 const BUILD_TIMESTAMP = Date.now();
 
@@ -28,6 +30,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: '',
+      siteTitle: SITE_TITLE,
+      siteDescription: SITE_DESCRIPTION,
       version: VERSION,
       buildTimestamp: BUILD_TIMESTAMP,
     },
@@ -45,9 +49,9 @@ export default defineNuxtConfig({
 
   pwa: {
     manifest: {
-      name: 'Flashcard',
-      short_name: 'Flashcard',
-      description: 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn',
+      name: SITE_TITLE,
+      short_name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
       lang: 'vi',
       icons: [
         {

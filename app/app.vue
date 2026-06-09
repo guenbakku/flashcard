@@ -20,17 +20,15 @@ useHead({
   },
 });
 
-const { public: { siteUrl } } = useRuntimeConfig();
+const { public: { siteUrl, siteTitle, siteDescription } } = useRuntimeConfig();
 
-const title = 'Flashcard';
-const description = 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn';
 const ogImage = `${siteUrl}/apple-touch-icon.png`;
 
 useSeoMeta({
-  title,
-  description,
-  ogTitle: title,
-  ogDescription: description,
+  title: siteTitle,
+  description: siteDescription,
+  ogTitle: siteTitle,
+  ogDescription: siteDescription,
   ogImage,
   twitterCard: 'summary_large_image',
 });
