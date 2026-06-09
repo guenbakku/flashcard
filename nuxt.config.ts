@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@vueuse/nuxt',
+    '@vite-pwa/nuxt',
   ],
 
   devtools: {
@@ -40,6 +41,26 @@ export default defineNuxtConfig({
       '!**/_composables/**',
       '!**/*.test.{js,ts,mts,mjs,vue}',
     ],
+  },
+
+  pwa: {
+    manifest: {
+      name: 'Flashcard',
+      short_name: 'Flashcard',
+      description: 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn',
+      lang: 'vi',
+      icons: [
+        {
+          src: 'apple-touch-icon.png',
+          type: 'image/png',
+          sizes: '250x250',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,json}'],
+    },
   },
 
   routeRules: {
