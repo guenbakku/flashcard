@@ -13,24 +13,21 @@ useHead({
     { key: 'theme-color', name: 'theme-color', content: color },
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
   ],
   htmlAttrs: {
-    lang: 'en',
+    lang: 'vi',
   },
 });
 
-const { public: { siteUrl } } = useRuntimeConfig();
-
-const title = 'Flashcard';
-const description = 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn';
+const { public: { siteUrl, siteTitle, siteDescription } } = useRuntimeConfig();
 const ogImage = `${siteUrl}/apple-touch-icon.png`;
 
 useSeoMeta({
-  title,
-  description,
-  ogTitle: title,
-  ogDescription: description,
+  title: siteTitle,
+  description: siteDescription,
+  ogTitle: siteTitle,
+  ogDescription: siteDescription,
   ogImage,
   twitterCard: 'summary_large_image',
 });
@@ -39,6 +36,7 @@ useSeoMeta({
 <template>
   <UApp>
     <NuxtLoadingIndicator />
+    <NuxtPwaManifest />
 
     <NuxtLayout>
       <NuxtPage />
