@@ -39,6 +39,7 @@ useSeoMeta({
     <NuxtPwaManifest />
 
     <NuxtLayout>
+      <PwaUpdatePrompt />
       <NuxtPage />
     </NuxtLayout>
   </UApp>
