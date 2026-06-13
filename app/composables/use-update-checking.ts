@@ -6,7 +6,7 @@ type Version = {
 
 const NOTIFY_RETRY_DELAY_SEC = 21600; // 6 hours
 
-const getPendingState = () => useState(() => true);
+const getPendingState = () => useState(() => false);
 const getLatestVersionState = () => useState<Version | undefined>();
 
 const fetchData = useDebounceFn(async () => {
@@ -16,7 +16,7 @@ const fetchData = useDebounceFn(async () => {
   pending.value = true;
   latestVersion.value = await $fetch(`/version.json?${Date.now()}`);
   pending.value = false;
-}, 1000);
+}, 500);
 
 const useUpdateChecking = () => {
   const pending = getPendingState();
@@ -32,7 +32,11 @@ const useUpdateChecking = () => {
     buildId: String(config.app.buildId),
   });
 
-  tryOnMounted(fetchData);
+  watch(() => $pwa?.needRefresh, (value) => {
+    if (value) {
+      fetchData();
+    }
+  }, { immediate: true });
 
   const hasUpdate = computed(
     () => $pwa?.needRefresh && latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
