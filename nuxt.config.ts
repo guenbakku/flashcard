@@ -71,28 +71,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-07-11',
 
-  vite: {
-    optimizeDeps: {
-      // Pre-bundle certain dependencies on startup to avoid page reloads
-      include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
-        '@vueuse/integrations/useSortable',
-        'rxdb',
-        'rxdb/plugins/cleanup',
-        'rxdb/plugins/json-dump',
-        'rxdb/plugins/leader-election',
-        'rxdb/plugins/query-builder',
-        'rxdb/plugins/storage-dexie',
-        'rxdb/plugins/update',
-        'rxjs',
-        'rxjs/operators',
-        'zod',
-        'zod/v4/core',
-      ],
-    },
-  },
-
   hooks: {
     // Generate the static JSON file containing the buildId in the public directory
     'nitro:init': (nitro) => {
