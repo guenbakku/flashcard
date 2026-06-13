@@ -59,8 +59,11 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,json}'],
+      globPatterns: ['**/*.{js,css,html}'],
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
     },
+    registerType: 'prompt',
   },
 
   routeRules: {

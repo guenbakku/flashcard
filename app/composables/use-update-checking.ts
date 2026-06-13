@@ -23,6 +23,8 @@ const useUpdateChecking = () => {
   const latestVersion = getLatestVersionState();
   const lastNotifiedAt = useLocalStorage<number | undefined>('new-version-notified-at', undefined);
 
+  const { $pwa } = useNuxtApp();
+
   const config = useRuntimeConfig();
   const currentVersion = shallowRef({
     version: config.public.version,
@@ -33,10 +35,13 @@ const useUpdateChecking = () => {
   tryOnMounted(fetchData);
 
   const hasUpdate = computed(
-    () => latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
+    () => $pwa?.needRefresh && latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
   );
 
-  const update = () => reloadNuxtApp();
+  const update = async () => {
+    await $pwa?.updateServiceWorker(true);
+    window.location.reload();
+  };
 
   const checkUpdate = async () => {
     const shouldNotify = () => {
