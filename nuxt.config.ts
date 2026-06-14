@@ -43,22 +43,30 @@ export default defineNuxtConfig({
     ],
   },
 
-  icon: {
-    provider: 'none',
-    clientBundle: {
-      icons: [
-        'lucide:menu',
-        'lucide:panel-left-close',
-        'lucide:moon',
-      ],
-      scan: {
-        globInclude: [
-          '{app,shared}/**',
-        ],
-        globExclude: ['node_modules'],
+  /**
+   * Bundle icons on the client for production and test environments:
+   * - Production: Ensures icons render offline in PWA mode.
+   * - Test: Prevents unnecessary network requests during test runs.
+   * - Development: Uses remote fetching so new icons display instantly during HMR.
+   */
+  icon: process.env.NODE_ENV === 'development'
+    ? {}
+    : {
+        provider: 'none',
+        clientBundle: {
+          icons: [
+            'lucide:menu',
+            'lucide:panel-left-close',
+            'lucide:moon',
+          ],
+          scan: {
+            globInclude: [
+              '{app,shared}/**',
+            ],
+            globExclude: ['node_modules'],
+          },
+        },
       },
-    },
-  },
 
   pwa: {
     manifest: {
