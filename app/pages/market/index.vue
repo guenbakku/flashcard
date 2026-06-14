@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core';
 
-const { data: decks, pending } = useMarketDecks();
+const { data: decks, pending, error } = useMarketDecks();
 
 const keyword = useState(() => '');
 const debouncedKeyword = refDebounced(keyword, 300);
@@ -52,6 +52,14 @@ const filteredDecks = computed(() =>
               <USkeleton class="h-7 w-24 rounded-lg bg-default/70 mt-2" />
             </div>
           </UPageGrid>
+
+          <div v-else-if="error" class="flex justify-center">
+            <UEmpty
+              icon="i-lucide-server-crash"
+              title="Có lỗi xảy ra khi kết nối với server"
+              description="Hãy thử lại sau một lúc nữa."
+            />
+          </div>
 
           <div v-else-if="filteredDecks.length === 0" class="flex justify-center">
             <UEmpty

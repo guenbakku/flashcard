@@ -102,7 +102,7 @@ const handleBrowse = (direction: 'next' | 'prev') => {
           <template v-else-if="!cards?.length">
             <div class="flex flex-col items-center gap-4 text-center">
               <div class="bg-elevated flex size-20 items-center justify-center rounded-full">
-                <UIcon name="i-lucide-meh" class="text-muted size-10" />
+                <UIcon name="i-lucide-server-crash" class="text-muted size-10" />
               </div>
               <h2 class="text-default text-2xl font-bold">
                 Không tìm thấy thẻ nào

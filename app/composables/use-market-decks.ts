@@ -1,7 +1,7 @@
 import { type DeckMeta, deckMetaSchema } from '~/types';
 
 const useMarketDecks = () => {
-  const { data: decksMeta, pending } = useClientFetch<DeckMeta[]>('/data/decks.json', {
+  const { data: decksMeta, pending, error } = useClientFetch<DeckMeta[]>('/data/decks.json', {
     transform: raw => deckMetaSchema.array().parse(raw),
   });
 
@@ -13,6 +13,7 @@ const useMarketDecks = () => {
 
   return {
     data: decks,
+    error,
     pending,
     getDeck,
   };
