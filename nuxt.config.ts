@@ -43,6 +43,23 @@ export default defineNuxtConfig({
     ],
   },
 
+  icon: {
+    provider: 'none',
+    clientBundle: {
+      icons: [
+        'lucide:menu',
+        'lucide:panel-left-close',
+        'lucide:moon',
+      ],
+      scan: {
+        globInclude: [
+          '{app,shared}/**',
+        ],
+        globExclude: ['node_modules'],
+      },
+    },
+  },
+
   pwa: {
     manifest: {
       name: SITE_TITLE,
