@@ -8,8 +8,6 @@ const BUILD_TIMESTAMP = Date.now();
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false,
-
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
@@ -83,7 +81,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: '/',
+      navigateFallback: '/200',
       globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,jpeg,gif}'],
       cleanupOutdatedCaches: true,
       clientsClaim: true,
