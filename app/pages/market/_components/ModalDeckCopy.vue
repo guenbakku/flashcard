@@ -46,6 +46,14 @@ async function handleCopyDeck() {
       ]),
       color: 'success',
       icon: 'i-lucide-check-circle',
+      actions: [
+        {
+          icon: 'i-lucide-layers',
+          label: 'Bộ thẻ của tôi',
+          color: 'primary',
+          to: '/',
+        },
+      ],
     });
   } catch (e) {
     console.error(e);
