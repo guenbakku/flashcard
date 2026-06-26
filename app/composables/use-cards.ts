@@ -54,6 +54,11 @@ const useCards = (deckId: string) => {
     keywordFilter$.next(keyword);
   };
 
+  const getAllCards = clientOnly(async () => {
+    const db = await getDb();
+    return db.card.find().where('deckId').eq(deckId).sort({ order: 'asc' }).exec();
+  });
+
   const createCard = clientOnly(async (payload: CardPayload) => {
     const db = await getDb();
     const deckDoc = await db.deck.findOne(deckId).exec();
@@ -168,6 +173,7 @@ const useCards = (deckId: string) => {
   return {
     cardDocs,
     pending: computed(() => !getLoadedState().value),
+    getAllCards,
     filterCards,
     createCard,
     updateCard,
