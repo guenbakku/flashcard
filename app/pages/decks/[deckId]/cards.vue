@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSortable, type UseSortableOptions } from '@vueuse/integrations/useSortable';
-import type { RxDocument } from 'rxdb';
 
 import type { DocTypes } from '~/composables/use-indexed-db';
 
@@ -22,7 +21,7 @@ watch(keywordDebounced, (newVal) => {
   filterCards(newVal);
 }, { immediate: true });
 
-const deck = ref<RxDocument<DeckDocument> | null>(null);
+const deck = ref<DeckDocument>();
 const pending = ref(true);
 
 const creationModalOpen = ref(false);
@@ -58,7 +57,7 @@ useSortable(sortableRoot, cardDocs, {
 } as UseSortableOptions);
 
 onMounted(async () => {
-  deck.value = await getDeck(deckId);
+  deck.value = await getDeck(deckId) ?? undefined;
   pending.value = false;
 });
 </script>
