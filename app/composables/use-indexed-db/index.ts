@@ -27,19 +27,23 @@ export type MyDatabase
 
 export type DocTypes = ExtractDocTypes<MyDatabase>;
 
-const getDb = () => initDb<MyDatabase>(
-  {
-    ...deckCollectionFactory(),
-    ...cardCollectionFactory(),
-  },
-  [deckCollectionHook],
-);
+function getDb() {
+  return initDb<MyDatabase>(
+    {
+      ...deckCollectionFactory(),
+      ...cardCollectionFactory(),
+    },
+    [deckCollectionHook],
+  );
+}
 
-const useIndexedDb = () => ({
-  getDb,
-  exportJson,
-  importJson,
-  registerGracefulDbClosing,
-});
+function useIndexedDb() {
+  return {
+    getDb,
+    exportJson,
+    importJson,
+    registerGracefulDbClosing,
+  };
+}
 
 export default useIndexedDb;

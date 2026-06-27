@@ -6,8 +6,13 @@ type Version = {
 
 const NOTIFY_RETRY_DELAY_SEC = 21600; // 6 hours
 
-const getPendingState = () => useState(() => false);
-const getLatestVersionState = () => useState<Version | undefined>();
+function getPendingState() {
+  return useState(() => false);
+}
+
+function getLatestVersionState() {
+  return useState<Version | undefined>();
+}
 
 const fetchData = useDebounceFn(async () => {
   const pending = getPendingState();

@@ -19,7 +19,7 @@ const totalDeckCards = computed(() => cards.value.length);
 const modalOpen = ref(false);
 const isCopyable = computed(() => !!deck.value && cards.value.length > 0);
 
-const handleBrowse = (direction: 'next' | 'prev') => {
+function handleBrowse(direction: 'next' | 'prev') {
   setTimeout(
     () => {
       switch (direction) {

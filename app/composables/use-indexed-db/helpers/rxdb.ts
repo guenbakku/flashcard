@@ -11,10 +11,10 @@ let _dbInstance: Promise<RxDatabase> | null = null;
  *
  * This function implements a singleton pattern to ensure only one database instance is created.
  */
-export const initDb = async <DatabaseType = RxDatabase>(
+export async function initDb<DatabaseType = RxDatabase>(
   collections: Collections,
   hooks: Array<(db: DatabaseType) => void> = [],
-): Promise<DatabaseType> => {
+): Promise<DatabaseType> {
   if (!import.meta.client) {
     throw new Error('Database instance is only available in the browser.');
   }
@@ -56,7 +56,7 @@ export const initDb = async <DatabaseType = RxDatabase>(
  *
  * Once closed, the internal singleton reference is reset to `null`.
  */
-export const closeDb = async () => {
+export async function closeDb() {
   if (_dbInstance) {
     const db = await _dbInstance;
     if (!db.closed) {

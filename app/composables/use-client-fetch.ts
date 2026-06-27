@@ -3,7 +3,7 @@ import type { UseFetchOptions } from '#app';
 /**
  * Fetch data from API only on client-side
  */
-const useClientFetch = <T>(url: string | (() => string), options: UseFetchOptions<T> = {}) => {
+function useClientFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
   let urlValue = toValue(url);
 
   // Add buildVersion as query parameter to JSON files to prevent caching issues of browser.
