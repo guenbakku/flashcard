@@ -43,9 +43,7 @@ const useUpdateChecking = () => {
     }
   }, { immediate: true });
 
-  const hasUpdate = computed(
-    () => $pwa?.needRefresh && latestVersion.value?.version && latestVersion.value.version !== currentVersion.value.version,
-  );
+  const hasUpdate = computed(() => $pwa?.needRefresh);
 
   const update = async () => {
     await $pwa?.updateServiceWorker(true);
