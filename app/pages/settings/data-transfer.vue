@@ -43,7 +43,7 @@ async function handleExport() {
     console.error('Export failed:', error);
     toast.add({
       title: 'Xuất dữ liệu thất bại',
-      description: error instanceof Error ? error.message : 'Lỗi không xác định',
+      description: error instanceof Error ? error.message : undefined,
       color: 'error',
       icon: 'i-lucide-alert-circle',
     });
@@ -93,7 +93,7 @@ async function handleImport() {
       console.error(error);
       toast.add({
         title: 'Khôi phục dữ liệu thất bại',
-        description: error instanceof Error ? error.message : 'Lỗi không xác định',
+        description: error instanceof Error ? error.message : undefined,
         color: 'error',
         icon: 'i-lucide-alert-circle',
       });
