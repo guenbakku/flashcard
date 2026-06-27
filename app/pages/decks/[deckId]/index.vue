@@ -2,20 +2,24 @@
 import type { DocTypes } from '~/composables/use-indexed-db';
 
 type DeckDocument = DocTypes['deck'];
+type CardDocument = DocTypes['card'];
 
 const route = useRoute();
 const deckId = String(route.params.deckId);
 
 const { getDeck, answer } = useMyDecks();
-const { cardDocs } = useCards(deckId);
+const { getAllCards } = useCards(deckId);
 
-const deck = ref<DeckDocument | null>(null);
+const deck = ref<DeckDocument>();
 const pending = ref(true);
 const isAnswering = ref(false);
+const cardDocs = shallowRef<CardDocument[]>([]);
 const capturedMasteredCards = ref<Set<string>>(new Set());
 
 onMounted(async () => {
-  deck.value = await getDeck(deckId);
+  deck.value = await getDeck(deckId) ?? undefined;
+  cardDocs.value = await getAllCards() ?? [];
+
   capturedMasteredCards.value = new Set(cardDocs.value.filter(c => c.isMastered).map(c => c.id));
   pending.value = false;
 });

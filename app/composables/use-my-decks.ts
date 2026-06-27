@@ -56,10 +56,10 @@ const useMyDecks = () => {
     keywordFilter$.next(keyword);
   };
 
-  const getDeck = async (id: string) => {
+  const getDeck = clientOnly(async (id: string) => {
     const db = await getDb();
     return await db.deck.findOne(id).exec();
-  };
+  });
 
   const answer = clientOnly(async (data: AnswerPayload) => {
     const db = await getDb();
