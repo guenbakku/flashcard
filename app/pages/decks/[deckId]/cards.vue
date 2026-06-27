@@ -74,7 +74,7 @@ onMounted(async () => {
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"
-            size="sm"
+            size="md"
           />
         </template>
       </UDashboardNavbar>

@@ -119,7 +119,7 @@ function reStudy() {
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"
-            size="sm"
+            size="md"
           />
         </template>
       </UDashboardNavbar>
@@ -324,7 +324,7 @@ function reStudy() {
                 <UButton
                   color="neutral"
                   variant="subtle"
-                  icon="i-lucide-arrow-left"
+                  icon="i-lucide-move-left"
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
                   :disabled="currentIndex === 0"
@@ -335,7 +335,7 @@ function reStudy() {
                 <UButton
                   color="neutral"
                   variant="subtle"
-                  icon="i-lucide-arrow-right"
+                  icon="i-lucide-move-right"
                   trailing
                   size="lg"
                   class="flex-1 justify-center touch-manipulation"
