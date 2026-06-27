@@ -11,10 +11,15 @@ type CardDoc = DocTypes['card'];
 type AnswerPayload = Pick<CardDoc, 'id' | 'isMastered'>;
 type DeckMeta = Pick<DeckDoc, 'id' | 'name' | 'description'>;
 
-const getDecksState = () => useState<RxDocument<DeckDoc>[]>('myDeckDocs', () => []);
-const getLoadedState = () => useState<boolean>('myDecksLoaded', () => false);
+function getDecksState() {
+  return useState<RxDocument<DeckDoc>[]>('myDeckDocs', () => []);
+}
 
-const useMyDecks = () => {
+function getLoadedState() {
+  return useState<boolean>('myDecksLoaded', () => false);
+}
+
+function useMyDecks() {
   const deckDocs = getDecksState();
   const loaded = getLoadedState();
   const { getDb } = useIndexedDb();

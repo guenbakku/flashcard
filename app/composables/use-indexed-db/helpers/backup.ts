@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isRxDatabase as basedIsRxDatabase, type RxDatabase } from 'rxdb';
 
-export const exportJson = async <MyDatabase = RxDatabase>(db: MyDatabase) => {
+export async function exportJson<MyDatabase = RxDatabase>(db: MyDatabase) {
   if (!isRxDatabase(db)) {
     throw new Error('Not a RxDatabase instance');
   }
@@ -19,7 +19,7 @@ export const exportJson = async <MyDatabase = RxDatabase>(db: MyDatabase) => {
 };
 
 // TODO: re-consider the performance (memory usage...) when import large data set.
-export const importJson = async <MyDatabase = RxDatabase>(db: MyDatabase, jsonData: any) => {
+export async function importJson<MyDatabase = RxDatabase>(db: MyDatabase, jsonData: any) {
   if (!isRxDatabase(db)) {
     throw new Error('Not a RxDatabase instance');
   }

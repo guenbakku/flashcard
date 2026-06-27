@@ -1,6 +1,6 @@
 import { closeDb } from './rxdb';
 
-export const registerGracefulDbClosing = () => {
+export function registerGracefulDbClosing() {
   const handleBeforeUnload = async (_event: BeforeUnloadEvent) => {
     closeDb();
   };

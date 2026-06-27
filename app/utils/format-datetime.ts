@@ -10,6 +10,6 @@ function formatDatetime(dateStr: number | string | Date | undefined) {
     hour: '2-digit',
     minute: '2-digit',
   });
-};
+}
 
 export default formatDatetime;

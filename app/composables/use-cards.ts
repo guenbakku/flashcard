@@ -8,10 +8,15 @@ import type { DocTypes } from '~/composables/use-indexed-db';
 type CardDocument = DocTypes['card'];
 type CardPayload = Pick<CardDocument, 'front' | 'back' | 'backSub'>;
 
-const getCardsState = () => useState<RxDocument<CardDocument>[]>('cardDocs', () => []);
-const getLoadedState = () => useState<boolean>('cardsLoaded', () => false);
+function getCardsState() {
+  return useState<RxDocument<CardDocument>[]>('cardDocs', () => []);
+}
 
-const useCards = (deckId: string) => {
+function getLoadedState() {
+  return useState<boolean>('cardsLoaded', () => false);
+}
+
+function useCards(deckId: string) {
   const cardDocs = getCardsState();
   const loaded = getLoadedState();
   const { getDb } = useIndexedDb();

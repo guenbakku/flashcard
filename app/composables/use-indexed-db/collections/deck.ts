@@ -66,7 +66,7 @@ const factory = collectionFactory('deck', {
   },
 });
 
-export const hook = (db: InferRxCollection<ReturnType<typeof factory>>) => {
+export function hook(db: InferRxCollection<ReturnType<typeof factory>>) {
   db.deck.postCreate(function (plainData, rxDocument) {
     Object.defineProperty(rxDocument, 'progress', {
       get: function () {

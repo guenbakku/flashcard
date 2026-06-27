@@ -59,7 +59,7 @@ const totalCorrectAnswers = computed(() => Object.values(results.value).filter(v
 const progress = computed(() => totalDisplayCards.value ? Math.round((Object.values(results.value).length / totalDisplayCards.value) * 100) : 0);
 const isDone = computed(() => !isBrowseMode.value && totalDisplayCards.value && Object.values(results.value).length === totalDisplayCards.value);
 
-const handleBrowse = (direction: 'next' | 'prev') => {
+function handleBrowse(direction: 'next' | 'prev') {
   setTimeout(
     () => {
       switch (direction) {

@@ -7,7 +7,7 @@ const {
   update,
 } = useUpdateChecking();
 
-const handleUpdate = () => {
+function handleUpdate() {
   isUpdating.value = true;
   // Delay reloading to allow the user to notice the loading state/UI change
   setTimeout(update, 1000);

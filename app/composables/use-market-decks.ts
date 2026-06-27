@@ -1,6 +1,6 @@
 import { type DeckMeta, deckMetaSchema } from '~/types';
 
-const useMarketDecks = () => {
+function useMarketDecks() {
   const { data: decksMeta, pending, error } = useClientFetch<DeckMeta[]>('/data/decks.json', {
     transform: raw => deckMetaSchema.array().parse(raw),
   });
