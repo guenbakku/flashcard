@@ -54,7 +54,7 @@ const handleBrowse = (direction: 'next' | 'prev') => {
             icon="i-lucide-arrow-left"
             color="neutral"
             variant="ghost"
-            size="sm"
+            size="md"
           />
         </template>
       </UDashboardNavbar>
@@ -140,7 +140,7 @@ const handleBrowse = (direction: 'next' | 'prev') => {
               <UButton
                 color="neutral"
                 variant="subtle"
-                icon="i-lucide-arrow-left"
+                icon="i-lucide-move-left"
                 size="lg"
                 class="flex-1 justify-center touch-manipulation"
                 :disabled="currentIndex === 0"
@@ -151,7 +151,7 @@ const handleBrowse = (direction: 'next' | 'prev') => {
               <UButton
                 color="neutral"
                 variant="subtle"
-                icon="i-lucide-arrow-right"
+                icon="i-lucide-move-right"
                 trailing
                 size="lg"
                 class="flex-1 justify-center touch-manipulation"
