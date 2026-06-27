@@ -4,6 +4,8 @@ import type { DocTypes } from '~/composables/use-indexed-db';
 type DeckDocument = DocTypes['deck'];
 type CardDocument = DocTypes['card'];
 
+const toast = useToast();
+
 const route = useRoute();
 const deckId = String(route.params.deckId);
 
@@ -88,14 +90,24 @@ async function handleAnswer(result: boolean) {
   isAnswering.value = true;
   results.value[currentCard.value.id] = result;
 
-  await answer({
-    id: currentCard.value.id,
-    isMastered: result,
-  });
+  try {
+    await answer({
+      id: currentCard.value.id,
+      isMastered: result,
+    });
 
-  handleBrowse('next');
-
-  isAnswering.value = false;
+    handleBrowse('next');
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      title: 'Đã xảy ra lỗi. Vui lòng thử lại sau.',
+      description: error instanceof Error ? error.message : undefined,
+      color: 'error',
+      icon: 'i-lucide-alert-circle',
+    });
+  } finally {
+    isAnswering.value = false;
+  }
 }
 
 function restart() {
