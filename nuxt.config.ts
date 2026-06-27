@@ -9,10 +9,14 @@ const BUILD_TIMESTAMP = Date.now();
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui',
-    '@vueuse/nuxt',
-    '@vite-pwa/nuxt',
+    ...[
+      '@nuxt/eslint',
+      '@nuxt/ui',
+      '@vueuse/nuxt',
+    ],
+
+    // Omit PWA module during testing to avoid environment-specific side effects
+    ...(process.env.NODE_ENV === 'test' ? [] : ['@vite-pwa/nuxt']),
   ],
 
   devtools: {
