@@ -31,11 +31,10 @@ jobs:
         # ensuring the zip file does not contain the root 'dist/' folder itself.
         run: |
           cd dist
-          zip -r ../release-dist.zip .
-          cd ..
+          zip -r "${{ github.workspace }}/release-dist.zip" .
 
       - name: Upload Zip to Release Resource
         uses: actions/upload-artifact@v4
         with:
           name: release-dist
-          path: release-dist.zip
+          path: ${{ github.workspace }}/release-dist.zip
