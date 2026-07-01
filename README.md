@@ -22,7 +22,7 @@ Ensure you have [Node.js](https://nodejs.org/) installed (recommended version 22
 Clone the repository and install the required dependencies:
 
 ```bash
-npm install
+yarn install
 ```
 
 ### Development Server
@@ -30,7 +30,7 @@ npm install
 Start the local development server on `http://localhost:3000`:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 ## 🏗️ Production & Deployment
@@ -42,15 +42,15 @@ This application is architected as a Single Page Application (SPA). It runs comp
 To build the application for static production:
 
 ```bash
-npm run generate
+yarn generate
 ```
 
-> 💡 **Note on Deck Data:** The `npm run generate-decks-data` command compiles your source flashcard data into the application. You don't need to run this manually; it is automatically executed during the production build sequence.
+> 💡 **Note on Deck Data:** The `yarn generate-decks-data` command compiles your source flashcard data into the application. You don't need to run this manually; it is automatically executed during the production build sequence.
 
 If you ever need to manually trigger the data generation without running a full build:
 
 ```bash
-npm run generate-decks-data
+yarn generate-decks-data
 ```
 
 ## 🧪 Quality Assurance
@@ -61,10 +61,10 @@ Run the test suite to ensure application stability:
 
 ```bash
 # Run all tests
-npm run test
+yarn test
 
 # Run tests and generate a code coverage report (Output: /.coverage/)
-npm run test:coverage
+yarn test:coverage
 ```
 
 ### Linting & Formatting
@@ -73,10 +73,10 @@ Maintain code quality and style standards:
 
 ```bash
 # Check code for linting errors
-npm run lint
+yarn lint
 
 # Automatically fix linting and formatting issues
-npm run lint:fix
+yarn lint:fix
 ```
 
 ## 📄 License

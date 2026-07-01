@@ -18,16 +18,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm' # Automatically caches node_modules to speed up subsequent runs
+          cache: 'yarn' # Automatically caches Yarn packages to speed up subsequent runs
 
       - name: Install dependencies
-        run: npm ci # Uses 'npm ci' for clean and reliable installations based on package-lock.json
+        run: yarn --frozen-lockfile
 
       - name: Run build script
-        run: npm run generate
+        run: yarn generate
 
       - name: Zip dist folder contents
-        # Navigates into the 'dist' folder and compresses everything inside, 
+        # Navigates into the 'dist' folder and compresses everything inside,
         # ensuring the zip file does not contain the root 'dist/' folder itself.
         run: |
           cd dist
@@ -35,8 +35,7 @@ jobs:
           cd ..
 
       - name: Upload Zip to Release Resource
-        uses: actions/upload-artifact@v4 
+        uses: actions/upload-artifact@v4
         with:
           name: release-dist
           path: release-dist.zip
-          
