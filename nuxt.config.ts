@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const SITE_TITLE = 'Flashcard';
 const SITE_DESCRIPTION = 'Ứng dụng học flashcard giúp ghi nhớ hiệu quả và theo dõi tiến độ học tập ngay trên trình duyệt của bạn';
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 const BUILD_TIMESTAMP = Date.now();
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
