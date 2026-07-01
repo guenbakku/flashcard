@@ -97,12 +97,12 @@ onMounted(async () => {
                 <p class="text-xs text-muted">Kéo thả thẻ để thay đổi thứ tự học.</p>
               </div>
 
-              <div class="flex items-center gap-3">
+              <div class="flex items-center justify-between gap-3 w-full md:w-70">
                 <UInput
                   v-model="keyword"
                   icon="i-lucide-search"
                   placeholder="Tìm thẻ..."
-                  class="w-64 sm:w-80"
+                  class="w-full"
                 >
                   <template v-if="keyword" #trailing>
                     <UButton
